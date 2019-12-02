@@ -15,7 +15,7 @@ class Coroutine {
     
     static let pool = Pool(creator: Coroutine.init)
     
-    static func new(block: @escaping () throws -> Void, resumer: @escaping Resumer) -> Coroutine {
+    static func new(block: @escaping () throws -> Void, resumer: @escaping Resumer = { $0() }) -> Coroutine {
         let coroutine = pool.pop()
         coroutine.resumer = resumer
         coroutine.setBlock { [unowned coroutine, unowned pool] in

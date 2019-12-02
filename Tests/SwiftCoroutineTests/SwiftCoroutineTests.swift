@@ -86,6 +86,19 @@ class SwiftCoroutineTests: XCTestCase {
         wait(for: [expectation], timeout: 60)
     }
     
+    func testGenerator() {
+        var items = [2, 3, 1, 4, 2, 4]
+        let generator = Generator<((Int, Int) -> Bool) -> Void> { yield in
+            items.sort { left, right in
+                var result = false
+                yield { result = $0(left, right) }
+                return result
+            }
+        }
+        while let next = generator.next() { next(>) }
+        XCTAssertEqual(items, items.sorted(by: >))
+    }
+    
 }
 
 

@@ -31,6 +31,8 @@
 		1A934FCA2390491F00155B71 /* CoPromise+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A934FC6239048FE00155B71 /* CoPromise+Combine.swift */; };
 		1A956C302393DB4C002F74C5 /* DispatchQueue+Coroutine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A956C2F2393DB4C002F74C5 /* DispatchQueue+Coroutine.swift */; };
 		1AB2F6692393E3D300B7B1FD /* DispatchQueue+Coroutine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A956C2F2393DB4C002F74C5 /* DispatchQueue+Coroutine.swift */; };
+		1AB2F6942395531400B7B1FD /* Generator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB2F6932395531400B7B1FD /* Generator.swift */; };
+		1AB2F6952395531600B7B1FD /* Generator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB2F6932395531400B7B1FD /* Generator.swift */; };
 		1AEEC82E23893FA400F86A81 /* DispatchQueue+Compose.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEEC82D23893FA400F86A81 /* DispatchQueue+Compose.swift */; };
 		1AFF9F372387D846002DD893 /* Coroutine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFF9F362387D846002DD893 /* Coroutine.swift */; };
 		1AFF9F382387D846002DD893 /* Coroutine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFF9F362387D846002DD893 /* Coroutine.swift */; };
@@ -79,6 +81,7 @@
 		1A934FC3239031C000155B71 /* XCTAssertContains.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCTAssertContains.swift; sourceTree = "<group>"; };
 		1A934FC6239048FE00155B71 /* CoPromise+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoPromise+Combine.swift"; sourceTree = "<group>"; };
 		1A956C2F2393DB4C002F74C5 /* DispatchQueue+Coroutine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DispatchQueue+Coroutine.swift"; sourceTree = "<group>"; };
+		1AB2F6932395531400B7B1FD /* Generator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Generator.swift; sourceTree = "<group>"; };
 		1AEEC82D23893FA400F86A81 /* DispatchQueue+Compose.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DispatchQueue+Compose.swift"; sourceTree = "<group>"; };
 		1AFF9F362387D846002DD893 /* Coroutine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coroutine.swift; sourceTree = "<group>"; };
 		1AFF9F3A2387D873002DD893 /* Pool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pool.swift; sourceTree = "<group>"; };
@@ -169,6 +172,7 @@
 			isa = PBXGroup;
 			children = (
 				1AFF9F362387D846002DD893 /* Coroutine.swift */,
+				1AB2F6932395531400B7B1FD /* Generator.swift */,
 			);
 			path = Coroutine;
 			sourceTree = "<group>";
@@ -378,7 +382,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 0930;
+				LastUpgradeCheck = 1120;
 				ORGANIZATIONNAME = "Alex Belozierov";
 				TargetAttributes = {
 					F8CD258520199CF700952299 = {
@@ -470,6 +474,7 @@
 				1AFF9F3B2387D873002DD893 /* Pool.swift in Sources */,
 				1AEEC82E23893FA400F86A81 /* DispatchQueue+Compose.swift in Sources */,
 				1AFF9F422387D92F002DD893 /* DispatchQueue+Extensions.swift in Sources */,
+				1AB2F6942395531400B7B1FD /* Generator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -502,6 +507,7 @@
 				1A934FAA2390284100155B71 /* Publisher+Extensions.swift in Sources */,
 				1AFF9F432387D92F002DD893 /* DispatchQueue+Extensions.swift in Sources */,
 				1A934FAC2390284800155B71 /* CoFututre.swift in Sources */,
+				1AB2F6952395531600B7B1FD /* Generator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -745,7 +751,7 @@
 		F8CD25B420199D1000952299 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
@@ -773,7 +779,7 @@
 		F8CD25B520199D1000952299 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
