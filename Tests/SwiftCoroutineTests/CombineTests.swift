@@ -26,7 +26,6 @@ class CombineTests: XCTestCase {
     }
     
     private func testImageDownload<P: Publisher>(publisher: P) where P.Output == Data {
-        Scheduler
         let expectation = XCTestExpectation(description: "Image download")
         coroutine(on: .global()) {
             XCTAssertNotNil(try publisher.compactMap(UIImage.init).await())

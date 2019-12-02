@@ -16,7 +16,9 @@ class Pool<T> {
     
     init(creator: @escaping () -> T) {
         self.creator = creator
-        memoryPressureSource.activate()
+        if #available(OSX 10.12, iOS 10.0, *) {
+            memoryPressureSource.activate()
+        }
     }
     
     func pop() -> T {
