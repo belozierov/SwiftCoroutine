@@ -9,32 +9,31 @@
 open class Generator<Element> {
     
     private enum State {
-        case prepared, suspended, resumed
+        case prepared, started, finished
     }
     
     public typealias Iterator = ((Element?) -> Void) -> Void
     
     private let iterator: Iterator
     private var state: State = .prepared
+    private var _next: Element?
     
-    private var _next: Element? {
-        didSet {
-            state = .suspended
-            coroutine.suspend()
+    private lazy var coroutine: Coroutine = .new(block: { [weak self] in
+        self?.iterator {
+            self?._next = $0
+            self?.coroutine.suspend()
         }
-    }
-    
-    private lazy var coroutine: Coroutine = .new(block: {
-        [weak self] in self?.iterate()
+        self?._next = nil
+        self?.state = .finished
     })
     
     public init(iterator: @escaping Iterator) {
         self.iterator = iterator
     }
     
-    private func iterate() {
-        iterator { _next = $0 }
-        _next = nil
+    deinit {
+        print("testaaaaaaa")
+        if state != .finished { coroutine.free() }
     }
     
 }
@@ -44,11 +43,12 @@ extension Generator: IteratorProtocol {
     open func next() -> Element? {
         switch state {
         case .prepared:
+            state = .started
             coroutine.start()
-        case .suspended:
+        case .started:
             coroutine.resume()
-        case .resumed:
-            fatalError()
+        case .finished:
+            break
         }
         return _next
     }
