@@ -32,7 +32,6 @@ open class Generator<Element> {
     }
     
     deinit {
-        print("testaaaaaaa")
         if state != .finished { coroutine.free() }
     }
     

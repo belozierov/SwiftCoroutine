@@ -99,6 +99,19 @@ class SwiftCoroutineTests: XCTestCase {
         XCTAssertEqual(items, items.sorted(by: >))
     }
     
+    func testDispatchSwitch() {
+        let expectation = XCTestExpectation(description: "Dispatch switch")
+        coroutine {
+            XCTAssertTrue(Thread.isMainThread)
+            DispatchQueue.global().switchTo()
+            XCTAssertFalse(Thread.isMainThread)
+            DispatchQueue.main.switchTo()
+            XCTAssertTrue(Thread.isMainThread)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 60)
+    }
+    
 }
 
 
