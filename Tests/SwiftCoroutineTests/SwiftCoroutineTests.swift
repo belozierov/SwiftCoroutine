@@ -16,17 +16,23 @@ class SwiftCoroutineTests: XCTestCase {
         let date = Date()
         var result = [Int]()
         coroutine {
-            result.append(1)
+            result.append(0)
             delay(1)
             XCTAssertDuration(from: date, in: 1..<2)
             result.append(3)
         }
         coroutine {
+            result.append(1)
+            delay(3)
+            XCTAssertDuration(from: date, in: 3..<4)
+            XCTAssertEqual(result, (0..<5).map { $0 })
+            expectation.fulfill()
+        }
+        coroutine {
             result.append(2)
             delay(2)
+            result.append(4)
             XCTAssertDuration(from: date, in: 2..<3)
-            XCTAssertEqual(result, [1, 2, 3])
-            expectation.fulfill()
         }
         wait(for: [expectation], timeout: 60)
     }
@@ -53,7 +59,7 @@ class SwiftCoroutineTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Test nested")
         let item1 = DispatchQueue.global().async { () -> Int in
             sleep(2)
-            return 5 as Int
+            return 5
         }
         let item2 = DispatchQueue.global().async { () -> Int in
             sleep(3)
