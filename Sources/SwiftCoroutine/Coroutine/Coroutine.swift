@@ -20,8 +20,10 @@ class Coroutine {
         coroutine.resumer = resumer
         coroutine.setBlock { [unowned coroutine, unowned pool] in
             try? block()
-            coroutine.free()
-            pool.push(coroutine)
+            coroutine.onSuspend = {
+                coroutine.free()
+                pool.push(coroutine)
+            }
         }
         return coroutine
     }
@@ -31,13 +33,13 @@ class Coroutine {
     private typealias Environment = UnsafeMutablePointer<Int32>
     
     private let block = UnsafeMutablePointer<Block>.allocate(capacity: 1)
-    private let stack = UnsafeMutableRawPointer.allocate(byteCount: .stackSize, alignment: 4096)
-    private let returnPoint = Environment.allocate(capacity: .environmentSize)
-    private let resumePoint = Environment.allocate(capacity: .environmentSize)
+    private var stack = UnsafeMutableRawPointer.allocate(byteCount: .stackSize, alignment: 4096)
+    let returnPoint = Environment.allocate(capacity: .environmentSize)
+    let resumePoint = Environment.allocate(capacity: .environmentSize)
     var resumer: Resumer?, onSuspend: Block?
     
     @inline(__always) func setBlock(_ block: @escaping Block) {
-        self.block.initialize {
+        self.block.initialize { [unowned self] in
             block()
             longjmp(self.returnPoint, 1)
         }

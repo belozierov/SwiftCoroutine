@@ -11,6 +11,7 @@ import Foundation
 open class CoFuture<Output> {
     
     public typealias Result = Swift.Result<Output, Error>
+    public typealias Completion = (Result) -> ()
     
     public enum FutureError: Swift.Error {
         case timeOut, cancelled
@@ -18,7 +19,7 @@ open class CoFuture<Output> {
     
     let mutex = NSLock()
     var _result: Result?
-    var subscriptions = [AnyHashable: (Result) -> Void]()
+    var subscriptions = [AnyHashable: Completion]()
     
     // MARK: - State
     
@@ -74,6 +75,18 @@ open class CoFuture<Output> {
         let promise = CoPromise<T>()
         subscriptions[promise] = { promise.finish(with: $0.map(transform)) }
         return promise
+    }
+    
+    // MARK: - Notify
+    
+    open func notify(flags: DispatchWorkItemFlags = [], queue: DispatchQueue, execute: @escaping Completion) {
+        mutex.lock()
+        withUnsafePointer(to: execute) { pointer in
+            subscriptions[pointer] = { result in
+                queue.async(flags: flags) { execute(result) }
+            }
+        }
+        mutex.unlock()
     }
     
 }

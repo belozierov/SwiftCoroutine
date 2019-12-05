@@ -39,6 +39,7 @@ class SwiftCoroutineTests: XCTestCase {
     
     func testCompose() {
         let expectation = XCTestExpectation(description: "Compose execute")
+        let expectation2 = XCTestExpectation(description: "Notifiy")
         let session = URLSession.shared
         let future = compose {
             session.data(for: .testImageURL)
@@ -52,7 +53,11 @@ class SwiftCoroutineTests: XCTestCase {
             guard let images = try? future.await() else { return XCTFail() }
             XCTAssertEqual(images.count, 3)
         }
-        wait(for: [expectation], timeout: 60)
+        future.notify(queue: .global()) {
+            XCTAssertEqual(try? $0.get().count, 3)
+            expectation2.fulfill()
+        }
+        wait(for: [expectation, expectation2], timeout: 60)
     }
     
     func testNested() {
@@ -115,6 +120,17 @@ class SwiftCoroutineTests: XCTestCase {
             XCTAssertTrue(Thread.isMainThread)
             expectation.fulfill()
         }
+        wait(for: [expectation], timeout: 60)
+    }
+    
+    func testManyUsage() {
+        let expectation = XCTestExpectation(description: "Many usage")
+        let group = DispatchGroup()
+        for _ in 0..<10_000 {
+            group.enter()
+            coroutine(on: .global(), execute: group.leave)
+        }
+        group.notify(queue: .global(), execute: expectation.fulfill)
         wait(for: [expectation], timeout: 60)
     }
     
