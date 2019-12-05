@@ -98,6 +98,7 @@ class Coroutine {
     
     deinit {
         free()
+        block.deallocate()
         stack.deallocate()
         returnPoint.deallocate()
         resumePoint.deallocate()
