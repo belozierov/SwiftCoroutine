@@ -33,9 +33,9 @@ class Coroutine {
     private typealias Environment = UnsafeMutablePointer<Int32>
     
     private let block = UnsafeMutablePointer<Block>.allocate(capacity: 1)
-    private var stack = UnsafeMutableRawPointer.allocate(byteCount: .stackSize, alignment: 4096)
-    let returnPoint = Environment.allocate(capacity: .environmentSize)
-    let resumePoint = Environment.allocate(capacity: .environmentSize)
+    private let stack = UnsafeMutableRawPointer.allocate(byteCount: .stackSize, alignment: .pageSize)
+    private let returnPoint = Environment.allocate(capacity: .environmentSize)
+    private let resumePoint = Environment.allocate(capacity: .environmentSize)
     var resumer: Resumer?, onSuspend: Block?
     
     @inline(__always) func setBlock(_ block: @escaping Block) {
@@ -120,6 +120,7 @@ extension Coroutine: Hashable {
 
 extension Int {
     
+    fileprivate static let pageSize = sysconf(_SC_PAGESIZE)
     fileprivate static let stackSize = 128 * 1024
     fileprivate static let environmentSize = MemoryLayout<jmp_buf>.size
     
