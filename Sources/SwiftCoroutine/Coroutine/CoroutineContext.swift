@@ -33,12 +33,14 @@ open class CoroutineContext {
         withUnsafePointer(to: { [unowned self] in
             block()
             longjmp(self.returnPoint, .finishFlag)
-        }) {
-            __start(returnPoint, stack.baseAddress?.advanced(by: stack.count), $0) {
-                $0?.assumingMemoryBound(to: Block.self).pointee()
-            }
-        } == .finishFlag
+        }, start)
      }
+    
+    private func start(with block: UnsafePointer<Block>) -> Bool {
+        __start(returnPoint, stack.baseAddress?.advanced(by: stack.count), block) {
+            $0?.assumingMemoryBound(to: Block.self).pointee()
+        } == .finishFlag
+    }
     
     @discardableResult @inline(__always)
     open func resume() -> Bool {

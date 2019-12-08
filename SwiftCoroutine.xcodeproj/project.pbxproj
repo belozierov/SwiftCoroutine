@@ -185,8 +185,8 @@
 			children = (
 				1A65BABA239CE05C004C1716 /* CoroutineContext.swift */,
 				1A65BAC0239CEC46004C1716 /* Coroutine.swift */,
-				1A65BABC239CE1BD004C1716 /* SyncCoroutine.swift */,
 				1A65BABE239CE34A004C1716 /* AsyncCoroutine.swift */,
+				1A65BABC239CE1BD004C1716 /* SyncCoroutine.swift */,
 				1AB2F6932395531400B7B1FD /* Generator.swift */,
 			);
 			path = Coroutine;

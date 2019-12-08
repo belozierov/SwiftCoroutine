@@ -48,7 +48,7 @@ open class AsyncCoroutine: Coroutine {
     open func setDispatcher(_ dispatcher: AsyncCoroutine.Dispatcher) {
         self.dispatcher = dispatcher
         guard isCurrent else { return }
-        notifyOnSuspend(handler: resume)
+        notifyOnceOnSuspend(handler: resume)
         suspend()
     }
     

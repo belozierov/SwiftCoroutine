@@ -41,9 +41,9 @@ open class SyncCoroutine {
         context.suspend()
     }
     
-    private func perform(_ work: () -> Bool) -> Bool {
+    private func perform(_ block: () -> Bool) -> Bool {
         setCurrent()
-        let finished = work()
+        let finished = block()
         resetCurrent()
         postSuspend(finished: finished)
         return finished
@@ -73,7 +73,7 @@ extension SyncCoroutine: Coroutine {
     open func setDispatcher(_ dispatcher: AsyncCoroutine.Dispatcher) {
         guard isCurrent else { fatalError() }
         let coroutine = AsyncCoroutine(context: context, dispatcher: dispatcher)
-        notifyOnSuspend(handler: coroutine.resume)
+        notifyOnceOnSuspend(handler: coroutine.resume)
         suspend()
     }
     

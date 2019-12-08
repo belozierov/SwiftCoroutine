@@ -31,15 +31,15 @@ extension Coroutine {
         notificationCenter.post(name: name, object: self)
     }
     
-    public func notifyOnSuspend(handler: @escaping Block) {
-        notify(name: .coroutineDidSuspend, handler: handler)
+    public func notifyOnceOnSuspend(handler: @escaping Block) {
+        notifyOnce(name: .coroutineDidSuspend, handler: handler)
     }
     
     public func notifyOnCompletion(handler: @escaping Block) {
-        notify(name: .coroutineDidComplete, handler: handler)
+        notifyOnce(name: .coroutineDidComplete, handler: handler)
     }
     
-    private func notify(name: Notification.Name, handler: @escaping Block) {
+    private func notifyOnce(name: Notification.Name, handler: @escaping Block) {
         notificationCenter.notifyOnce(name: name, object: self) { _ in handler() }
     }
     
@@ -58,7 +58,7 @@ extension Thread {
 
 extension Notification.Name {
     
-    static let coroutineDidSuspend = Notification.Name(#function)
-    static let coroutineDidComplete = Notification.Name(#function)
+    public static let coroutineDidSuspend = Notification.Name(#function)
+    public static let coroutineDidComplete = Notification.Name(#function)
     
 }
