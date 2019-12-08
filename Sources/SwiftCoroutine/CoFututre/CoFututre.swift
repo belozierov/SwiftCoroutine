@@ -21,6 +21,10 @@ open class CoFuture<Output> {
     var _result: Result?
     var subscriptions = [AnyHashable: Completion]()
     
+    private func addSubscription(completion: @escaping Completion) {
+        withUnsafePointer(to: completion) { subscriptions[$0] = completion }
+    }
+    
     // MARK: - State
     
     open var result: Result? {
@@ -47,7 +51,7 @@ open class CoFuture<Output> {
         defer { mutex.unlock() }
         while true {
             if let result = _result { return try result.get() }
-            subscriptions[coroutine] = { _ in coroutine.resume() }
+            addSubscription { _ in coroutine.resume() }
             mutex.unlock()
             coroutine.suspend()
             mutex.lock()
@@ -81,10 +85,8 @@ open class CoFuture<Output> {
     
     open func notify(flags: DispatchWorkItemFlags = [], queue: DispatchQueue, execute: @escaping Completion) {
         mutex.lock()
-        withUnsafePointer(to: execute) { pointer in
-            subscriptions[pointer] = { result in
-                queue.async(flags: flags) { execute(result) }
-            }
+        addSubscription { result in
+            queue.async(flags: flags) { execute(result) }
         }
         mutex.unlock()
     }

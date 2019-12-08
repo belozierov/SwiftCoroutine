@@ -34,7 +34,7 @@ class SwiftCoroutineTests: XCTestCase {
             result.append(4)
             XCTAssertDuration(from: date, in: 2..<3)
         }
-        wait(for: [expectation], timeout: 60)
+        wait(for: [expectation], timeout: 10)
     }
     
     func testCompose() {
@@ -57,7 +57,7 @@ class SwiftCoroutineTests: XCTestCase {
             XCTAssertEqual(try? $0.get().count, 3)
             expectation2.fulfill()
         }
-        wait(for: [expectation, expectation2], timeout: 60)
+        wait(for: [expectation, expectation2], timeout: 10)
     }
     
     func testNested() {
@@ -94,7 +94,7 @@ class SwiftCoroutineTests: XCTestCase {
                 XCTAssertDuration(from: date, in: 3..<4)
             }
         }
-        wait(for: [expectation], timeout: 60)
+        wait(for: [expectation], timeout: 10)
     }
     
     func testGenerator() {
@@ -123,6 +123,19 @@ class SwiftCoroutineTests: XCTestCase {
         wait(for: [expectation], timeout: 60)
     }
     
+    func testSyncCoroutineSwitch() {
+        let expectation = XCTestExpectation(description: "Dispatch switch")
+        SyncCoroutine.fromPool().start {
+            XCTAssertTrue(Thread.isMainThread)
+            DispatchQueue.global().switchTo()
+            XCTAssertFalse(Thread.isMainThread)
+            DispatchQueue.main.switchTo()
+            XCTAssertTrue(Thread.isMainThread)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 60)
+    }
+    
     func testManyUsage() {
         let expectation = XCTestExpectation(description: "Many usage")
         let group = DispatchGroup()
@@ -131,7 +144,7 @@ class SwiftCoroutineTests: XCTestCase {
             coroutine(on: .global(), execute: group.leave)
         }
         group.notify(queue: .global(), execute: expectation.fulfill)
-        wait(for: [expectation], timeout: 60)
+        wait(for: [expectation], timeout: 10)
     }
     
 }

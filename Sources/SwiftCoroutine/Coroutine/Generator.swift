@@ -17,22 +17,21 @@ open class Generator<Element> {
     private let iterator: Iterator
     private var state: State = .prepared
     private var _next: Element?
-    
-    private lazy var coroutine: Coroutine = .new(block: { [weak self] in
-        self?.iterator {
-            self?._next = $0
-            self?.coroutine.suspend()
-        }
-        self?._next = nil
-        self?.state = .finished
-    })
+    private lazy var coroutine = SyncCoroutine.fromPool()
     
     public init(iterator: @escaping Iterator) {
         self.iterator = iterator
     }
     
-    deinit {
-        if state != .finished { coroutine.free() }
+    private func start() {
+        coroutine.start { [weak self] in
+            self?.iterator {
+                self?._next = $0
+                self?.coroutine.suspend()
+            }
+            self?._next = nil
+            self?.state = .finished
+        }
     }
     
 }
@@ -43,7 +42,7 @@ extension Generator: IteratorProtocol {
         switch state {
         case .prepared:
             state = .started
-            coroutine.start()
+            start()
         case .started:
             coroutine.resume()
         case .finished:

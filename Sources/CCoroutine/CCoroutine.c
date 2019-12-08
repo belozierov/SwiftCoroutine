@@ -9,8 +9,9 @@
 #include "CCoroutine.h"
 #include <setjmp.h>
 
-void __start(jmp_buf ret, const void* stack, const void* param, const void (*block)(const void*)) {
-    if (setjmp(ret)) return;
+int __start(jmp_buf ret, const void* stack, const void* param, const void (*block)(const void*)) {
+    int n = setjmp(ret);
+    if (n) return n;
     #if defined(__x86_64__)
     __asm__ ("movq %0, %%rsp" :: "g"(stack));
     block(param);
@@ -18,11 +19,13 @@ void __start(jmp_buf ret, const void* stack, const void* param, const void (*blo
     __asm__ (
     "mov sp, %0\n"
     "mov x0, %1\n"
-    "blr %2\n"
-    :: "r"(stack), "r"(param), "r"(block));
+    "blr %2" :: "r"(stack), "r"(param), "r"(block));
     #endif
+    return 0;
 }
 
-void __save(jmp_buf env, jmp_buf ret) {
-    if (!setjmp(env)) longjmp(ret, 1);
+int __save(jmp_buf env, jmp_buf ret) {
+    int n = setjmp(env);
+    if (n) return n;
+    longjmp(ret, 1);
 }

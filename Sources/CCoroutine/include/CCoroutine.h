@@ -9,7 +9,7 @@
 #ifndef CCoroutine_h
 #define CCoroutine_h
 
-void __start(int* ret, const void* stack, const void* param, const void (*block)(const void*));
-void __save(int* env, int* ret);
+int __start(int* ret, const void* stack, const void* param, const void (*block)(const void*));
+int __save(int* env, int* ret);
 
 #endif

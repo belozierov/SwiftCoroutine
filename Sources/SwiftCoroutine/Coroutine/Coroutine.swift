@@ -1,136 +1,64 @@
 //
 //  Coroutine.swift
-//  SwiftCoroutine
+//  SwiftCoroutine iOS
 //
-//  Created by Alex Belozierov on 22.11.2019.
+//  Created by Alex Belozierov on 08.12.2019.
 //  Copyright © 2019 Alex Belozierov. All rights reserved.
 //
 
 import Foundation
-#if SWIFT_PACKAGE
-import CCoroutine
-#endif
 
-class Coroutine {
-    
-    static let pool = Pool(creator: Coroutine.init)
-    
-    static func new(block: @escaping () throws -> Void, resumer: @escaping Resumer = { $0() }) -> Coroutine {
-        let coroutine = pool.pop()
-        coroutine.resumer = resumer
-        coroutine.setBlock { [unowned coroutine, unowned pool] in
-            try? block()
-            coroutine.onSuspend = {
-                coroutine.free()
-                pool.push(coroutine)
-            }
-        }
-        return coroutine
-    }
+public protocol Coroutine: class {
     
     typealias Block = () -> Void
-    typealias Resumer = (@escaping Block) -> Void
-    private typealias Environment = UnsafeMutablePointer<Int32>
     
-    private let block = UnsafeMutablePointer<Block>.allocate(capacity: 1)
-    private let stack = UnsafeMutableRawPointer.allocate(byteCount: .stackSize, alignment: .pageSize)
-    private let returnPoint = Environment.allocate(capacity: .environmentSize)
-    private let resumePoint = Environment.allocate(capacity: .environmentSize)
-    var resumer: Resumer?, onSuspend: Block?
-    
-    @inline(__always) func setBlock(_ block: @escaping Block) {
-        self.block.initialize { [unowned self] in
-            block()
-            longjmp(self.returnPoint, 1)
-        }
-    }
-    
-    // MARK: - Start
-    
-    @inline(__always) func start() {
-        resumer?(_start)
-    }
-    
-    private func _start() {
-        Thread.current.currentCoroutine = self
-        __start(returnPoint, stack.advanced(by: .stackSize), block) {
-            $0?.assumingMemoryBound(to: Block.self).pointee()
-        }
-        Thread.current.currentCoroutine = nil
-        onSuspend?()
-    }
-    
-    // MARK: - Resume
-    
-    @inline(__always) func resume() {
-        resumer?(_resume)
-    }
-    
-    private func _resume() {
-        Thread.current.currentCoroutine = self
-        __save(returnPoint, resumePoint)
-        Thread.current.currentCoroutine = nil
-        onSuspend?()
-    }
-    
-    // MARK: - Suspend
-    
-    @inline(__always) func suspend() {
-        __save(resumePoint, returnPoint)
-    }
-    
-    func suspendAndResume(with resumer: @escaping Resumer) {
-        self.resumer = resumer
-        onSuspend = { [unowned self] in
-            self.onSuspend = nil
-            self.resume()
-        }
-        suspend()
-    }
-    
-    // MARK: - Free
-    
-    @inline(__always) func free() {
-        block.deinitialize(count: 1)
-        onSuspend = nil
-        resumer = nil
-    }
-    
-    deinit {
-        free()
-        block.deallocate()
-        stack.deallocate()
-        returnPoint.deallocate()
-        resumePoint.deallocate()
-    }
+    func resume()
+    func suspend()
+    func setDispatcher(_ dispatcher: AsyncCoroutine.Dispatcher)
     
 }
 
-extension Coroutine: Hashable {
+extension Coroutine {
     
-    static func == (lhs: Coroutine, rhs: Coroutine) -> Bool {
-        lhs.stack == rhs.stack
+    @inline(__always) var isCurrent: Bool {
+        Thread.current.currentCoroutine === self
     }
     
-    func hash(into hasher: inout Hasher) {
-        stack.hash(into: &hasher)
+    // MARK: - Notifications
+    
+    func postSuspend(finished: Bool) {
+        let name: Notification.Name = finished ? .coroutineDidComplete : .coroutineDidSuspend
+        notificationCenter.post(name: name, object: self)
     }
     
-}
-
-extension Int {
+    public func notifyOnSuspend(handler: @escaping Block) {
+        notify(name: .coroutineDidSuspend, handler: handler)
+    }
     
-    fileprivate static let pageSize = sysconf(_SC_PAGESIZE)
-    fileprivate static let stackSize = 128 * 1024
-    fileprivate static let environmentSize = MemoryLayout<jmp_buf>.size
+    public func notifyOnCompletion(handler: @escaping Block) {
+        notify(name: .coroutineDidComplete, handler: handler)
+    }
+    
+    private func notify(name: Notification.Name, handler: @escaping Block) {
+        notificationCenter.notifyOnce(name: name, object: self) { _ in handler() }
+    }
+    
+    private var notificationCenter: NotificationCenter { .default }
     
 }
 
 extension Thread {
     
-    var currentCoroutine: Coroutine? {
-        get { threadDictionary.value(forKey: #function) as? Coroutine }
-        set { threadDictionary.setValue(newValue, forKey: #function) }
+    public var currentCoroutine: Coroutine? {
+        @inline(__always) get { threadDictionary.value(forKey: #function) as? Coroutine }
+        @inline(__always) set { threadDictionary.setValue(newValue, forKey: #function) }
     }
+    
+}
+
+extension Notification.Name {
+    
+    static let coroutineDidSuspend = Notification.Name(#function)
+    static let coroutineDidComplete = Notification.Name(#function)
     
 }
