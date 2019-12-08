@@ -11,11 +11,9 @@ import Foundation
 extension DispatchQueue {
 
     open func coroutine(group: DispatchGroup? = nil, qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = [], execute work: @escaping () throws -> Void) {
-        let context = CoroutineContext.pool.pop()
-        let coroutine = AsyncCoroutine(context: context,
-                                       dispatcher: .init(queue: self, group: group, qos: qos, flags: flags))
-        coroutine.notifyOnCompletion { CoroutineContext.pool.push(context) }
-        coroutine.start { try? work() }
+        Coroutine
+            .fromPool { self.async(group: group, qos: qos, flags: flags, execute: $0) }
+            .start { try? work() }
     }
     
     open func coroutine<T>(group: DispatchGroup? = nil, qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = [], execute work: @escaping () throws -> T) -> CoFuture<T> {
@@ -27,7 +25,7 @@ extension DispatchQueue {
     open func switchTo(group: DispatchGroup? = nil, qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = []) {
         guard let coroutine = Thread.current.currentCoroutine
             else { fatalError() }
-        coroutine.setDispatcher(.init(queue: self, group: group, qos: qos, flags: flags))
+        coroutine.setDispatcher { self.async(group: group, qos: qos, flags: flags, execute: $0) }
     }
 
 }

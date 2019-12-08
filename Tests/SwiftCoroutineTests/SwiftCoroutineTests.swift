@@ -123,19 +123,6 @@ class SwiftCoroutineTests: XCTestCase {
         wait(for: [expectation], timeout: 60)
     }
     
-    func testSyncCoroutineSwitch() {
-        let expectation = XCTestExpectation(description: "Dispatch switch")
-        SyncCoroutine.fromPool().start {
-            XCTAssertTrue(Thread.isMainThread)
-            DispatchQueue.global().switchTo()
-            XCTAssertFalse(Thread.isMainThread)
-            DispatchQueue.main.switchTo()
-            XCTAssertTrue(Thread.isMainThread)
-            expectation.fulfill()
-        }
-        wait(for: [expectation], timeout: 60)
-    }
-    
     func testManyUsage() {
         let expectation = XCTestExpectation(description: "Many usage")
         let group = DispatchGroup()

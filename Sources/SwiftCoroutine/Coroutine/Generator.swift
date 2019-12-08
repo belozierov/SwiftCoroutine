@@ -17,13 +17,14 @@ open class Generator<Element> {
     private let iterator: Iterator
     private var state: State = .prepared
     private var _next: Element?
-    private lazy var coroutine = SyncCoroutine.fromPool()
+    private lazy var coroutine = Coroutine.fromPool { $0() }
     
     public init(iterator: @escaping Iterator) {
         self.iterator = iterator
     }
     
     private func start() {
+        state = .started
         coroutine.start { [weak self] in
             self?.iterator {
                 self?._next = $0
@@ -40,13 +41,9 @@ extension Generator: IteratorProtocol {
     
     open func next() -> Element? {
         switch state {
-        case .prepared:
-            state = .started
-            start()
-        case .started:
-            coroutine.resume()
-        case .finished:
-            break
+        case .prepared: start()
+        case .started: coroutine.resume()
+        case .finished: break
         }
         return _next
     }
