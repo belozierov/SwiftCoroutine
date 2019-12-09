@@ -10,22 +10,24 @@ import Foundation
 
 extension DispatchQueue {
 
-    open func coroutine(group: DispatchGroup? = nil, qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = [], execute work: @escaping () throws -> Void) {
+    public func coroutine(group: DispatchGroup? = nil, qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = [], execute work: @escaping () throws -> Void) {
         Coroutine
             .fromPool { self.async(group: group, qos: qos, flags: flags, execute: $0) }
             .start { try? work() }
     }
     
-    open func coroutine<T>(group: DispatchGroup? = nil, qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = [], execute work: @escaping () throws -> T) -> CoFuture<T> {
+    public func coroutine<T>(group: DispatchGroup? = nil, qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = [], execute work: @escaping () throws -> T) -> CoFuture<T> {
         let item = CoPromise<T>()
         coroutine(group: group, qos: qos, flags: flags) { item.perform(work) }
         return item
     }
     
-    open func switchTo(group: DispatchGroup? = nil, qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = []) {
+    public func switchTo(group: DispatchGroup? = nil, qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = []) {
         guard let coroutine = Thread.current.currentCoroutine
             else { fatalError() }
-        coroutine.setDispatcher { self.async(group: group, qos: qos, flags: flags, execute: $0) }
+        coroutine.dispatcher = { self.async(group: group, qos: qos, flags: flags, execute: $0) }
+        coroutine.notifyOnceOnSuspend(handler: coroutine.resume)
+        coroutine.suspend()
     }
 
 }

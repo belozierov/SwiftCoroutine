@@ -112,26 +112,18 @@ class SwiftCoroutineTests: XCTestCase {
     
     func testDispatchSwitch() {
         let expectation = XCTestExpectation(description: "Dispatch switch")
-        coroutine {
-            XCTAssertTrue(Thread.isMainThread)
-            DispatchQueue.global().switchTo()
-            XCTAssertFalse(Thread.isMainThread)
-            DispatchQueue.main.switchTo()
-            XCTAssertTrue(Thread.isMainThread)
-            expectation.fulfill()
-        }
-        wait(for: [expectation], timeout: 60)
-    }
-    
-    func testManyUsage() {
-        let expectation = XCTestExpectation(description: "Many usage")
         let group = DispatchGroup()
         for _ in 0..<10_000 {
-            group.enter()
-            coroutine(on: .global(), execute: group.leave)
+            DispatchQueue.global().coroutine(group: group) {
+                XCTAssertFalse(Thread.isMainThread)
+                DispatchQueue.main.switchTo()
+                XCTAssertTrue(Thread.isMainThread)
+                DispatchQueue.global().switchTo()
+                XCTAssertFalse(Thread.isMainThread)
+            }
         }
         group.notify(queue: .global(), execute: expectation.fulfill)
-        wait(for: [expectation], timeout: 10)
+        wait(for: [expectation], timeout: 60)
     }
     
 }

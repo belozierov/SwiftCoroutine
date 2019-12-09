@@ -21,8 +21,9 @@ open class Coroutine {
     }
     
     private let context: CoroutineContext
-    private var dispatcher: Dispatcher
-    private var caller: Coroutine?
+    private var suspendHandlers = [Block]()
+    private var completionHandlers = [Block]()
+    var dispatcher: Dispatcher
     
     public init(context: CoroutineContext, dispatcher: @escaping Dispatcher) {
         self.context = context
@@ -40,27 +41,20 @@ open class Coroutine {
     }
     
     private func perform(_ block: @escaping () -> Bool) {
-        dispatcher {
-            self.setCurrent()
+        var caller: Coroutine?
+        dispatcher { [unowned self] in
+            let thread = Thread.current
+            caller = thread.currentCoroutine
+            thread.currentCoroutine = self
             self.postSuspend(finished: block())
-            self.resetCurrent()
+            thread.currentCoroutine = caller
         }
     }
     
     // MARK: - Suspend
     
     @inline(__always) open func suspend() {
-        resetCurrent()
         context.suspend()
-    }
-    
-    // MARK: - Dispatcher
-    
-    open func setDispatcher(_ dispatcher: @escaping Dispatcher) {
-        self.dispatcher = dispatcher
-        if Thread.current.currentCoroutine !== self { return }
-        notifyOnceOnSuspend(handler: resume)
-        suspend()
     }
     
 }
@@ -69,43 +63,24 @@ extension Coroutine {
     
     // MARK: - Notifications
     
-    public static let coroutineDidSuspend = Notification.Name(#function)
-    public static let coroutineDidComplete = Notification.Name(#function)
+    @inline(__always) public func notifyOnceOnSuspend(handler: @escaping Block) {
+        suspendHandlers.append(handler)
+    }
+    
+    @inline(__always) public func notifyOnCompletion(handler: @escaping Block) {
+        completionHandlers.append(handler)
+    }
     
     private func postSuspend(finished: Bool) {
-        let name = finished ? Coroutine.coroutineDidComplete : Coroutine.coroutineDidSuspend
-        notificationCenter.post(name: name, object: self)
-    }
-    
-    public func notifyOnceOnSuspend(handler: @escaping Block) {
-        notifyOnce(name: Coroutine.coroutineDidSuspend, handler: handler)
-    }
-    
-    public func notifyOnCompletion(handler: @escaping Block) {
-        notifyOnce(name: Coroutine.coroutineDidComplete, handler: handler)
-    }
-    
-    private func notifyOnce(name: Notification.Name, handler: @escaping Block) {
-        notificationCenter.notifyOnce(name: name, object: self) { _ in handler() }
-    }
-    
-    private var notificationCenter: NotificationCenter { .default }
-    
-}
-
-extension Coroutine {
-    
-    // MARK: - Current coroutine lifecycle
-    
-    private func setCurrent() {
-        let thread = Thread.current
-        caller = thread.currentCoroutine
-        thread.currentCoroutine = self
-    }
-        
-    private func resetCurrent() {
-        Thread.current.currentCoroutine = caller
-        caller = nil
+        let handlers: [Block]
+        if finished {
+            handlers = completionHandlers
+            completionHandlers.removeAll()
+        } else {
+            handlers = suspendHandlers
+        }
+        suspendHandlers.removeAll()
+        handlers.forEach { $0() }
     }
     
 }
