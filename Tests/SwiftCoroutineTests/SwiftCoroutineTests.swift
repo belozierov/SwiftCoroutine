@@ -72,15 +72,21 @@ class SwiftCoroutineTests: XCTestCase {
         }
         let date = Date()
         coroutine {
+            let current = Thread.current.currentCoroutine
+            XCTAssertNotNil(current)
             delay(1)
             XCTAssertDuration(from: date, in: 1..<2)
             delay(1)
             XCTAssertDuration(from: date, in: 2..<3)
             try coroutine {
                 delay(2)
+                XCTAssertFalse(current === Thread.current.currentCoroutine)
                 XCTAssertDuration(from: date, in: 4..<5)
             }.await()
+            XCTAssertTrue(current === Thread.current.currentCoroutine)
             XCTAssertDuration(from: date, in: 4..<5)
+            delay(1)
+            XCTAssertDuration(from: date, in: 5..<6)
             expectation.fulfill()
         }
         coroutine {
@@ -124,6 +130,30 @@ class SwiftCoroutineTests: XCTestCase {
         }
         group.notify(queue: .global(), execute: expectation.fulfill)
         wait(for: [expectation], timeout: 60)
+    }
+    
+    func testSyncDispatchCoroutine() {
+        let cor1 = Coroutine { $0() }
+        let cor2 = Coroutine { $0() }
+        var result = [Int]()
+        cor1.start {
+            XCTAssertTrue(Thread.current.currentCoroutine === cor1)
+            result.append(0)
+            cor1.suspend()
+            XCTAssertTrue(Thread.current.currentCoroutine === cor1)
+            result.append(3)
+        }
+        XCTAssertNil(Thread.current.currentCoroutine)
+        result.append(1)
+        cor2.start {
+            XCTAssertTrue(Thread.current.currentCoroutine === cor2)
+            result.append(2)
+            cor1.resume()
+            XCTAssertTrue(Thread.current.currentCoroutine === cor2)
+            result.append(4)
+        }
+        XCTAssertNil(Thread.current.currentCoroutine)
+        XCTAssertEqual(result, (0..<5).map { $0 })
     }
     
 }

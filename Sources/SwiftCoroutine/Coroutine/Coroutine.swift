@@ -89,7 +89,7 @@ open class Coroutine {
 
 extension Thread {
     
-    public var currentCoroutine: Coroutine? {
+    public fileprivate(set) var currentCoroutine: Coroutine? {
         @inline(__always) get { threadDictionary.value(forKey: #function) as? Coroutine }
         @inline(__always) set { threadDictionary.setValue(newValue, forKey: #function) }
     }
