@@ -23,6 +23,10 @@ open class Coroutine {
         return coroutine
     }
     
+    @inline(__always) public static var current: Coroutine? {
+        Thread.current.currentCoroutine
+    }
+    
     private let context: CoroutineContext
     private var dispatcher: Dispatcher, handler: Handler?
     
@@ -89,7 +93,7 @@ open class Coroutine {
 
 extension Thread {
     
-    public fileprivate(set) var currentCoroutine: Coroutine? {
+    fileprivate var currentCoroutine: Coroutine? {
         @inline(__always) get { threadDictionary.value(forKey: #function) as? Coroutine }
         @inline(__always) set { threadDictionary.setValue(newValue, forKey: #function) }
     }

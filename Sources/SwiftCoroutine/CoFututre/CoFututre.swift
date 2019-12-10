@@ -45,7 +45,7 @@ open class CoFuture<Output> {
     // MARK: - Operations
     
     open func await() throws -> Output {
-        guard let coroutine = Thread.current.currentCoroutine
+        guard let coroutine = Coroutine.current
             else { fatalError() }
         mutex.lock()
         defer { mutex.unlock() }

@@ -72,7 +72,7 @@ class SwiftCoroutineTests: XCTestCase {
         }
         let date = Date()
         coroutine {
-            let current = Thread.current.currentCoroutine
+            let current = Coroutine.current
             XCTAssertNotNil(current)
             delay(1)
             XCTAssertDuration(from: date, in: 1..<2)
@@ -80,10 +80,10 @@ class SwiftCoroutineTests: XCTestCase {
             XCTAssertDuration(from: date, in: 2..<3)
             try coroutine {
                 delay(2)
-                XCTAssertFalse(current === Thread.current.currentCoroutine)
+                XCTAssertFalse(current === Coroutine.current)
                 XCTAssertDuration(from: date, in: 4..<5)
             }.await()
-            XCTAssertTrue(current === Thread.current.currentCoroutine)
+            XCTAssertTrue(current === Coroutine.current)
             XCTAssertDuration(from: date, in: 4..<5)
             delay(1)
             XCTAssertDuration(from: date, in: 5..<6)
@@ -137,22 +137,22 @@ class SwiftCoroutineTests: XCTestCase {
         let cor2 = Coroutine { $0() }
         var result = [Int]()
         cor1.start {
-            XCTAssertTrue(Thread.current.currentCoroutine === cor1)
+            XCTAssertTrue(Coroutine.current === cor1)
             result.append(0)
             cor1.suspend()
-            XCTAssertTrue(Thread.current.currentCoroutine === cor1)
+            XCTAssertTrue(Coroutine.current === cor1)
             result.append(3)
         }
-        XCTAssertNil(Thread.current.currentCoroutine)
+        XCTAssertNil(Coroutine.current)
         result.append(1)
         cor2.start {
-            XCTAssertTrue(Thread.current.currentCoroutine === cor2)
+            XCTAssertTrue(Coroutine.current === cor2)
             result.append(2)
             cor1.resume()
-            XCTAssertTrue(Thread.current.currentCoroutine === cor2)
+            XCTAssertTrue(Coroutine.current === cor2)
             result.append(4)
         }
-        XCTAssertNil(Thread.current.currentCoroutine)
+        XCTAssertNil(Coroutine.current)
         XCTAssertEqual(result, (0..<5).map { $0 })
     }
     
