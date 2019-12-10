@@ -23,22 +23,22 @@ class CoroutineContext {
     @inline(__always) func start(block: @escaping Block) -> Bool {
         withUnsafePointer(to: { [unowned self] in
             block()
-            longjmp(self.returnPoint, .finishFlag)
+            longjmp(self.returnPoint, .finished)
         }, start)
      }
     
     private func start(with block: UnsafePointer<Block>) -> Bool {
         __start(returnPoint, stack.baseAddress?.advanced(by: stack.count), block) {
             $0?.assumingMemoryBound(to: Block.self).pointee()
-        } == .finishFlag
+        } == .finished
     }
     
     @inline(__always) func resume() -> Bool {
-        __save(returnPoint, resumePoint) == .finishFlag
+        __save(returnPoint, resumePoint, -1) == .finished
     }
     
     @inline(__always) func suspend() {
-        __save(resumePoint, returnPoint)
+        __save(resumePoint, returnPoint, -1)
     }
     
     deinit {
@@ -58,6 +58,6 @@ extension Int {
 
 extension Int32 {
     
-    fileprivate static let finishFlag: Int32 = -1
+    fileprivate static let finished: Int32 = 1
     
 }

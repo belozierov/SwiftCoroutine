@@ -10,6 +10,6 @@
 #define CCoroutine_h
 
 int __start(int* ret, const void* stack, const void* param, const void (*block)(const void*));
-int __save(int* env, int* ret);
+int __save(int* env, int* ret, int retVal);
 
 #endif

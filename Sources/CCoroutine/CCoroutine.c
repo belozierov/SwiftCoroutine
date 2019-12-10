@@ -24,8 +24,8 @@ int __start(jmp_buf ret, const void* stack, const void* param, const void (*bloc
     return 0;
 }
 
-int __save(jmp_buf env, jmp_buf ret) {
+int __save(jmp_buf env, jmp_buf ret, int retVal) {
     int n = setjmp(env);
     if (n) return n;
-    longjmp(ret, 1);
+    longjmp(ret, retVal);
 }
