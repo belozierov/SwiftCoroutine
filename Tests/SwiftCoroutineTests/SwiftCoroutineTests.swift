@@ -34,7 +34,7 @@ class SwiftCoroutineTests: XCTestCase {
             result.append(4)
             XCTAssertDuration(from: date, in: 2..<3)
         }
-        wait(for: [expectation], timeout: 10)
+        wait(for: [expectation], timeout: 60)
     }
     
     func testCompose() {
@@ -57,7 +57,7 @@ class SwiftCoroutineTests: XCTestCase {
             XCTAssertEqual(try? $0.get().count, 3)
             expectation2.fulfill()
         }
-        wait(for: [expectation, expectation2], timeout: 10)
+        wait(for: [expectation, expectation2], timeout: 60)
     }
     
     func testNested() {
@@ -94,7 +94,7 @@ class SwiftCoroutineTests: XCTestCase {
                 XCTAssertDuration(from: date, in: 3..<4)
             }
         }
-        wait(for: [expectation], timeout: 10)
+        wait(for: [expectation], timeout: 60)
     }
     
     func testGenerator() {

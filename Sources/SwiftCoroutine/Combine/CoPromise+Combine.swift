@@ -11,14 +11,14 @@ import Combine
 @available(OSX 10.15, iOS 13.0, *)
 extension CoPromise: Subject {
     
-    open func send(completion: Subscribers.Completion<Error>) {
+    public func send(completion: Subscribers.Completion<Error>) {
         switch completion {
         case .finished: break
         case .failure(let error): send(error: error)
         }
     }
     
-    open func send(subscription: Subscription) {
+    public func send(subscription: Subscription) {
         subscription.request(.max(1))
     }
     

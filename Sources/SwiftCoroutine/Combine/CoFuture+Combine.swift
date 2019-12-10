@@ -13,7 +13,7 @@ extension CoFuture: Publisher, Cancellable {
     
     public typealias Failure = Error
     
-    open func receive<S: Subscriber>(subscriber: S) where Output == S.Input, Failure == S.Failure {
+    public func receive<S: Subscriber>(subscriber: S) where Output == S.Input, Failure == S.Failure {
         mutex.lock()
         defer { mutex.unlock() }
         if let result = _result { return subscriber.finish(with: result) }

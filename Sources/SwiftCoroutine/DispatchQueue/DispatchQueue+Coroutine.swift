@@ -25,9 +25,7 @@ extension DispatchQueue {
     public func switchTo(group: DispatchGroup? = nil, qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = []) {
         guard let coroutine = Thread.current.currentCoroutine
             else { fatalError() }
-        coroutine.dispatcher = { self.async(group: group, qos: qos, flags: flags, execute: $0) }
-        coroutine.notifyOnceOnSuspend(handler: coroutine.resume)
-        coroutine.suspend()
+        coroutine.restart { self.async(group: group, qos: qos, flags: flags, execute: $0) }
     }
 
 }

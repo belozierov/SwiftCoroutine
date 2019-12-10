@@ -8,33 +8,33 @@
 
 import Foundation
 
-open class Pool<T> {
+class Pool<T> {
     
     private let mutex = NSLock()
     private let creator: () -> T
     private var pool = [T]()
     
-    public init(creator: @escaping () -> T) {
+    init(creator: @escaping () -> T) {
         self.creator = creator
         if #available(OSX 10.12, iOS 10.0, *) {
             memoryPressureSource.activate()
         }
     }
     
-    open func pop() -> T {
+    func pop() -> T {
         mutex.lock()
         let coroutine = pool.popLast()
         mutex.unlock()
         return coroutine ?? creator()
     }
     
-    open func push(_ element: T) {
+    func push(_ element: T) {
         mutex.lock()
         pool.append(element)
         mutex.unlock()
     }
     
-    open func reset() {
+    func reset() {
         mutex.lock()
         pool.removeAll()
         mutex.unlock()

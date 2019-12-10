@@ -31,7 +31,7 @@ class CombineTests: XCTestCase {
             XCTAssertNotNil(try publisher.compactMap(UIImage.init).await())
             expectation.fulfill()
         }
-        wait(for: [expectation], timeout: 10)
+        wait(for: [expectation], timeout: 60)
     }
     
 }

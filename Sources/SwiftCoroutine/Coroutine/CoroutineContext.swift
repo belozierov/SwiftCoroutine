@@ -8,28 +8,19 @@
 
 import Foundation
 
-open class CoroutineContext {
+class CoroutineContext {
     
-    public static let pool = Pool(creator: CoroutineContext.init)
-    
-    public typealias Block = () -> Void
+    typealias Block = () -> Void
     private let stack: UnsafeMutableRawBufferPointer
     private let returnPoint, resumePoint: UnsafeMutablePointer<Int32>
     
-    @inline(__always)
-    public init(stackSizeInPages: Int) {
+    @inline(__always) init(stackSizeInPages: Int) {
         stack = .allocate(byteCount: stackSizeInPages * .pageSize, alignment: .pageSize)
         returnPoint = .allocate(capacity: .environmentSize)
         resumePoint = .allocate(capacity: .environmentSize)
     }
     
-    @inline(__always)
-    public convenience init() {
-        self.init(stackSizeInPages: 32)
-    }
-    
-    @discardableResult @inline(__always)
-    open func start(block: @escaping Block) -> Bool {
+    @inline(__always) func start(block: @escaping Block) -> Bool {
         withUnsafePointer(to: { [unowned self] in
             block()
             longjmp(self.returnPoint, .finishFlag)
@@ -42,13 +33,11 @@ open class CoroutineContext {
         } == .finishFlag
     }
     
-    @discardableResult @inline(__always)
-    open func resume() -> Bool {
+    @inline(__always) func resume() -> Bool {
         __save(returnPoint, resumePoint) == .finishFlag
     }
     
-    @inline(__always)
-    open func suspend() {
+    @inline(__always) func suspend() {
         __save(resumePoint, returnPoint)
     }
     

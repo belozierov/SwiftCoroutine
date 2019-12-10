@@ -19,7 +19,7 @@ public struct FututeComposite<T> {
 
 extension DispatchQueue {
     
-    open func compose<T>(group: DispatchGroup? = nil, qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = [], @FututeComposite<T> builder: @escaping () -> [CoFuture<T>]) -> CoFuture<[T]> {
+    public func compose<T>(group: DispatchGroup? = nil, qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = [], @FututeComposite<T> builder: @escaping () -> [CoFuture<T>]) -> CoFuture<[T]> {
         let promise = CoPromise<[T]>()
         coroutine(group: group, qos: qos, flags: flags) {
             promise.perform { try builder().map { try $0.await() } }

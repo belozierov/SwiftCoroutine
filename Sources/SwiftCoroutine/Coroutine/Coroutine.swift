@@ -12,22 +12,34 @@ open class Coroutine {
     
     public typealias Block = () -> Void
     public typealias Dispatcher = (@escaping Block) -> Void
+    public typealias Handler = (Bool) -> Void
+    
+    private static let pool = Pool { CoroutineContext(stackSizeInPages: 32) }
     
     public static func fromPool(with dispatcher: @escaping Dispatcher) -> Coroutine {
-        let context = CoroutineContext.pool.pop()
+        let context = pool.pop()
         let coroutine = Coroutine(context: context, dispatcher: dispatcher)
-        coroutine.notifyOnCompletion { CoroutineContext.pool.push(context) }
+        coroutine.handler = { if $0 { pool.push(context) } }
         return coroutine
     }
     
     private let context: CoroutineContext
-    private var suspendHandlers = [Block]()
-    private var completionHandlers = [Block]()
-    var dispatcher: Dispatcher
+    private var dispatcher: Dispatcher, handler: Handler?
     
-    public init(context: CoroutineContext, dispatcher: @escaping Dispatcher) {
+    @inline(__always) init(context: CoroutineContext, dispatcher: @escaping Dispatcher) {
         self.context = context
         self.dispatcher = dispatcher
+    }
+    
+    public init(stackSizeInPages: Int = 32, dispatcher: @escaping Dispatcher) {
+        self.context = CoroutineContext(stackSizeInPages: stackSizeInPages)
+        self.dispatcher = dispatcher
+    }
+    
+    open func addHandler(_ handler: @escaping Handler) {
+        self.handler = self.handler.map {
+            previous in { previous($0); handler($0) }
+        } ?? handler
     }
     
     // MARK: - Perform
@@ -40,13 +52,19 @@ open class Coroutine {
         perform(context.resume)
     }
     
+    @inline(__always) open func restart(with dispatcher: @escaping Dispatcher) {
+        self.dispatcher = dispatcher
+        suspend(with: resume)
+    }
+    
     private func perform(_ block: @escaping () -> Bool) {
         var caller: Coroutine?
         dispatcher { [unowned self] in
             let thread = Thread.current
             caller = thread.currentCoroutine
             thread.currentCoroutine = self
-            self.postSuspend(finished: block())
+            let finished = block()
+            self.handler?(finished)
             thread.currentCoroutine = caller
         }
     }
@@ -57,30 +75,14 @@ open class Coroutine {
         context.suspend()
     }
     
-}
-
-extension Coroutine {
-    
-    // MARK: - Notifications
-    
-    @inline(__always) public func notifyOnceOnSuspend(handler: @escaping Block) {
-        suspendHandlers.append(handler)
-    }
-    
-    @inline(__always) public func notifyOnCompletion(handler: @escaping Block) {
-        completionHandlers.append(handler)
-    }
-    
-    private func postSuspend(finished: Bool) {
-        let handlers: [Block]
-        if finished {
-            handlers = completionHandlers
-            completionHandlers.removeAll()
-        } else {
-            handlers = suspendHandlers
+    @inline(__always) open func suspend(with completion: @escaping Block) {
+        let previousHandler = handler
+        handler = { [unowned self] in
+            self.handler = previousHandler
+            previousHandler?($0)
+            completion()
         }
-        suspendHandlers.removeAll()
-        handlers.forEach { $0() }
+        suspend()
     }
     
 }

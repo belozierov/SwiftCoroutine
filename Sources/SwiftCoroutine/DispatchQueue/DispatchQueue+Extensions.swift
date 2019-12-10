@@ -14,7 +14,7 @@ extension DispatchQueue {
         Thread.isMainThread ? .main : .global()
     }
     
-    open func async<T>(group: DispatchGroup? = nil, qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = [], execute work: @escaping () throws -> T) -> CoFuture<T> {
+    public func async<T>(group: DispatchGroup? = nil, qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = [], execute work: @escaping () throws -> T) -> CoFuture<T> {
         let item = CoPromise<T>()
         async(group: group, qos: qos, flags: flags) { item.perform(work) }
         return item
