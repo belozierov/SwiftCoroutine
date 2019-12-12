@@ -13,8 +13,8 @@ You can find some API similarity to the Kotlin coroutines, thanks to my friends 
 ```swift
 
 //Main thread
-//If coroutine is started with default parameters on the main thread, 
-//it will also run on the main DispatchQueue
+let url: URL //some image URL
+//If coroutine is started with default parameters on the main thread, it will also run on the main DispatchQueue
 coroutine {
     //your custom extension that returns CoFuture<Data>
     let future = URLSession.shared.getData(with: url)
