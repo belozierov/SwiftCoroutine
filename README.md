@@ -72,7 +72,7 @@ coroutine(on: .main) {
 
 ### Coroutines
 
-You can create coroutines with the DispatchQueue extension and the corresponding global functions. API is identical to `async` function, except that you can call await inside and suspend coroutines execution by resuming it when a `CoFuture` result is available. If global `coroutine` function is started with default parameters on the main thread, coroutine will run on the main DispatchQueue else on global.
+You can create coroutines with the DispatchQueue extension and the corresponding global functions. API is identical to `async` function, except that you can call await inside and suspend coroutines execution by resuming it when a `CoFuture` result is available. This makes it possible to write within the coroutines asynchronous code as synchronous. If global `coroutine` function is started with default parameters on the main thread, coroutine will run on the main DispatchQueue else on global.
 
 This is a stackful coroutines, so each coroutine has its own stack, and after its completion, gets into the pool for reuse. If the system needs more RAM, the pool deinitializes all free coroutines and deallocates extra memory.
 
