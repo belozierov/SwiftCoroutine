@@ -65,7 +65,7 @@ let future2: CoFuture<Int> = async(on: .global()) {
 
 coroutine(on: .main) {
     let sum = try future1.await() + future2.await() //will perform 3 sec.
-    self.label.text = "Sum is \(sum)» 
+    self.label.text = "Sum is \(sum)"
 }
 ```
 
