@@ -11,19 +11,13 @@ You can find some API similarity to the Kotlin coroutines, thanks to my friends 
 ### Usage
 
 ```swift
-
-//Main thread
-let url: URL //some URL
-//if coroutine is started with default parameters on the main thread, coroutine will run on the main DispatchQueue else on global
-coroutine {
+coroutine(on: .main) {
     //your custom extension that returns CoFuture<Data>
     let future = URLSession.shared.getData(with: url)
-    //await result that suspends coroutine
+    //await result that suspends coroutine and not block the thread
     let data = try future.await()
-    //perform some work, like make an image
-    let image = UIImage(data: data)
     //coroutine is performed on the main thread, that's why we can set the image in UIImageView
-    self.imageView.image = image
+    self.imageView.image = UIImage(data: data)
 }
 ```
 
@@ -71,7 +65,7 @@ coroutine(on: .main) {
 
 ### Coroutines
 
-You can create coroutines with the DispatchQueue extension and the corresponding global functions. API is identical to `async` function, except that you can call await inside and suspend coroutines execution by resuming it when a `CoFuture` result is available. This makes it possible to write within the coroutines asynchronous code as synchronous.
+You can create coroutines with the DispatchQueue extension and the corresponding global functions. API is identical to `async` function, except that you can call await inside and suspend coroutines execution by resuming it when a `CoFuture` result is available. If global `coroutine` function is started with default parameters on the main thread, coroutine will run on the main DispatchQueue else on global.
 
 This is a stackful coroutines, so each coroutine has its own stack, and after its completion, gets into the pool for reuse. If the system needs more RAM, the pool deinitializes all free coroutines and deallocates extra memory.
 
