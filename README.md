@@ -18,8 +18,10 @@ let imageURL: URL
 coroutine {
     //your custom extension that returns CoFuture<Data>
     let future = URLSession.shared.getData(with: imageURL)
+    
     //await result that suspends coroutine and does not block the thread
     let data = try future.await()
+    
     //coroutine is performed on the main thread, that's why we can set the image in UIImageView
     self.imageView.image = UIImage(data: data)
 }
