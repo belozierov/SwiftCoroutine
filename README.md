@@ -13,12 +13,15 @@ You can find some API similarity to the Kotlin coroutines, thanks to my friends 
 ```swift
 
 //Main thread
-//If coroutine is started with default parameters on the main thread, it will also run on the main DispatchQueue
+//If coroutine is started with default parameters on the main thread, 
+//it will also run on the main DispatchQueue
 coroutine {
     //your custom extension that returns CoFuture<Data>
     let future = URLSession.shared.getData(with: url)
+    
     //await result that suspends coroutine and does not block the thread
     let data = try future.await()
+    
     //coroutine is performed on the main thread, that's why we can set the image in UIImageView
     self.imageView.image = UIImage(data: data)
 }
