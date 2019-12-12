@@ -122,9 +122,9 @@ class SwiftCoroutineTests: XCTestCase {
         for _ in 0..<10_000 {
             DispatchQueue.global().coroutine(group: group) {
                 XCTAssertFalse(Thread.isMainThread)
-                DispatchQueue.main.switchTo()
+                DispatchQueue.main.setDispatcher()
                 XCTAssertTrue(Thread.isMainThread)
-                DispatchQueue.global().switchTo()
+                DispatchQueue.global().setDispatcher()
                 XCTAssertFalse(Thread.isMainThread)
             }
         }
