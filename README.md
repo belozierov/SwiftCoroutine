@@ -28,6 +28,10 @@ coroutine {
 }
 ```
 
+### Installation
+
+`SwiftCoroutine` is available through the [Swift Package Manager](https://swift.org/package-manager) for macOS and iOS.
+
 ## Working with SwiftCoroutine
 
 ### Futures and promises
@@ -142,7 +146,3 @@ coroutine {
     //do some work with data
 }
 ```
-
-### Installation
-
-`SwiftCoroutine` is available through the [Swift Package Manager](https://swift.org/package-manager) for macOS and iOS.
