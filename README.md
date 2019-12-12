@@ -11,7 +11,10 @@ You can find some API similarity to the Kotlin coroutines, thanks to my friends 
 ### Usage
 
 ```swift
-coroutine(on: .main) {
+
+//Main thread
+//If coroutine is started with default parameters on the main thread, it will also run on the main DispatchQueue
+coroutine {
     //your custom extension that returns CoFuture<Data>
     let future = URLSession.shared.getData(with: url)
     //await result that suspends coroutine and not block the thread
@@ -81,7 +84,7 @@ coroutine {
 }
 ```
 
-Also you can change DispatchQueue inside coroutine with `setDispatcher` function.
+Also you can change DispatchQueue inside coroutine with the `setDispatcher` function.
 
 ```swift
 coroutine(on: .global()) {
@@ -113,7 +116,7 @@ cor2.start {
 
 ### Generators
 
-The framework also includes the `Generator` class that allows yield values after each iteration similar to C# and Python [generators](https://en.wikipedia.org/wiki/Generator_(computer_programming)).
+The framework also includes the `Generator` class that allows yield values after each iteration similar to C#, Python, etc. [generators](https://en.wikipedia.org/wiki/Generator_(computer_programming)).
 
 ```swift
 let generator = Generator<Int> { yield in
