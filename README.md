@@ -13,7 +13,6 @@ You can find some API similarity to the Kotlin coroutines, thanks to my friends 
 ```swift
 
 //Main thread
-let imageURL: URL
 
 //If coroutine is started with default parameters on the main thread,
 //it will also run on the main DispatchQueue
