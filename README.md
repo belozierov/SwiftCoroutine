@@ -13,19 +13,24 @@ You can find some API similarity to the Kotlin coroutines, thanks to my friends 
 ```swift
 
 //Main thread
-let url: URL //some URL
-//if coroutine is started with default parameters on the main thread, coroutine will run on the main DispatchQueue else on global
+
+//If coroutine is started with default parameters on the main thread,
+//it will also run on the main DispatchQueue
 coroutine {
     //your custom extension that returns CoFuture<Data>
-    let future = URLSession.shared.getData(with: url)
-    //await result that suspends coroutine
+    let future = URLSession.shared.getData(with: imageURL)
+    
+    //await result that suspends coroutine and doesn't block the thread
     let data = try future.await()
-    //perform some work, like make an image
-    let image = UIImage(data: data)
+    
     //coroutine is performed on the main thread, that's why we can set the image in UIImageView
-    self.imageView.image = image
+    self.imageView.image = UIImage(data: data)
 }
 ```
+
+### Installation
+
+`SwiftCoroutine` is available through the [Swift Package Manager](https://swift.org/package-manager) for macOS and iOS.
 
 ## Working with SwiftCoroutine
 
@@ -64,14 +69,14 @@ let future2: CoFuture<Int> = async(on: .global()) {
 }
 
 coroutine(on: .main) {
-    let sum = try future1.await() + future2.await() //will perform 3 sec.
-    self.label.text = "Sum is \(sum)» 
+    let sum = try future1.await() + future2.await() //will await for 3 sec., doesn't block the thread
+    self.label.text = "Sum is \(sum)"
 }
 ```
 
 ### Coroutines
 
-You can create coroutines with the DispatchQueue extension and the corresponding global functions. API is identical to `async` function, except that you can call await inside and suspend coroutines execution by resuming it when a `CoFuture` result is available. This makes it possible to write within the coroutines asynchronous code as synchronous.
+You can create coroutines with the DispatchQueue extension and the corresponding global functions. API is identical to `async` function, except that you can call await inside and suspend coroutines execution by resuming it when a `CoFuture` result is available. This makes it possible to write within the coroutines asynchronous code as synchronous. If global `coroutine` function is started with default parameters on the main thread, coroutine will run on the main DispatchQueue else on global.
 
 This is a stackful coroutines, so each coroutine has its own stack, and after its completion, gets into the pool for reuse. If the system needs more RAM, the pool deinitializes all free coroutines and deallocates extra memory.
 
@@ -79,15 +84,15 @@ The framework also gives you access to the `Coroutine` class if you need more co
 
 ```swift
 coroutine {
-     let coroutine: Coroutine! = .current
+     let coroutine: Coroutine! = .current //get current coroutine if needed
      someAsyncFuncWithCompletion {
-         coroutine.resume()
+         coroutine.resume() //manual resume outside coroutine
      }
-     coroutine.suspend()
+     coroutine.suspend() //manual suspend inside coroutine
 }
 ```
 
-Also you can change DispatchQueue inside coroutine with `setDispatcher` function.
+Also you can change DispatchQueue inside coroutine with the `setDispatcher` function.
 
 ```swift
 coroutine(on: .global()) {
@@ -119,7 +124,7 @@ cor2.start {
 
 ### Generators
 
-The framework also includes the `Generator` class that allows yield values after each iteration similar to C# and Python [generators](https://en.wikipedia.org/wiki/Generator_(computer_programming)).
+The framework also includes the `Generator` class that allows yield values after each iteration similar to C#, Python, etc. [generators](https://en.wikipedia.org/wiki/Generator_(computer_programming)).
 
 ```swift
 let generator = Generator<Int> { yield in
@@ -141,7 +146,3 @@ coroutine {
     //do some work with data
 }
 ```
-
-### Installation
-
-`SwiftCoroutine` is available through the [Swift Package Manager](https://swift.org/package-manager) for macOS and iOS.
