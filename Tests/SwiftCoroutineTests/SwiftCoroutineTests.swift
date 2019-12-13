@@ -46,12 +46,12 @@ class SwiftCoroutineTests: XCTestCase {
             session.data(for: .testImageURL)
             session.data(for: .testImageURL)
         }.transform {
-            $0.map { $0.data }.compactMap(UIImage.init)
+            $0.map { $0.data }
         }
         coroutine {
             defer { expectation.fulfill() }
-            guard let images = try? future.await() else { return XCTFail() }
-            XCTAssertEqual(images.count, 3)
+            guard let dataArray = try? future.await() else { return XCTFail() }
+            XCTAssertEqual(dataArray.count, 3)
         }
         future.notify(queue: .global()) {
             XCTAssertEqual(try? $0.get().count, 3)

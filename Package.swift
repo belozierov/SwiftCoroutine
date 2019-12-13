@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "SwiftCoroutine",
+    platforms: [.iOS(.v11), .macOS(.v10_13)],
     products: [
         .library(
             name: "SwiftCoroutine",

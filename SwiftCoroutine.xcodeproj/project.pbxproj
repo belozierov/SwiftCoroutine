@@ -33,6 +33,8 @@
 		1A934FC5239031C000155B71 /* XCTAssertContains.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A934FC3239031C000155B71 /* XCTAssertContains.swift */; };
 		1A934FC92390491D00155B71 /* CoPromise+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A934FC6239048FE00155B71 /* CoPromise+Combine.swift */; };
 		1A934FCA2390491F00155B71 /* CoPromise+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A934FC6239048FE00155B71 /* CoPromise+Combine.swift */; };
+		1A94E5C223A3E6A300812AFD /* SwiftCoroutineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F810EF0C1F8F302700025AD1 /* SwiftCoroutineTests.swift */; };
+		1A94E5C323A3E6A600812AFD /* CombineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A934FB1239028CA00155B71 /* CombineTests.swift */; };
 		1A956C302393DB4C002F74C5 /* DispatchQueue+Coroutine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A956C2F2393DB4C002F74C5 /* DispatchQueue+Coroutine.swift */; };
 		1AB2F6692393E3D300B7B1FD /* DispatchQueue+Coroutine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A956C2F2393DB4C002F74C5 /* DispatchQueue+Coroutine.swift */; };
 		1AB2F6942395531400B7B1FD /* Generator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB2F6932395531400B7B1FD /* Generator.swift */; };
@@ -523,6 +525,8 @@
 			files = (
 				1A934FC5239031C000155B71 /* XCTAssertContains.swift in Sources */,
 				1A934FBC23902A5300155B71 /* URL+Extensions.swift in Sources */,
+				1A94E5C223A3E6A300812AFD /* SwiftCoroutineTests.swift in Sources */,
+				1A94E5C323A3E6A600812AFD /* CombineTests.swift in Sources */,
 				1A934FBF23902BF400155B71 /* DispatchQueue+Extensions.swift in Sources */,
 				1A934FB9239029B700155B71 /* URLSession+Extensions.swift in Sources */,
 			);
@@ -768,6 +772,7 @@
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = Sources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MODULEMAP_FILE = "${PROJECT_DIR}/Sources/module.modulemap";
@@ -796,6 +801,7 @@
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = Sources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MODULEMAP_FILE = "${PROJECT_DIR}/Sources/module.modulemap";
@@ -819,6 +825,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Tests/SwiftCoroutineTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = "BBelozierov.SwiftCoroutine-macOSTests";
@@ -838,6 +845,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Tests/SwiftCoroutineTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = "BBelozierov.SwiftCoroutine-macOSTests";
