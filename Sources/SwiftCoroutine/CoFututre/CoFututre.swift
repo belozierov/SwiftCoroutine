@@ -13,7 +13,7 @@ open class CoFuture<Output> {
     public typealias Result = Swift.Result<Output, Error>
     public typealias Completion = (Result) -> ()
     
-    public enum FutureError: Swift.Error {
+    public enum FutureError: Error {
         case timeOut, cancelled
     }
     

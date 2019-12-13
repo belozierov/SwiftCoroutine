@@ -28,6 +28,7 @@ open class CoLazyPromise<Output>: CoFuture<Output> {
     override var _result: Result? {
         set { __result = newValue }
         get {
+            if let result = __result { return result }
             if !started { start() }
             return __result
         }
