@@ -28,6 +28,12 @@ coroutine {
 }
 ```
 
+### Requirements
+
+- iOS 11.0+ / macOS 10.13+
+- Xcode 10.2+
+- Swift 5+
+
 ### Installation
 
 `SwiftCoroutine` is available through the [Swift Package Manager](https://swift.org/package-manager) for macOS and iOS.
@@ -140,7 +146,7 @@ generator.next() //return 2
 Apple has recently introduced a new reactive programming framework that makes writing asynchronous code easier and includes a lot of convenient and common functionality. This framework includes the await extension for all publishers that allows combining reactive programming and coroutines for higher productivity.
 
 ```swift
-let publisher = URLSession.shared.dataTaskPublisher(for: .testImageURL).map(\.data)
+let publisher = URLSession.shared.dataTaskPublisher(for: url).map(\.data)
 coroutine {
     let data = try publisher.await()
     //do some work with data
