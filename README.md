@@ -86,9 +86,9 @@ The framework also gives you access to the `Coroutine` class if you need more co
 coroutine {
      let coroutine: Coroutine! = .current
      someAsyncFuncWithCompletion {
-         coroutine.resume()
+         coroutine.resume() //manual resume outside coroutine
      }
-     coroutine.suspend()
+     coroutine.suspend() //manual suspend inside coroutine
 }
 ```
 
