@@ -84,7 +84,7 @@ The framework also gives you access to the `Coroutine` class if you need more co
 
 ```swift
 coroutine {
-     let coroutine: Coroutine! = .current
+     let coroutine: Coroutine! = .current //get current coroutine if needed
      someAsyncFuncWithCompletion {
          coroutine.resume() //manual resume outside coroutine
      }
