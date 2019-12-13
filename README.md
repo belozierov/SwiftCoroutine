@@ -20,7 +20,7 @@ coroutine {
     //your custom extension that returns CoFuture<Data>
     let future = URLSession.shared.getData(with: imageURL)
     
-    //await result that suspends coroutine and does not block the thread
+    //await result that suspends coroutine and doesn't block the thread
     let data = try future.await()
     
     //coroutine is performed on the main thread, that's why we can set the image in UIImageView
@@ -69,7 +69,7 @@ let future2: CoFuture<Int> = async(on: .global()) {
 }
 
 coroutine(on: .main) {
-    let sum = try future1.await() + future2.await() //will await for 3 sec.
+    let sum = try future1.await() + future2.await() //will await for 3 sec., doesn't block the thread
     self.label.text = "Sum is \(sum)"
 }
 ```
