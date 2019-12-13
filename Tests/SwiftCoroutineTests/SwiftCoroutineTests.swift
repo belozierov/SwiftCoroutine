@@ -156,6 +156,26 @@ class SwiftCoroutineTests: XCTestCase {
         XCTAssertEqual(result, (0..<5).map { $0 })
     }
     
+    func testLazyPromise() {
+        let expectation = XCTestExpectation(description: "Lazy promise test")
+        let item1 = CoLazyPromise<Int> {
+            sleep(2)
+            $0(.success(5))
+        }
+        let item2 = CoLazyPromise<Int>(queue: .global()) {
+            sleep(1)
+            $0(.success(6))
+        }
+        let date = Date()
+        coroutine(on: .global()) {
+            let result = try item1.await() + item2.await()
+            XCTAssertEqual(result, 11)
+            XCTAssertDuration(from: date, in: 3..<4)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 10)
+    }
+    
 }
 
 
