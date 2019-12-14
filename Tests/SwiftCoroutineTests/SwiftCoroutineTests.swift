@@ -176,6 +176,28 @@ class SwiftCoroutineTests: XCTestCase {
         wait(for: [expectation], timeout: 10)
     }
     
+    func testAwaitTimeOut() {
+        let expectation = XCTestExpectation(description: "Await timeout")
+        let date = Date()
+        let future = async(on: .global()) { () -> Int in
+            sleep(3)
+            return 5
+        }
+        coroutine {
+            do {
+                _ = try future.await(timeout: .now() + 1)
+                XCTFail()
+            } catch let error as CoFuture<Int>.FutureError {
+                XCTAssert(error == .timeout)
+            } catch {
+                XCTFail()
+            }
+            XCTAssertDuration(from: date, in: 1..<2)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 5)
+    }
+    
 }
 
 
