@@ -14,14 +14,14 @@ open class CoFuture<Output> {
     public typealias Completion = (Result) -> ()
     
     public enum FutureError: Error {
-        case timeOut, cancelled
+        case cancelled, awaitCalledOutsideCoroutine
     }
     
     let mutex = NSLock()
     var _result: Result?
     var subscriptions = [AnyHashable: Completion]()
     
-    private func addSubscription(completion: @escaping Completion) {
+    func addSubscription(completion: @escaping Completion) {
         withUnsafePointer(to: completion) { subscriptions[$0] = completion }
     }
     
@@ -45,8 +45,9 @@ open class CoFuture<Output> {
     // MARK: - Operations
     
     open func await() throws -> Output {
+        assert(Coroutine.current != nil, "Await must be called inside coroutine")
         guard let coroutine = Coroutine.current
-            else { fatalError() }
+            else { throw FutureError.awaitCalledOutsideCoroutine }
         mutex.lock()
         defer { mutex.unlock() }
         while true {
@@ -85,10 +86,10 @@ open class CoFuture<Output> {
     
     open func notify(flags: DispatchWorkItemFlags = [], queue: DispatchQueue, execute: @escaping Completion) {
         mutex.lock()
-        addSubscription { result in
-            queue.async(flags: flags) { execute(result) }
-        }
-        mutex.unlock()
+        defer { mutex.unlock() }
+        let completion = { result in queue.async(flags: flags) { execute(result) } }
+        if let result = _result { return completion(result) }
+        addSubscription(completion: completion)
     }
     
 }

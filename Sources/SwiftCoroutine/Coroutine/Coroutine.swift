@@ -49,6 +49,7 @@ open class Coroutine {
     // MARK: - Perform
     
     @inline(__always) open func start(block: @escaping Block) {
+        assert(self !== Coroutine.current, "Start must be called outside current coroutine")
         perform { self.context.start(block: block) }
     }
     
@@ -76,6 +77,7 @@ open class Coroutine {
     // MARK: - Suspend
     
     @inline(__always) open func suspend() {
+        assert(self === Coroutine.current, "Suspend must be called inside current coroutine")
         context.suspend()
     }
     

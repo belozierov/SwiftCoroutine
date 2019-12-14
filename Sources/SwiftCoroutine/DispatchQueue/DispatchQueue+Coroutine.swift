@@ -23,9 +23,8 @@ extension DispatchQueue {
     }
     
     public func setDispatcher(group: DispatchGroup? = nil, qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = []) {
-        guard let coroutine = Coroutine.current
-            else { fatalError() }
-        coroutine.restart { self.async(group: group, qos: qos, flags: flags, execute: $0) }
+        assert(Coroutine.current != nil, "setDispatcher must be called inside coroutine")
+        Coroutine.current?.restart { self.async(group: group, qos: qos, flags: flags, execute: $0) }
     }
 
 }

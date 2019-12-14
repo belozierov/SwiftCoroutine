@@ -100,7 +100,7 @@ class SwiftCoroutineTests: XCTestCase {
                 XCTAssertDuration(from: date, in: 3..<4)
             }
         }
-        wait(for: [expectation], timeout: 60)
+        wait(for: [expectation], timeout: 10)
     }
     
     func testGenerator() {
