@@ -22,12 +22,10 @@ extension DispatchQueue {
     
 }
 
-@inline(__always)
-public func async(on queue: DispatchQueue = .__current, execute work: @escaping () -> Void) {
+@inlinable public func async(on queue: DispatchQueue = .__current, execute work: @escaping () -> Void) {
     queue.async(execute: work)
 }
 
-@inline(__always)
-public func async<T>(on queue: DispatchQueue = .__current, execute work: @escaping () throws -> T) -> CoFuture<T> {
+@inlinable public func async<T>(on queue: DispatchQueue = .__current, execute work: @escaping () throws -> T) -> CoFuture<T> {
     queue.async(execute: work)
 }

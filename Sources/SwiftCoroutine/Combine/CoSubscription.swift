@@ -18,11 +18,11 @@ class CoSubscription: Subscription {
         self.canceller = canceller
     }
     
-    @inline(__always) func cancel() {
+    @inlinable func cancel() {
         canceller(self)
     }
     
-    func request(_ demand: Subscribers.Demand) {}
+    @inlinable func request(_ demand: Subscribers.Demand) {}
     
 }
 

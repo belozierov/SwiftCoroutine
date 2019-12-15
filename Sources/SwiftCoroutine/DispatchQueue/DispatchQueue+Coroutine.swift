@@ -29,12 +29,12 @@ extension DispatchQueue {
 
 }
 
-@inline(__always)
+@inlinable
 public func coroutine(on queue: DispatchQueue = .__current, execute work: @escaping () throws -> Void) {
     queue.coroutine(execute: work)
 }
 
-@inline(__always)
+@inlinable
 public func coroutine<T>(on queue: DispatchQueue = .__current, execute work: @escaping () throws -> T) -> CoFuture<T> {
     queue.coroutine(execute: work)
 }

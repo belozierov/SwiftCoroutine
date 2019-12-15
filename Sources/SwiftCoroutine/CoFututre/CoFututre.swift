@@ -107,11 +107,11 @@ open class CoFuture<Output> {
     
     // MARK: - Finish
     
-    @inline(__always) open func cancel() {
+    @inlinable open func cancel() {
         finish(with: .failure(FutureError.cancelled))
     }
     
-    func finish(with result: Result) {
+    @usableFromInline func finish(with result: Result) {
         mutex.lock()
         _result = result
         let blocks = subscriptions.values

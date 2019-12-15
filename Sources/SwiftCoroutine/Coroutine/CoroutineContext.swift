@@ -14,13 +14,13 @@ class CoroutineContext {
     private let stack: UnsafeMutableRawBufferPointer
     private let returnPoint, resumePoint: UnsafeMutablePointer<Int32>
     
-    @inline(__always) init(stackSizeInPages: Int) {
+    @inlinable init(stackSizeInPages: Int) {
         stack = .allocate(byteCount: stackSizeInPages * .pageSize, alignment: .pageSize)
         returnPoint = .allocate(capacity: .environmentSize)
         resumePoint = .allocate(capacity: .environmentSize)
     }
     
-    @inline(__always) func start(block: @escaping Block) -> Bool {
+    @inlinable func start(block: @escaping Block) -> Bool {
         withUnsafePointer(to: { [unowned self] in
             block()
             longjmp(self.returnPoint, .finished)
@@ -33,11 +33,11 @@ class CoroutineContext {
         } == .finished
     }
     
-    @inline(__always) func resume() -> Bool {
+    @inlinable func resume() -> Bool {
         __save(returnPoint, resumePoint, -1) == .finished
     }
     
-    @inline(__always) func suspend() {
+    @inlinable func suspend() {
         __save(resumePoint, returnPoint, -1)
     }
     

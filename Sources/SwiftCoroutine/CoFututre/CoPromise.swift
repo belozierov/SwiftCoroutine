@@ -10,19 +10,19 @@ open class CoPromise<Output>: CoFuture<Output> {
     
     @inline(__always) public override init() {}
     
-    @inline(__always) open func send(_ value: Output) {
+    @inlinable open func send(_ value: Output) {
         finish(with: .success(value))
     }
     
-    @inline(__always) open func send(error: Error) {
+    @inlinable open func send(error: Error) {
         finish(with: .failure(error))
     }
     
-    @inline(__always) open func send(result: Result) {
+    @inlinable open func send(result: Result) {
         finish(with: result)
     }
     
-    @inline(__always) open func perform(_ block: () throws -> Output) {
+    @inlinable open func perform(_ block: () throws -> Output) {
         finish(with: Result(catching: block))
     }
     
