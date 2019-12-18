@@ -143,7 +143,7 @@ generator.next() //return 2
 
 ### Combine
 
-Apple has recently introduced a new reactive programming framework that makes writing asynchronous code easier and includes a lot of convenient and common functionality. This framework includes the await extension for all publishers that allows combining reactive programming and coroutines for higher productivity.
+Apple has recently introduced a new reactive programming framework that makes writing asynchronous code easier and includes a lot of convenient and common functionality. This framework includes the `await` extension for all publishers that allows combining reactive programming and coroutines for higher productivity.
 
 ```swift
 let publisher = URLSession.shared.dataTaskPublisher(for: url).map(\.data)
