@@ -9,6 +9,10 @@
 import Foundation
 
 extension DispatchQueue {
+    
+    @inlinable public static var _current: DispatchQueue {
+        Thread.isMainThread ? .main : .global()
+    }
 
     public func coroutine(group: DispatchGroup? = nil, qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = [], execute work: @escaping () throws -> Void) {
         Coroutine
@@ -30,11 +34,13 @@ extension DispatchQueue {
 }
 
 @inlinable
-public func coroutine(on queue: DispatchQueue = .__current, execute work: @escaping () throws -> Void) {
+public func coroutine(on queue: DispatchQueue = ._current,
+                      execute work: @escaping () throws -> Void) {
     queue.coroutine(execute: work)
 }
 
 @inlinable
-public func coroutine<T>(on queue: DispatchQueue = .__current, execute work: @escaping () throws -> T) -> CoFuture<T> {
+public func coroutine<T>(on queue: DispatchQueue = ._current,
+                         execute work: @escaping () throws -> T) -> CoFuture<T> {
     queue.coroutine(execute: work)
 }

@@ -6,7 +6,6 @@
 //  Copyright © 2019 Alex Belozierov. All rights reserved.
 //
 
-
 import Combine
 
 @available(OSX 10.15, iOS 13.0, *)

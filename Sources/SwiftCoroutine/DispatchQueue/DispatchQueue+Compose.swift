@@ -29,7 +29,8 @@ extension DispatchQueue {
     
 }
 
-@inlinable public
-func compose<T>(on queue: DispatchQueue = .__current, @FututeComposite<T> builder: @escaping () -> [CoFuture<T>]) -> CoFuture<[T]> {
+@inlinable
+public func compose<T>(on queue: DispatchQueue = ._current,
+                       @FututeComposite<T> builder: @escaping () -> [CoFuture<T>]) -> CoFuture<[T]> {
     queue.compose(builder: builder)
 }

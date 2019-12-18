@@ -10,10 +10,6 @@ import Foundation
 
 extension DispatchQueue {
     
-    public static var __current: DispatchQueue {
-        Thread.isMainThread ? .main : .global()
-    }
-    
     public func async<T>(group: DispatchGroup? = nil, qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = [], execute work: @escaping () throws -> T) -> CoFuture<T> {
         let item = CoPromise<T>()
         async(group: group, qos: qos, flags: flags) { item.perform(work) }
@@ -22,10 +18,14 @@ extension DispatchQueue {
     
 }
 
-@inlinable public func async(on queue: DispatchQueue = .__current, execute work: @escaping () -> Void) {
+@inlinable
+public func async(on queue: DispatchQueue = .global(),
+                  execute work: @escaping () -> Void) {
     queue.async(execute: work)
 }
 
-@inlinable public func async<T>(on queue: DispatchQueue = .__current, execute work: @escaping () throws -> T) -> CoFuture<T> {
+@inlinable
+public func async<T>(on queue: DispatchQueue = .global(),
+                     execute work: @escaping () throws -> T) -> CoFuture<T> {
     queue.async(execute: work)
 }

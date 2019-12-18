@@ -21,8 +21,10 @@ class CoroutineContext {
     }
     
     @inlinable func start(block: @escaping Block) -> Bool {
-        withUnsafePointer(to: { [unowned self] in
-            block()
+        var blockRef: Block! = block
+        return withUnsafePointer(to: { [unowned(unsafe) self] in
+            blockRef()
+            blockRef = nil
             longjmp(self.returnPoint, .finished)
         }, start)
      }
