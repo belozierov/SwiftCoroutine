@@ -14,20 +14,11 @@ open class Coroutine {
     public typealias Dispatcher = (@escaping Block) -> Void
     public typealias Handler = (Bool) -> Void
     
-    private static let pool = Pool(maxElements: 32) { CoroutineContext(stackSizeInPages: 32) }
-    
-    public static func fromPool(with dispatcher: @escaping Dispatcher) -> Coroutine {
-        let context = pool.pop()
-        let coroutine = Coroutine(context: context, dispatcher: dispatcher)
-        coroutine.handler = { if $0 { pool.push(context) } }
-        return coroutine
-    }
-    
     @inline(__always) public static var current: Coroutine? {
         Thread.current.currentCoroutine
     }
     
-    private let context: CoroutineContext
+    let context: CoroutineContext
     private var dispatcher: Dispatcher, handler: Handler?
     
     @inline(__always) init(context: CoroutineContext, dispatcher: @escaping Dispatcher) {

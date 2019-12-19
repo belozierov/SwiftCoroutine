@@ -13,4 +13,6 @@
 int __start(jmp_buf ret, const void* stack, const void* param, const void (*block)(const void*));
 int __save(jmp_buf env, jmp_buf ret, int retVal);
 
+const void* _frameAddress(void);
+
 #endif

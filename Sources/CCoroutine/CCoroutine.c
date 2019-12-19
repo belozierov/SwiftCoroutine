@@ -28,3 +28,7 @@ int __save(jmp_buf env, jmp_buf ret, int retVal) {
     if (n) return n;
     longjmp(ret, retVal);
 }
+
+const void* _frameAddress(void) {
+    return __builtin_frame_address(1);
+}

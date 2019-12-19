@@ -20,6 +20,14 @@ class CoroutineContext {
         resumePoint = .allocate(capacity: .environmentSize)
     }
     
+    @inlinable var stackSize: Int {
+        stack.count
+    }
+    
+    @inlinable var stackStart: UnsafeRawPointer {
+        .init(stack.baseAddress!.advanced(by: stack.count))
+    }
+    
     @inlinable func start(block: @escaping Block) -> Bool {
         var blockRef: Block! = block
         return withUnsafePointer(to: { [unowned(unsafe) self] in
@@ -30,7 +38,7 @@ class CoroutineContext {
      }
     
     private func start(with block: UnsafePointer<Block>) -> Bool {
-        __start(returnPoint, stack.baseAddress?.advanced(by: stack.count), block) {
+        __start(returnPoint, stackStart, block) {
             $0?.assumingMemoryBound(to: Block.self).pointee()
         } == .finished
     }
