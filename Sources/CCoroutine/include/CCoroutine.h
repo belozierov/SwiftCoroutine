@@ -8,8 +8,9 @@
 
 #ifndef CCoroutine_h
 #define CCoroutine_h
+#include <setjmp.h>
 
-int __start(int* ret, const void* stack, const void* param, const void (*block)(const void*));
-int __save(int* env, int* ret, int retVal);
+int __start(jmp_buf ret, const void* stack, const void* param, const void (*block)(const void*));
+int __save(jmp_buf env, jmp_buf ret, int retVal);
 
 #endif

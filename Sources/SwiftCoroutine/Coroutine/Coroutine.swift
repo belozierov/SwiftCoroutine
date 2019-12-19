@@ -14,7 +14,7 @@ open class Coroutine {
     public typealias Dispatcher = (@escaping Block) -> Void
     public typealias Handler = (Bool) -> Void
     
-    private static let pool = Pool { CoroutineContext(stackSizeInPages: 32) }
+    private static let pool = Pool(maxElements: 32) { CoroutineContext(stackSizeInPages: 32) }
     
     public static func fromPool(with dispatcher: @escaping Dispatcher) -> Coroutine {
         let context = pool.pop()

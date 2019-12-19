@@ -7,7 +7,6 @@
 //
 
 #include "CCoroutine.h"
-#include <setjmp.h>
 
 int __start(jmp_buf ret, const void* stack, const void* param, const void (*block)(const void*)) {
     int n = setjmp(ret);
