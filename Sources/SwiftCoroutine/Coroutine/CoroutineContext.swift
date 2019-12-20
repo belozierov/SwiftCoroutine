@@ -14,17 +14,21 @@ import Foundation
 class CoroutineContext {
     
     typealias Block = () -> Void
+    
+    let haveGuardPage: Bool
     private let stack: UnsafeMutableRawBufferPointer
     private let returnPoint, resumePoint: UnsafeMutablePointer<Int32>
     
-    @inlinable init(stackSizeInPages: Int) {
-        stack = .allocate(byteCount: stackSizeInPages * .pageSize, alignment: .pageSize)
+    init(stackSizeInPages pages: Int, guardPage: Bool = true) {
+        haveGuardPage = guardPage
+        stack = .allocate(byteCount: pages * .pageSize, alignment: .pageSize)
+        if guardPage { mprotect(stack.baseAddress, .pageSize, PROT_READ) }
         returnPoint = .allocate(capacity: .environmentSize)
         resumePoint = .allocate(capacity: .environmentSize)
     }
     
     @inlinable var stackSize: Int {
-        stack.count
+        stack.count - (haveGuardPage ? .pageSize : 0)
     }
     
     @inlinable var stackStart: UnsafeRawPointer {
