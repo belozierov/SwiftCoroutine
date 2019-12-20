@@ -19,9 +19,18 @@ open class CoFuture<Output> {
     
     let mutex = NSLock()
     var _result: Result?
+    
+    // MARK: - Subscriptions
+    
     var subscriptions = [AnyHashable: Completion]()
     
-    func addSubscription(completion: @escaping Completion) {
+    func setSubscription(for key: AnyHashable, completion: Completion?) {
+        mutex.lock()
+        subscriptions[key] = completion
+        mutex.unlock()
+    }
+    
+    private func addSubscription(completion: @escaping Completion) {
         withUnsafePointer(to: completion) { subscriptions[$0] = completion }
     }
     
@@ -122,22 +131,25 @@ open class CoFuture<Output> {
     
     // MARK: - Transform
     
-    open func transform<T>(_ transform: @escaping (Output) -> T) -> CoFuture<T> {
-        let promise = CoPromise<T>()
-        mutex.lock()
-        subscriptions[promise] = { promise.finish(with: $0.map(transform)) }
-        mutex.unlock()
-        return promise
+    @inline(__always)
+    open func transform<T>(_ transformer: @escaping (Result) throws -> T) -> CoFuture<T> {
+        CoTransformFuture(parent: self, transformer: transformer)
     }
     
     // MARK: - Notify
     
-    open func notify(flags: DispatchWorkItemFlags = [], queue: DispatchQueue, execute: @escaping Completion) {
+    @inlinable public func notify(flags: DispatchWorkItemFlags = [], queue: DispatchQueue, execute completion: @escaping Completion) {
+        notify { result in queue.async(flags: flags) { completion(result) } }
+    }
+    
+    public func notify(execute completion: @escaping Completion) {
         mutex.lock()
-        defer { mutex.unlock() }
-        let completion = { result in queue.async(flags: flags) { execute(result) } }
-        if let result = _result { return completion(result) }
+        if let result = _result {
+            mutex.unlock()
+            return completion(result)
+        }
         addSubscription(completion: completion)
+        mutex.unlock()
     }
     
 }

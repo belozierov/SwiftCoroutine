@@ -15,16 +15,16 @@ extension CoFuture: Publisher, Cancellable {
     
     public func receive<S: Subscriber>(subscriber: S) where Output == S.Input, Failure == S.Failure {
         mutex.lock()
-        defer { mutex.unlock() }
-        if let result = _result { return subscriber.finish(with: result) }
-        let subscription = CoSubscription { [weak self] in self?.removeSubscription(for: $0) }
+        if let result = _result {
+            mutex.unlock()
+            return subscriber.finish(with: result)
+        }
+        let subscription = CoSubscription { [weak self] in
+            self?.setSubscription(for: $0, completion: nil)
+        }
         subscriptions[subscription] = subscriber.finish
+        mutex.unlock()
         subscriber.receive(subscription: subscription)
-    }
-    
-    private func removeSubscription(for key: CoSubscription) {
-        subscriptions.removeValue(forKey: key)
-        if subscriptions.isEmpty { cancel() }
     }
     
 }
