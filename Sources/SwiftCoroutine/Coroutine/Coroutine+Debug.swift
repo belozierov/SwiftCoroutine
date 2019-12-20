@@ -6,6 +6,10 @@
 //  Copyright © 2019 Alex Belozierov. All rights reserved.
 //
 
+#if SWIFT_PACKAGE
+import CCoroutine
+#endif
+
 extension Coroutine {
     
     @inline(never) public static var currentStackUsed: Int? {

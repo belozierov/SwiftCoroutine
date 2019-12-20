@@ -6,6 +6,9 @@
 //  Copyright © 2019 Alex Belozierov. All rights reserved.
 //
 
+#if SWIFT_PACKAGE
+import CCoroutine
+#endif
 import Foundation
 
 class CoroutineContext {
