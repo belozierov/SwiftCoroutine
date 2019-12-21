@@ -16,22 +16,29 @@ extension CoFuture {
         transform { result in try transformer(result.get()) }
     }
 
-     @inlinable public func then(_ handler: @escaping (Output) throws -> Void) -> CoFuture<Output> {
+     @inlinable public func then(_ handler: @escaping (Output) -> Void) -> CoFuture<Output> {
         map { value in
-            try? handler(value)
+            handler(value)
             return value
         }
     }
 
-    @inlinable public func `catch`(_ handler: @escaping (Error) throws -> Void) -> CoFuture<Output> {
+    @inlinable public func `catch`(_ handler: @escaping (Error) -> Void) -> CoFuture<Output> {
         transform { result in
             switch result {
             case .success(let value):
                 return value
             case .failure(let error):
-                try? handler(error)
+                handler(error)
                 throw error
             }
+        }
+    }
+    
+    @inlinable public func handler(_ handler: @escaping () -> Void) -> CoFuture<Output> {
+        transform { result in
+            handler()
+            return try result.get()
         }
     }
     
@@ -39,11 +46,11 @@ extension CoFuture {
     
     public func notify(execute completion: @escaping Completion) {
         mutex.lock()
-        if let result = _result {
+        if let result = result {
             mutex.unlock()
             return completion(result)
         }
-        _addSubscription(completion: completion)
+        addCompletion(completion: completion)
         mutex.unlock()
     }
     

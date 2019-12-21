@@ -13,6 +13,7 @@ class CoFutureTests: XCTestCase {
     
     func testTransform() {
         let expectation = XCTestExpectation(description: "Test Transform")
+        let expectation2 = XCTestExpectation(description: "Test Transform2")
         let promise = async { () -> Int in
             sleep(1)
             return 1
@@ -21,6 +22,7 @@ class CoFutureTests: XCTestCase {
             .map { $0 * 2 }
             .map { $0 * 3 }
             .map { $0.description }
+            .handler { expectation2.fulfill() }
         weak var weakTransformed: CoFuture<String>? = transformed
         transformed.notify(queue: .global()) {
             transformed = nil
@@ -28,7 +30,7 @@ class CoFutureTests: XCTestCase {
             XCTAssertEqual(try? $0.get(), "6")
             expectation.fulfill()
         }
-        wait(for: [expectation], timeout: 5)
+        wait(for: [expectation, expectation2], timeout: 5)
     }
     
 }

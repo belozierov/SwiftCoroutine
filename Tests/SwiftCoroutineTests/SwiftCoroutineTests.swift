@@ -34,7 +34,7 @@ class SwiftCoroutineTests: XCTestCase {
             result.append(4)
             XCTAssertDuration(from: date, in: 2..<3)
         }
-        wait(for: [expectation], timeout: 60)
+        wait(for: [expectation], timeout: 5)
     }
     
     func testCompose() {
@@ -173,14 +173,14 @@ class SwiftCoroutineTests: XCTestCase {
             XCTAssertDuration(from: date, in: 3..<4)
             expectation.fulfill()
         }
-        wait(for: [expectation], timeout: 10)
+        wait(for: [expectation], timeout: 5)
     }
     
     func testAwaitTimeOut() {
         let expectation = XCTestExpectation(description: "Await timeout")
         let date = Date()
         let future = async(on: .global()) { () -> Int in
-            sleep(3)
+            sleep(2)
             return 5
         }
         coroutine {

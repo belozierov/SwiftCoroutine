@@ -1,29 +1,44 @@
 //
 //  CoPromise.swift
-//  SwiftCoroutine iOS
+//  SwiftCoroutine
 //
-//  Created by Alex Belozierov on 26.11.2019.
+//  Created by Alex Belozierov on 21.12.2019.
 //  Copyright © 2019 Alex Belozierov. All rights reserved.
 //
 
 open class CoPromise<Output>: CoFuture<Output> {
     
-    @inline(__always) public override init() {}
+    private var _result: OutputResult?
     
-    @inlinable open func send(_ value: Output) {
-        finish(with: .success(value))
+    public override init() {}
+    
+    open override var result: OutputResult? {
+        mutex.lock()
+        defer { mutex.unlock() }
+        return _result
     }
     
-    @inlinable open func send(error: Error) {
-        finish(with: .failure(error))
+    open override func send(result: OutputResult) {
+        mutex.lock()
+        _result = result
+        mutex.unlock()
+        super.send(result: result)
     }
     
-    @inlinable open func send(result: Result) {
-        finish(with: result)
+}
+
+extension CoPromise {
+    
+    @inlinable public func send(_ output: Output) {
+        send(result: .success(output))
     }
     
-    @inlinable open func perform(_ block: () throws -> Output) {
-        finish(with: Result(catching: block))
+    @inlinable public func send(error: Error) {
+        send(result: .failure(error))
+    }
+    
+    @inlinable public func perform(_ block: () throws -> Output) {
+        send(result: Result(catching: block))
     }
     
 }

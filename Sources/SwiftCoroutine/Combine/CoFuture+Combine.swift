@@ -15,7 +15,7 @@ extension CoFuture: Publisher, Cancellable {
     
     public func receive<S: Subscriber>(subscriber: S) where Output == S.Input, Failure == S.Failure {
         let subscription = CoSubscription { [weak self] in
-            self?.setSubscription(for: $0, completion: nil)
+            self?.setCompletion(for: $0, completion: nil)
         }
         subscriber.receive(subscription: subscription)
         notify(execute: subscriber.finish)

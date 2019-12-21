@@ -2,7 +2,7 @@
 //  CoFututre+Await.swift
 //  SwiftCoroutine
 //
-//  Created by Alex Belozierov on 20.12.2019.
+//  Created by Alex Belozierov on 21.12.2019.
 //  Copyright © 2019 Alex Belozierov. All rights reserved.
 //
 
@@ -11,7 +11,7 @@ import Foundation
 extension CoFuture {
     
     @inline(__always) public func await() throws -> Output {
-        try await(coroutine: try currentCoroutine(), resultGetter: { _result })
+        try await(coroutine: try currentCoroutine())
     }
     
     public func await(timeout: DispatchTime) throws -> Output {
@@ -31,8 +31,8 @@ extension CoFuture {
         timer.activate()
         defer { timer.cancel() }
         return try await(coroutine: coroutine, resultGetter: {
-            _result ?? (isTimeOut ? .failure(FutureError.timeout) : nil)
-        }, resumeSubscription: {
+            isTimeOut ? .failure(FutureError.timeout) : nil
+        }, resume: {
             mutex.lock()
             defer { mutex.unlock() }
             if isTimeOut { return false }
@@ -46,19 +46,22 @@ extension CoFuture {
     }
     
     private func await(coroutine: Coroutine,
-                       resultGetter: () -> Result?,
-                       resumeSubscription: @escaping () -> Bool = { true },
-                       suspendCompletion: @escaping () -> Void = {}) throws -> Output {
+                       resultGetter: () -> OutputResult? = { nil },
+                       resume: @escaping () -> Bool = { true },
+                       suspendCompletion: (() -> Void)? = nil) throws -> Output {
         mutex.lock()
         defer { mutex.unlock() }
+        defer { setCompletion(for: coroutine, completion: nil) }
         while true {
-            if let result = resultGetter() { return try result.get() }
-            _addSubscription { _ in
-                if resumeSubscription() { coroutine.resume() }
+            if let result = result ?? resultGetter() {
+                return try result.get()
+            }
+            setCompletion(for: coroutine) { _ in
+                if resume() { coroutine.resume() }
             }
             coroutine.suspend {
                 self.mutex.unlock()
-                suspendCompletion()
+                suspendCompletion?()
             }
             mutex.lock()
         }
