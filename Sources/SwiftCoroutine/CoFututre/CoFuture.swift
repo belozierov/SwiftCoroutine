@@ -18,7 +18,7 @@ open class CoFuture<Output> {
     }
     
     let mutex = NSRecursiveLock()
-    private var completions = [AnyHashable: Completion]()
+    private var _completions = [AnyHashable: Completion]()
     
     // MARK: - Result
     
@@ -26,8 +26,8 @@ open class CoFuture<Output> {
     
     @usableFromInline func send(result: OutputResult) {
         mutex.lock()
-        let items = completions.values
-        completions.removeAll()
+        let items = _completions.values
+        _completions.removeAll()
         mutex.unlock()
         items.forEach { $0(result) }
     }
@@ -55,18 +55,23 @@ extension CoFuture {
         send(result: .failure(FutureError.cancelled))
     }
     
-    // MARK: - Completion
+    // MARK: - Completions
     
-    @usableFromInline func setCompletion(for key: AnyHashable, completion: Completion?) {
-        mutex.lock()
-        completions[key] = completion
-        mutex.unlock()
+    @usableFromInline var completions: [AnyHashable: Completion] {
+        get {
+            mutex.lock()
+            defer { mutex.unlock() }
+            return _completions
+        }
+        set {
+            mutex.lock()
+            _completions = newValue
+            mutex.unlock()
+        }
     }
     
     @inlinable func addCompletion(completion: @escaping Completion) {
-        withUnsafePointer(to: completion) {
-            setCompletion(for: $0, completion: completion)
-        }
+        withUnsafePointer(to: completion) { completions[$0] = completion }
     }
     
 }

@@ -51,12 +51,12 @@ extension CoFuture {
                        suspendCompletion: (() -> Void)? = nil) throws -> Output {
         mutex.lock()
         defer { mutex.unlock() }
-        defer { setCompletion(for: coroutine, completion: nil) }
+        defer { completions[coroutine] = nil }
         while true {
             if let result = result ?? resultGetter() {
                 return try result.get()
             }
-            setCompletion(for: coroutine) { _ in
+            completions[coroutine] = { _ in
                 if resume() { coroutine.resume() }
             }
             coroutine.suspend {

@@ -10,52 +10,47 @@ import Foundation
 
 extension CoFuture {
     
-    // MARK: - Transform
+    // MARK: - Map output
     
-    @inlinable public func map<T>(_ transformer: @escaping (Output) throws -> T) -> CoFuture<T> {
+    @inlinable public func mapOutput<T>(_ transformer: @escaping (Output) throws -> T) -> CoFuture<T> {
         transform { result in try transformer(result.get()) }
     }
-
-     @inlinable public func then(_ handler: @escaping (Output) -> Void) -> CoFuture<Output> {
-        map { value in
-            handler(value)
-            return value
-        }
-    }
-
-    @inlinable public func `catch`(_ handler: @escaping (Error) -> Void) -> CoFuture<Output> {
-        transform { result in
-            switch result {
-            case .success(let value):
-                return value
-            case .failure(let error):
-                handler(error)
-                throw error
-            }
-        }
-    }
     
-    @inlinable public func handler(_ handler: @escaping () -> Void) -> CoFuture<Output> {
-        transform { result in
-            handler()
-            return try result.get()
-        }
-    }
+    // MARK: - On result
     
-    // MARK: - Notify
-    
-    public func notify(execute completion: @escaping Completion) {
+    @discardableResult
+    public func onResult(queue: DispatchQueue? = nil, execute completion: @escaping Completion) -> CoFuture<Output> {
+        let completion = queue.map { queue in
+            { result in queue.async { completion(result) }}
+        } ?? completion
         mutex.lock()
         if let result = result {
             mutex.unlock()
-            return completion(result)
+            completion(result)
+        } else {
+            addCompletion(completion: completion)
+            mutex.unlock()
         }
-        addCompletion(completion: completion)
-        mutex.unlock()
+        return self
     }
     
-    @inlinable public func notify(flags: DispatchWorkItemFlags = [], queue: DispatchQueue, execute completion: @escaping Completion) {
-        notify { result in queue.async(flags: flags) { completion(result) } }
+    @inlinable @discardableResult
+    public func onResult(queue: DispatchQueue? = nil, execute completion: @escaping () -> Void) -> CoFuture<Output> {
+        onResult(queue: queue) { _ in completion() }
+    }
+    
+    // MARK: - On success
+    
+    @inlinable @discardableResult
+    public func onSuccess(queue: DispatchQueue? = nil, execute handler: @escaping (Output) -> Void) -> CoFuture<Output> {
+        onResult(queue: queue) { if case .success(let output) = $0 { handler(output) } }
+    }
+    
+    // MARK: - On error
+    
+    @inlinable @discardableResult
+    public func onError(queue: DispatchQueue? = nil, execute handler: @escaping (Error) -> Void) -> CoFuture<Output> {
+        onResult(queue: queue) { if case .failure(let error) = $0 { handler(error) } }
     }
     
 }

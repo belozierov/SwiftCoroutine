@@ -45,7 +45,7 @@ class SwiftCoroutineTests: XCTestCase {
             session.data(for: .testImageURL)
             session.data(for: .testImageURL)
             session.data(for: .testImageURL)
-        }.map {
+        }.mapOutput {
             $0.map { $0.data }
         }
         coroutine {
@@ -53,7 +53,7 @@ class SwiftCoroutineTests: XCTestCase {
             guard let dataArray = try? future.await() else { return XCTFail() }
             XCTAssertEqual(dataArray.count, 3)
         }
-        future.notify(queue: .global()) {
+        future.onResult(queue: .global()) {
             XCTAssertEqual(try? $0.get().count, 3)
             expectation2.fulfill()
         }
