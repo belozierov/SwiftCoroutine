@@ -45,7 +45,7 @@ class SwiftCoroutineTests: XCTestCase {
             session.data(for: .testImageURL)
             session.data(for: .testImageURL)
             session.data(for: .testImageURL)
-        }.mapOutput {
+        }.transformValue {
             $0.map { $0.data }
         }
         coroutine {

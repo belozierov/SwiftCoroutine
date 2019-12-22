@@ -16,11 +16,9 @@ extension CoFuture {
     
     public func await(timeout: DispatchTime) throws -> Output {
         let coroutine = try currentCoroutine()
-        let mutex = NSLock()
+        let mutex = self.mutex
         var isSuspended = false, isTimeOut = false
-        let timer = DispatchSource.makeTimerSource()
-        timer.schedule(deadline: timeout, leeway: .milliseconds(100))
-        timer.setEventHandler {
+        let timer = DispatchSource.startTimer(timeout: timeout) {
             mutex.lock()
             isTimeOut = true
             if !isSuspended { return mutex.unlock() }
@@ -28,7 +26,6 @@ extension CoFuture {
             mutex.unlock()
             coroutine.resume()
         }
-        timer.activate()
         defer { timer.cancel() }
         return try await(coroutine: coroutine, resultGetter: {
             isTimeOut ? .failure(FutureError.timeout) : nil
@@ -39,9 +36,7 @@ extension CoFuture {
             defer { isSuspended = false }
             return isSuspended
         }, suspendCompletion: {
-            mutex.lock()
             isSuspended = true
-            mutex.unlock()
         })
     }
     
@@ -60,8 +55,8 @@ extension CoFuture {
                 if resume() { coroutine.resume() }
             }
             coroutine.suspend {
-                self.mutex.unlock()
                 suspendCompletion?()
+                self.mutex.unlock()
             }
             mutex.lock()
         }
@@ -72,6 +67,18 @@ extension CoFuture {
         guard let coroutine = Coroutine.current
             else { throw FutureError.awaitCalledOutsideCoroutine }
         return coroutine
+    }
+    
+}
+
+extension DispatchSource {
+    
+    fileprivate static func startTimer(timeout: DispatchTime, handler: @escaping () -> Void) -> DispatchSourceTimer {
+        let timer = DispatchSource.makeTimerSource()
+        timer.schedule(deadline: timeout, leeway: .milliseconds(50))
+        timer.setEventHandler(handler: handler)
+        timer.activate()
+        return timer
     }
     
 }

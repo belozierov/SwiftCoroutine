@@ -12,7 +12,7 @@ extension CoFuture {
     
     // MARK: - Map output
     
-    @inlinable public func mapOutput<T>(_ transformer: @escaping (Output) throws -> T) -> CoFuture<T> {
+    @inlinable public func transformValue<T>(_ transformer: @escaping (Output) throws -> T) -> CoFuture<T> {
         transform { result in try transformer(result.get()) }
     }
     

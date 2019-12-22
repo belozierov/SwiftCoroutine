@@ -9,14 +9,14 @@
 class CoTransformFuture<Input, Output>: CoFuture<Output> {
     
     typealias InputResult = Result<Input, Error>
-    typealias Transform = (InputResult) throws -> Output
+    typealias Transformer = (InputResult) throws -> Output
     
     private var parent: CoFuture<Input>
-    private let transform: Transform
+    private let transformer: Transformer
     
-    init(parent: CoFuture<Input>, transform: @escaping Transform) {
+    init(parent: CoFuture<Input>, transformer: @escaping Transformer) {
         self.parent = parent
-        self.transform = transform
+        self.transformer = transformer
         super.init()
         addToParent()
     }
@@ -24,14 +24,14 @@ class CoTransformFuture<Input, Output>: CoFuture<Output> {
     // MARK: - Result
     
     @inlinable override var result: OutputResult? {
-        parent.result.map { input in Result { try transform(input) } }
+        parent.result.map { input in Result { try transformer(input) } }
     }
     
     // MARK: - Transform
     
     override func transform<T>(_ transformer: @escaping (OutputResult) throws -> T) -> CoFuture<T> {
         if !isKnownUniquelyReferenced(&parent) { return super.transform(transformer) }
-        let selfTransformer = self.transform
+        let selfTransformer = self.transformer
         let transformedCompletions = completions.mapValues { completion in
             { result in completion(Result { try selfTransformer(result) }) }
         }
@@ -50,14 +50,14 @@ extension CoTransformFuture {
     // MARK: - Send input
     
     @inlinable func send(result: InputResult) {
-        send(result: Result { try transform(result) })
+        send(result: Result { try transformer(result) })
     }
     
     // MARK: - Parent completion
     
     private func addToParent() {
         parent.completions[identifier] = { [unowned self] result in
-            self.send(result: .init { try self.transform(result) })
+            self.send(result: .init { try self.transformer(result) })
         }
     }
     

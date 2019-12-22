@@ -34,8 +34,8 @@ open class CoFuture<Output> {
     
     // MARK: - Transform
     
-    open func transform<T>(_ transform: @escaping (OutputResult) throws -> T) -> CoFuture<T> {
-        CoTransformFuture(parent: self, transform: transform)
+    open func transform<T>(_ transformer: @escaping (OutputResult) throws -> T) -> CoFuture<T> {
+        CoTransformFuture(parent: self, transformer: transformer)
     }
     
 }

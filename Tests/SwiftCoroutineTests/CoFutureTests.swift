@@ -19,12 +19,12 @@ class CoFutureTests: XCTestCase {
             return 1
         }
         var transformed: CoFuture<String>! = promise
-            .mapOutput { $0 * 2 }
+            .transformValue { $0 * 2 }
             .onError { _ in XCTFail() }
-            .mapOutput { $0 * 3 }
+            .transformValue { $0 * 3 }
             .onSuccess { XCTAssertEqual($0, 6) }
             .onSuccess { _ in expectation.fulfill() }
-            .mapOutput { $0.description }
+            .transformValue { $0.description }
             .onResult { expectation.fulfill() }
         weak var weakTransformed: CoFuture<String>? = transformed
         transformed.onResult(queue: .global()) {
