@@ -133,8 +133,8 @@ class SwiftCoroutineTests: XCTestCase {
     }
     
     func testSyncDispatchCoroutine() {
-        let cor1 = Coroutine { $0() }
-        let cor2 = Coroutine { $0() }
+        let cor1 = Coroutine { $0.block() }
+        let cor2 = Coroutine { $0.block() }
         var result = [Int]()
         cor1.start {
             XCTAssertTrue(Coroutine.current === cor1)

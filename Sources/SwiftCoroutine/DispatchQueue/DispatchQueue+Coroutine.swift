@@ -16,7 +16,7 @@ extension DispatchQueue {
 
     public func coroutine(group: DispatchGroup? = nil, qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = [], execute work: @escaping () throws -> Void) {
         Coroutine
-            .fromPool { self.async(group: group, qos: qos, flags: flags, execute: $0) }
+            .fromPool { self.async(group: group, qos: qos, flags: flags, execute: $0.block) }
             .start { try? work() }
     }
     
@@ -28,7 +28,9 @@ extension DispatchQueue {
     
     public func setDispatcher(group: DispatchGroup? = nil, qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = []) {
         assert(Coroutine.current != nil, "setDispatcher must be called inside coroutine")
-        Coroutine.current?.restart { self.async(group: group, qos: qos, flags: flags, execute: $0) }
+        Coroutine.current?.restart {
+            self.async(group: group, qos: qos, flags: flags, execute: $0.block)
+        }
     }
 
 }

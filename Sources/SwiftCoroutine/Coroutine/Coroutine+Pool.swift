@@ -8,7 +8,7 @@
 
 extension Coroutine {
     
-    private static let pool = Pool(maxElements: 32) { CoroutineContext(stackSizeInPages: 32) }
+    private static let pool = Pool(maxElements: 32, creator: CoroutineContext.init)
     
     public static func fromPool(with dispatcher: @escaping Dispatcher) -> Coroutine {
         let context = pool.pop()

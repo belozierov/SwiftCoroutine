@@ -19,9 +19,18 @@ class CoroutineContext {
     private let stack: UnsafeMutableRawBufferPointer
     private let returnPoint, resumePoint: UnsafeMutablePointer<Int32>
     
-    init(stackSizeInPages pages: Int, guardPage: Bool = true) {
+    @inlinable convenience init() {
+        self.init(stackSize: Int(SIGSTKSZ), guardPage: true)
+    }
+    
+    @inlinable convenience init(stackSizeInPages pages: Int, guardPage: Bool = true) {
+        let stackSize = max(Int(MINSIGSTKSZ), pages * .pageSize)
+        self.init(stackSize: stackSize, guardPage: true)
+    }
+    
+    private init(stackSize: Int, guardPage: Bool) {
         haveGuardPage = guardPage
-        stack = .allocate(byteCount: pages * .pageSize, alignment: .pageSize)
+        stack = .allocate(byteCount: stackSize, alignment: .pageSize)
         if guardPage { mprotect(stack.baseAddress, .pageSize, PROT_READ) }
         returnPoint = .allocate(capacity: .environmentSize)
         resumePoint = .allocate(capacity: .environmentSize)
