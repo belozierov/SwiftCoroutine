@@ -53,9 +53,9 @@ func makeSomeFuture() -> CoFuture<Int> {
     return promise
 }
 
-let future = makeSomeFuture()
+let future = makeSomeFuture().transformValue { $0.description } 
 future.onResult(queue: .global()) { result in
-    //do some work with result of type Result<Int, Error>
+    //do some work with result of type Result<String, Error>
 }
 ```
 
