@@ -10,6 +10,12 @@ import Foundation
 
 extension CoFuture {
     
+    // MARK: - Transform
+    
+    public func transform<T>(_ transformer: @escaping (OutputResult) throws -> T) -> CoFuture<T> {
+        CoTransformFuture(parent: self, transformer: transformer)
+    }
+    
     // MARK: - Map output
     
     @inlinable public func transformValue<T>(_ transformer: @escaping (Output) throws -> T) -> CoFuture<T> {

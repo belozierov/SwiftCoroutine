@@ -32,12 +32,6 @@ open class CoFuture<Output> {
         items.forEach { $0(result) }
     }
     
-    // MARK: - Transform
-    
-    open func transform<T>(_ transformer: @escaping (OutputResult) throws -> T) -> CoFuture<T> {
-        CoTransformFuture(parent: self, transformer: transformer)
-    }
-    
 }
 
 extension CoFuture {

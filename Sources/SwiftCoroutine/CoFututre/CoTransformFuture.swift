@@ -27,20 +27,6 @@ class CoTransformFuture<Input, Output>: CoFuture<Output> {
         parent.result.map { input in Result { try transformer(input) } }
     }
     
-    // MARK: - Transform
-    
-    override func transform<T>(_ transformer: @escaping (OutputResult) throws -> T) -> CoFuture<T> {
-        if !isKnownUniquelyReferenced(&parent) { return super.transform(transformer) }
-        let selfTransformer = self.transformer
-        let transformedCompletions = completions.mapValues { completion in
-            { result in completion(Result { try selfTransformer(result) }) }
-        }
-        parent.completions.merge(transformedCompletions) { _, new in new }
-        return parent.transform { result in
-            try transformer(.init { try selfTransformer(result) })
-        }
-    }
-    
     deinit { removeFromParent() }
     
 }
@@ -57,7 +43,7 @@ extension CoTransformFuture {
     
     private func addToParent() {
         parent.completions[identifier] = { [unowned self] result in
-            self.send(result: .init { try self.transformer(result) })
+            self.send(result: Result { try self.transformer(result) })
         }
     }
     
