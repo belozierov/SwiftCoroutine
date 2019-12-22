@@ -18,7 +18,7 @@ extension CoFuture: Publisher, Cancellable {
             self?.setCompletion(for: $0, completion: nil)
         }
         subscriber.receive(subscription: subscription)
-        notify(execute: subscriber.finish)
+        setCompletion(for: subscription, completion: subscriber.finish)
     }
     
 }
