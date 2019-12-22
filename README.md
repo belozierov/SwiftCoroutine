@@ -42,7 +42,7 @@ coroutine {
 
 ### Futures and promises
 
-Futures and promises are represented by the respective `CoFuture` class and its `CoPromise` and `CoLazyPromise` subclasses, which are generics to the type they return. They are thread-safe and have the support of the basic required functionality, including `await` mechanism, `onResult`, `onSuccess` and `onError` on completion, and using the `transform`, `transformValue` functions you can build chains.
+Futures and promises are represented by the respective `CoFuture` class and its `CoPromise` and `CoLazyPromise` subclasses, which are generics to the type they return. They are thread-safe and have the support of the basic required functionality, including `await` mechanism, `onResult` on completion, and using the `transform` function you can build chains.
 
 ```swift
 func makeSomeFuture() -> CoFuture<Int> {
@@ -54,7 +54,7 @@ func makeSomeFuture() -> CoFuture<Int> {
 }
 
 let future = makeSomeFuture()
-future.notify(queue: .global()) { result in
+future.onResult(queue: .global()) { result in
     //do some work with result of type Result<Int, Error>
 }
 ```
