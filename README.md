@@ -111,8 +111,8 @@ coroutine(on: .global()) {
 Or you can create coroutines with custom dispatchers.
 
 ```swift
-let cor1 = Coroutine(dispatcher: { $0() })
-let cor2 = Coroutine(dispatcher: { $0() })
+let cor1 = Coroutine(dispatcher: { $0.block() })
+let cor2 = Coroutine(dispatcher: { $0.block() })
 
 cor1.start {
     //call 1
