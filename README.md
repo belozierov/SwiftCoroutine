@@ -54,7 +54,7 @@ func makeSomeFuture() -> CoFuture<Int> {
 }
 
 let future = makeSomeFuture().transformValue { $0.description } 
-future.onResult(queue: .global()) { result in
+future.onResult(on: .global) { result in
     //do some work with result of type Result<String, Error>
 }
 ```
@@ -64,12 +64,12 @@ future.onResult(queue: .global()) { result in
 The framework includes extensions to DispatchQueue and global functions that allow you to execute code on a specific queue that returns `CoFuture`. You can wait for the result with the `await` function inside coroutine, which suspends it and does not block the thread, so you can do it, for example, on the main thread.
 
 ```swift
-let future1: CoFuture<Int> = async(on: .global()) {
+let future1: CoFuture<Int> = async {
     sleep(2) //some work
     return 5
 }
 
-let future2: CoFuture<Int> = async(on: .global()) {
+let future2: CoFuture<Int> = async {
     sleep(3) //some work
     return 6
 }
@@ -90,7 +90,7 @@ The framework also gives you access to the `Coroutine` class if you need more co
 
 ```swift
 coroutine {
-     let coroutine: Coroutine! = .current //get current coroutine if needed
+     let coroutine = try Coroutine.current() //get current coroutine if needed
      someAsyncFuncWithCompletion {
          coroutine.resume() //manual resume outside coroutine
      }
@@ -98,21 +98,21 @@ coroutine {
 }
 ```
 
-Also you can change DispatchQueue inside coroutine with the `setDispatcher` function.
+Also you can change Dispatcher inside coroutine with the `setDispatcher` function.
 
 ```swift
-coroutine(on: .global()) {
+coroutine(on: .global) {
     //thread from global queue
-    DispatchQueue.main.setDispatcher()
+    try Coroutine.setDispatcher(.main)
     //main thread
 }
 ```
 
-Or you can create coroutines with custom dispatchers.
+Or you can create coroutines without dispatcher.
 
 ```swift
-let cor1 = Coroutine(dispatcher: { $0.block() })
-let cor2 = Coroutine(dispatcher: { $0.block() })
+let cor1 = Coroutine()
+let cor2 = Coroutine()
 
 cor1.start {
     //call 1

@@ -13,11 +13,12 @@ import CCoroutine
 extension Coroutine {
     
     @inline(never) public static var currentStackUsed: Int? {
-        Coroutine.current?.distanceToStack(from: _frameAddress())
+        guard let coroutine = try? Coroutine.current() else { return nil }
+        return coroutine.distanceToStack(from: _frameAddress())
     }
     
     @inline(never) public static var currentStackFreeSpace: Int? {
-        guard let coroutine = Coroutine.current else { return nil }
+        guard let coroutine = try? Coroutine.current() else { return nil }
         return coroutine.stackSize - coroutine.distanceToStack(from: _frameAddress())
     }
     

@@ -11,11 +11,11 @@ import Foundation
 extension CoFuture {
     
     @inline(__always) public func await() throws -> Output {
-        try await(coroutine: try currentCoroutine())
+        try await(coroutine: .current())
     }
     
     public func await(timeout: DispatchTime) throws -> Output {
-        let coroutine = try currentCoroutine()
+        let coroutine = try Coroutine.current()
         let mutex = self.mutex
         var isSuspended = false, isTimeOut = false
         let timer = DispatchSource.startTimer(timeout: timeout) {
@@ -60,13 +60,6 @@ extension CoFuture {
             }
             mutex.lock()
         }
-    }
-    
-    private func currentCoroutine() throws -> Coroutine {
-        assert(Coroutine.current != nil, "Await must be called inside coroutine")
-        guard let coroutine = Coroutine.current
-            else { throw FutureError.awaitCalledOutsideCoroutine }
-        return coroutine
     }
     
 }

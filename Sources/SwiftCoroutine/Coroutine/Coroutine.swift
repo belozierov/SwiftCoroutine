@@ -10,29 +10,36 @@ import Foundation
 
 open class Coroutine {
     
-    public typealias Block = () -> Void
-    public typealias DispatcherData = (fromSuspend: Bool, block: Block)
-    public typealias Dispatcher = (DispatcherData) -> Void
+    public typealias Block = Dispatcher.Block
     public typealias Handler = (Bool) -> Void
     
-    @inline(__always) public static var current: Coroutine? {
-        Thread.current.currentCoroutine
+    public enum CoroutineError: Error {
+        case mustBeCalledInsideCoroutine
+    }
+    
+    @inline(__always) public static func current() throws -> Coroutine {
+        if let coroutine = Thread.current.currentCoroutine { return coroutine }
+        throw CoroutineError.mustBeCalledInsideCoroutine
+    }
+    
+    @inlinable public static var isInsideCoroutine: Bool {
+        (try? current()) != nil
     }
     
     let context: CoroutineContext
-    private var dispatcher: Dispatcher, handler: Handler?
+    private var dispatcher: Dispatcher?, handler: Handler?
     
-    init(context: CoroutineContext, dispatcher: @escaping Dispatcher) {
+    init(context: CoroutineContext, dispatcher: Dispatcher?) {
         self.context = context
         self.dispatcher = dispatcher
     }
     
-    public init(dispatcher: @escaping Dispatcher) {
+    public init(dispatcher: Dispatcher? = nil) {
         self.context = CoroutineContext()
         self.dispatcher = dispatcher
     }
     
-    public init(stackSizeInPages pages: Int, dispatcher: @escaping Dispatcher) {
+    public init(stackSizeInPages pages: Int, dispatcher: Dispatcher) {
         self.context = CoroutineContext(stackSizeInPages: pages)
         self.dispatcher = dispatcher
     }
@@ -43,10 +50,14 @@ open class Coroutine {
         } ?? handler
     }
     
+    @inlinable open var isCurrent: Bool {
+        self === (try? Coroutine.current())
+    }
+    
     // MARK: - Perform
     
     @inline(__always) open func start(block: @escaping Block) {
-        assert(self !== Coroutine.current, "Start must be called outside current coroutine")
+        assert(!isCurrent, "Start must be called outside current coroutine")
         perform(fromSuspend: false) { self.context.start(block: block) }
     }
     
@@ -54,27 +65,28 @@ open class Coroutine {
         perform(fromSuspend: true, block: context.resume)
     }
     
-    @inline(__always) open func restart(with dispatcher: @escaping Dispatcher) {
+    @inline(__always) open func restart(with dispatcher: Dispatcher) {
         self.dispatcher = dispatcher
         suspend(with: resume)
     }
     
     private func perform(fromSuspend: Bool, block: @escaping () -> Bool) {
         var caller: Coroutine?
-        dispatcher((fromSuspend, { [unowned self] in
+        let performer = { [unowned self] in
             let thread = Thread.current
             caller = thread.currentCoroutine
             thread.currentCoroutine = self
             let finished = block()
             self.handler?(finished)
             thread.currentCoroutine = caller
-        }))
+        }
+        dispatcher?.perform(work: performer) ?? performer()
     }
     
     // MARK: - Suspend
     
     @inline(__always) open func suspend() {
-        assert(self === Coroutine.current, "Suspend must be called inside current coroutine")
+        assert(isCurrent, "Suspend must be called inside current coroutine")
         context.suspend()
     }
     

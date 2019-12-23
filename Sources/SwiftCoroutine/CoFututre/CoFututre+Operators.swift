@@ -25,9 +25,9 @@ extension CoFuture {
     // MARK: - On result
     
     @discardableResult
-    public func onResult(queue: DispatchQueue? = nil, execute completion: @escaping Completion) -> CoFuture<Output> {
-        let completion = queue.map { queue in
-            { result in queue.async { completion(result) }}
+    public func onResult(on dispatcher: Dispatcher? = nil, execute completion: @escaping Completion) -> CoFuture<Output> {
+        let completion = dispatcher.map { dispatcher in
+            { result in dispatcher.perform { completion(result) }}
         } ?? completion
         mutex.lock()
         if let result = result {
@@ -41,22 +41,26 @@ extension CoFuture {
     }
     
     @inlinable @discardableResult
-    public func onResult(queue: DispatchQueue? = nil, execute completion: @escaping () -> Void) -> CoFuture<Output> {
-        onResult(queue: queue) { _ in completion() }
+    public func onResult(on dispatcher: Dispatcher? = nil, execute completion: @escaping () -> Void) -> CoFuture<Output> {
+        onResult(on: dispatcher) { _ in completion() }
     }
     
     // MARK: - On success
     
     @inlinable @discardableResult
-    public func onSuccess(queue: DispatchQueue? = nil, execute handler: @escaping (Output) -> Void) -> CoFuture<Output> {
-        onResult(queue: queue) { if case .success(let output) = $0 { handler(output) } }
+    public func onSuccess(on dispatcher: Dispatcher? = nil, execute handler: @escaping (Output) -> Void) -> CoFuture<Output> {
+        onResult(on: dispatcher) {
+            if case .success(let output) = $0 { handler(output) }
+        }
     }
     
     // MARK: - On error
     
     @inlinable @discardableResult
-    public func onError(queue: DispatchQueue? = nil, execute handler: @escaping (Error) -> Void) -> CoFuture<Output> {
-        onResult(queue: queue) { if case .failure(let error) = $0 { handler(error) } }
+    public func onError(on dispatcher: Dispatcher? = nil, execute handler: @escaping (Error) -> Void) -> CoFuture<Output> {
+        onResult(on: dispatcher) {
+            if case .failure(let error) = $0 { handler(error) }
+        }
     }
     
 }

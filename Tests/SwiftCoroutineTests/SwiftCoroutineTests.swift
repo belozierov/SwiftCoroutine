@@ -53,7 +53,7 @@ class SwiftCoroutineTests: XCTestCase {
             guard let dataArray = try? future.await() else { return XCTFail() }
             XCTAssertEqual(dataArray.count, 3)
         }
-        future.onResult(queue: .global()) {
+        future.onResult(on: .global) {
             XCTAssertEqual(try? $0.get().count, 3)
             expectation2.fulfill()
         }
@@ -62,17 +62,17 @@ class SwiftCoroutineTests: XCTestCase {
     
     func testNested() {
         let expectation = XCTestExpectation(description: "Test nested")
-        let item1 = DispatchQueue.global().async { () -> Int in
+        let item1 = async { () -> Int in
             sleep(2)
-            return 5
+            return Int(5)
         }
-        let item2 = DispatchQueue.global().async { () -> Int in
+        let item2 = async { () -> Int in
             sleep(3)
             return 6
         }
         let date = Date()
         coroutine {
-            let current = Coroutine.current
+            let current = try Coroutine.current()
             XCTAssertNotNil(current)
             delay(1)
             XCTAssertDuration(from: date, in: 1..<2)
@@ -80,10 +80,10 @@ class SwiftCoroutineTests: XCTestCase {
             XCTAssertDuration(from: date, in: 2..<3)
             try coroutine {
                 delay(2)
-                XCTAssertFalse(current === Coroutine.current)
+                XCTAssertFalse(current.isCurrent)
                 XCTAssertDuration(from: date, in: 4..<5)
             }.await()
-            XCTAssertTrue(current === Coroutine.current)
+            XCTAssertTrue(current.isCurrent)
             XCTAssertDuration(from: date, in: 4..<5)
             delay(1)
             XCTAssertDuration(from: date, in: 5..<6)
@@ -95,7 +95,7 @@ class SwiftCoroutineTests: XCTestCase {
             XCTAssertDuration(from: date, in: 3..<4)
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            coroutine(on: .global()) {
+            coroutine(on: .global) {
                 delay(2)
                 XCTAssertDuration(from: date, in: 3..<4)
             }
@@ -122,9 +122,9 @@ class SwiftCoroutineTests: XCTestCase {
         for _ in 0..<10_000 {
             DispatchQueue.global().coroutine(group: group) {
                 XCTAssertFalse(Thread.isMainThread)
-                DispatchQueue.main.setDispatcher()
+                try Coroutine.setDispatcher(.main)
                 XCTAssertTrue(Thread.isMainThread)
-                DispatchQueue.global().setDispatcher()
+                try Coroutine.setDispatcher(.global)
                 XCTAssertFalse(Thread.isMainThread)
             }
         }
@@ -133,26 +133,26 @@ class SwiftCoroutineTests: XCTestCase {
     }
     
     func testSyncDispatchCoroutine() {
-        let cor1 = Coroutine { $0.block() }
-        let cor2 = Coroutine { $0.block() }
+        let cor1 = Coroutine()
+        let cor2 = Coroutine()
         var result = [Int]()
         cor1.start {
-            XCTAssertTrue(Coroutine.current === cor1)
+            XCTAssertTrue(cor1.isCurrent)
             result.append(0)
             cor1.suspend()
-            XCTAssertTrue(Coroutine.current === cor1)
+            XCTAssertTrue(cor1.isCurrent)
             result.append(3)
         }
-        XCTAssertNil(Coroutine.current)
+        XCTAssertNil(try? Coroutine.current())
         result.append(1)
         cor2.start {
-            XCTAssertTrue(Coroutine.current === cor2)
+            XCTAssertTrue(cor2.isCurrent)
             result.append(2)
             cor1.resume()
-            XCTAssertTrue(Coroutine.current === cor2)
+            XCTAssertTrue(cor2.isCurrent)
             result.append(4)
         }
-        XCTAssertNil(Coroutine.current)
+        XCTAssertNil(try? Coroutine.current())
         XCTAssertEqual(result, (0..<5).map { $0 })
     }
     
@@ -167,7 +167,7 @@ class SwiftCoroutineTests: XCTestCase {
             $0(.success(6))
         }
         let date = Date()
-        coroutine(on: .global()) {
+        coroutine(on: .global) {
             let result = try item1.await() + item2.await()
             XCTAssertEqual(result, 11)
             XCTAssertDuration(from: date, in: 3..<4)
@@ -179,7 +179,7 @@ class SwiftCoroutineTests: XCTestCase {
     func testAwaitTimeOut() {
         let expectation = XCTestExpectation(description: "Await timeout")
         let date = Date()
-        let future = async(on: .global()) { () -> Int in
+        let future = async(on: .global) { () -> Int in
             sleep(2)
             return 5
         }

@@ -17,7 +17,7 @@ open class Generator<Element> {
     private let iterator: Iterator
     private var state: State = .prepared
     private var _next: Element?
-    private lazy var coroutine = Coroutine.fromPool { $0.block() }
+    private lazy var coroutine = Coroutine.fromPool(with: nil)
     
     public init(iterator: @escaping Iterator) {
         self.iterator = iterator

@@ -27,7 +27,7 @@ class CoFutureTests: XCTestCase {
             .transformValue { $0.description }
             .onResult { expectation.fulfill() }
         weak var weakTransformed: CoFuture<String>? = transformed
-        transformed.onResult(queue: .global()) {
+        transformed.onResult(on: .global) {
             transformed = nil
             XCTAssertNil(weakTransformed)
             XCTAssertEqual(try? $0.get(), "6")

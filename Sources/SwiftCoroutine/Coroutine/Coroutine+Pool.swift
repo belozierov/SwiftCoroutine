@@ -10,7 +10,7 @@ extension Coroutine {
     
     private static let pool = Pool(maxElements: 32, creator: CoroutineContext.init)
     
-    public static func fromPool(with dispatcher: @escaping Dispatcher) -> Coroutine {
+    public static func fromPool(with dispatcher: Dispatcher?) -> Coroutine {
         let context = pool.pop()
         let coroutine = Coroutine(context: context, dispatcher: dispatcher)
         coroutine.addHandler { if $0 { pool.push(context) } }
