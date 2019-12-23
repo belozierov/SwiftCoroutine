@@ -9,7 +9,7 @@
 #if SWIFT_PACKAGE
 import CCoroutine
 #endif
-import Foundation
+import Darwin
 
 class CoroutineContext {
     
@@ -19,16 +19,7 @@ class CoroutineContext {
     private let stack: UnsafeMutableRawBufferPointer
     private let returnPoint, resumePoint: UnsafeMutablePointer<Int32>
     
-    @inlinable convenience init() {
-        self.init(stackSize: Int(SIGSTKSZ), guardPage: true)
-    }
-    
-    @inlinable convenience init(stackSizeInPages pages: Int, guardPage: Bool = true) {
-        let stackSize = max(Int(MINSIGSTKSZ), pages * .pageSize)
-        self.init(stackSize: stackSize, guardPage: true)
-    }
-    
-    private init(stackSize: Int, guardPage: Bool) {
+    init(stackSize: Int, guardPage: Bool = true) {
         haveGuardPage = guardPage
         stack = .allocate(byteCount: stackSize, alignment: .pageSize)
         if guardPage { mprotect(stack.baseAddress, .pageSize, PROT_READ) }
@@ -77,7 +68,7 @@ class CoroutineContext {
 
 extension Int {
     
-    fileprivate static let pageSize = sysconf(_SC_PAGESIZE)
+    static let pageSize = sysconf(_SC_PAGESIZE)
     fileprivate static let environmentSize = MemoryLayout<jmp_buf>.size
     
 }

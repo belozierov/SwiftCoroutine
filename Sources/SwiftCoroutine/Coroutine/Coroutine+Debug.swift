@@ -22,10 +22,6 @@ extension Coroutine {
         return coroutine.stackSize - coroutine.distanceToStack(from: _frameAddress())
     }
     
-    @inline(__always) open var stackSize: Int {
-        context.stackSize
-    }
-    
     private func distanceToStack(from pointer: UnsafeRawPointer) -> Int {
         pointer.distance(to: context.stackStart)
     }

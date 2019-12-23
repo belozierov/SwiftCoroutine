@@ -6,8 +6,6 @@
 //  Copyright © 2019 Alex Belozierov. All rights reserved.
 //
 
-import Foundation
-
 open class Coroutine {
     
     public typealias Block = Dispatcher.Block
@@ -15,15 +13,6 @@ open class Coroutine {
     
     public enum CoroutineError: Error {
         case mustBeCalledInsideCoroutine
-    }
-    
-    @inline(__always) public static func current() throws -> Coroutine {
-        if let coroutine = Thread.current.currentCoroutine { return coroutine }
-        throw CoroutineError.mustBeCalledInsideCoroutine
-    }
-    
-    @inlinable public static var isInsideCoroutine: Bool {
-        (try? current()) != nil
     }
     
     let context: CoroutineContext
@@ -34,13 +23,10 @@ open class Coroutine {
         self.dispatcher = dispatcher
     }
     
-    public init(dispatcher: Dispatcher? = nil) {
-        self.context = CoroutineContext()
-        self.dispatcher = dispatcher
-    }
-    
-    public init(stackSizeInPages pages: Int, dispatcher: Dispatcher) {
-        self.context = CoroutineContext(stackSizeInPages: pages)
+    public init(stackSize: StackSize = .recommended, dispatcher: Dispatcher? = nil) {
+        assert(stackSize.size >= StackSize.minimal.size,
+               "Stack size must be more or equal to minimal")
+        self.context = CoroutineContext(stackSize: stackSize.size)
         self.dispatcher = dispatcher
     }
     
@@ -50,19 +36,15 @@ open class Coroutine {
         } ?? handler
     }
     
-    @inlinable open var isCurrent: Bool {
-        self === (try? Coroutine.current())
-    }
-    
     // MARK: - Perform
     
     @inline(__always) open func start(block: @escaping Block) {
         assert(!isCurrent, "Start must be called outside current coroutine")
-        perform(fromSuspend: false) { self.context.start(block: block) }
+        performWithDispatcher { self.context.start(block: block) }
     }
     
     @inline(__always) open func resume() {
-        perform(fromSuspend: true, block: context.resume)
+        performWithDispatcher(block: context.resume)
     }
     
     @inline(__always) open func restart(with dispatcher: Dispatcher) {
@@ -70,17 +52,13 @@ open class Coroutine {
         suspend(with: resume)
     }
     
-    private func perform(fromSuspend: Bool, block: @escaping () -> Bool) {
-        var caller: Coroutine?
-        let performer = { [unowned self] in
-            let thread = Thread.current
-            caller = thread.currentCoroutine
-            thread.currentCoroutine = self
-            let finished = block()
-            self.handler?(finished)
-            thread.currentCoroutine = caller
+    private func performWithDispatcher(block: @escaping () -> Bool) {
+        (dispatcher?.perform ?? { $0() }) { [unowned self] in
+            self.performAsCurrent {
+                let finished = block()
+                self.handler?(finished)
+            }
         }
-        dispatcher?.perform(work: performer) ?? performer()
     }
     
     // MARK: - Suspend
@@ -110,15 +88,6 @@ extension Coroutine: Hashable {
     
     public func hash(into hasher: inout Hasher) {
         ObjectIdentifier(self).hash(into: &hasher)
-    }
-    
-}
-
-extension Thread {
-    
-    fileprivate var currentCoroutine: Coroutine? {
-        @inline(__always) get { threadDictionary.value(forKey: #function) as? Coroutine }
-        @inline(__always) set { threadDictionary.setValue(newValue, forKey: #function) }
     }
     
 }

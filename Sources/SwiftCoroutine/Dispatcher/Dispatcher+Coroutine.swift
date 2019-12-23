@@ -33,11 +33,11 @@ extension Coroutine {
 
 @inlinable public func coroutine(on dispatcher: Dispatcher = .current,
                                  execute work: @escaping () throws -> Void) {
-    Coroutine.fromPool(with: dispatcher).start { try? work() }
+    Coroutine.newFromPool(with: dispatcher).start { try? work() }
 }
 
 @inlinable public func coroutine<T>(on dispatcher: Dispatcher = .current,
-                                 execute work: @escaping () throws -> T) -> CoFuture<T> {
+                                    execute work: @escaping () throws -> T) -> CoFuture<T> {
     let item = CoPromise<T>()
     coroutine(on: dispatcher) { item.perform(work) }
     return item

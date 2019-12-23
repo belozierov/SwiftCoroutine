@@ -8,9 +8,11 @@
 
 extension Coroutine {
     
-    private static let pool = Pool(maxElements: 32, creator: CoroutineContext.init)
+    private static let pool = Pool(maxElements: 32) {
+        CoroutineContext(stackSize: StackSize.recommended.size)
+    }
     
-    public static func fromPool(with dispatcher: Dispatcher?) -> Coroutine {
+    public static func newFromPool(with dispatcher: Dispatcher?) -> Coroutine {
         let context = pool.pop()
         let coroutine = Coroutine(context: context, dispatcher: dispatcher)
         coroutine.addHandler { if $0 { pool.push(context) } }
