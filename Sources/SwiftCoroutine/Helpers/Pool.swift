@@ -20,6 +20,8 @@ class Pool<T> {
         _maxElements = maxElements
         if #available(OSX 10.12, iOS 10.0, *) {
             memoryPressureSource.activate()
+        } else {
+            memoryPressureSource.resume()
         }
     }
     
