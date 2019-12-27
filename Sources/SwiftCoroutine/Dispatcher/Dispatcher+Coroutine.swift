@@ -46,9 +46,5 @@ extension Coroutine {
 // MARK: - Compose
 
 @inlinable public func compose<T>(@CoFututeComposite<T> builder: @escaping () -> [CoFuture<T>]) -> CoFuture<[T]> {
-    let promise = CoPromise<[T]>()
-    coroutine(on: .global) {
-        promise.perform { try builder().map { try $0.await() } }
-    }
-    return promise
+    coroutine(on: .sync) { try builder().map { try $0.await() } }
 }
