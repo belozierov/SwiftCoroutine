@@ -13,17 +13,31 @@ import CCoroutine
 extension Coroutine {
     
     @inline(never) public static var currentStackUsed: Int? {
-        guard let coroutine = try? Coroutine.current() else { return nil }
-        return coroutine.distanceToStack(from: _frameAddress())
+        try? Coroutine.current().currentContext.usedStackSpace
     }
     
     @inline(never) public static var currentStackFreeSpace: Int? {
-        guard let coroutine = try? Coroutine.current() else { return nil }
-        return coroutine.stackSize - coroutine.distanceToStack(from: _frameAddress())
+        try? Coroutine.current().currentContext.freeStackSpace
     }
     
-    private func distanceToStack(from pointer: UnsafeRawPointer) -> Int {
-        pointer.distance(to: context.stackStart)
+    @inline(__always) public var stackSize: Int {
+        currentContext.stackSize
+    }
+    
+    private var currentContext: CoroutineContext {
+        subRoutines.last?.context ?? context
+    }
+    
+}
+
+extension CoroutineContext {
+    
+    @inline(never) fileprivate var usedStackSpace: Int {
+        _frameAddress().distance(to: stackStart)
+    }
+    
+    fileprivate var freeStackSpace: Int {
+        stackSize - usedStackSpace
     }
     
 }

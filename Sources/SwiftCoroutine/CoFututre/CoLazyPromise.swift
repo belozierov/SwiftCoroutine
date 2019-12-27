@@ -20,8 +20,12 @@ open class CoLazyPromise<Output>: CoFuture<Output> {
         self.promise = promise
     }
     
-    public init(queue: DispatchQueue, promise: @escaping PromiseBlock) {
-        self.promise = { completion in queue.async { promise(completion) } }
+    public init(on dispatcher: Dispatcher, promise: @escaping PromiseBlock) {
+        self.promise = { completion in dispatcher.perform { promise(completion) } }
+    }
+    
+    public convenience init(on dispatcher: Dispatcher, block: @escaping () throws -> Output) {
+        self.init(on: dispatcher) { $0(Result(catching: block)) }
     }
     
     open override var result: OutputResult? {

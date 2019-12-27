@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension Dispatcher {
+extension Coroutine.Dispatcher {
     
     @inlinable public static var current: Dispatcher {
         Thread.isMainThread ? .main : .global
@@ -25,19 +25,22 @@ extension DispatchQueue {
     // MARK: - Async
     
     @inlinable public func async<T>(group: DispatchGroup? = nil, qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = [], execute work: @escaping () throws -> T) -> CoFuture<T> {
-        let dispatcher = Dispatcher.dispatchQueue(self, qos: qos, flags: flags, group: group)
+        let dispatcher = Coroutine.Dispatcher
+            .dispatchQueue(self, qos: qos, flags: flags, group: group)
         return SwiftCoroutine.async(on: dispatcher, execute: work)
     }
     
     // MARK: - Coroutine
     
     @inlinable public func coroutine(group: DispatchGroup? = nil, qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = [], execute work: @escaping () throws -> Void) {
-        let dispatcher = Dispatcher.dispatchQueue(self, qos: qos, flags: flags, group: group)
+        let dispatcher = Coroutine.Dispatcher
+            .dispatchQueue(self, qos: qos, flags: flags, group: group)
         SwiftCoroutine.coroutine(on: dispatcher, execute: work)
     }
     
     @inlinable public func coroutine<T>(group: DispatchGroup? = nil, qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = [], execute work: @escaping () throws -> T) -> CoFuture<T> {
-        let dispatcher = Dispatcher.dispatchQueue(self, qos: qos, flags: flags, group: group)
+        let dispatcher = Coroutine.Dispatcher
+            .dispatchQueue(self, qos: qos, flags: flags, group: group)
         return SwiftCoroutine.coroutine(on: dispatcher, execute: work)
     }
     

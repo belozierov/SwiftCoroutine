@@ -8,7 +8,7 @@
 
 open class Coroutine {
     
-    public typealias Block = Dispatcher.Block
+    public typealias Block = () -> Void
     public typealias Handler = (Bool) -> Void
     
     public enum CoroutineError: Error {
@@ -16,14 +16,16 @@ open class Coroutine {
     }
     
     let context: CoroutineContext
-    private var dispatcher: Dispatcher?, handler: Handler?
+    var subRoutines = [CoSubroutine]()
+    private var dispatcher: Dispatcher
+    private var handler: Handler?
     
-    init(context: CoroutineContext, dispatcher: Dispatcher?) {
+    init(context: CoroutineContext, dispatcher: Dispatcher) {
         self.context = context
         self.dispatcher = dispatcher
     }
     
-    public init(stackSize: StackSize = .recommended, dispatcher: Dispatcher? = nil) {
+    public init(stackSize: StackSize = .recommended, dispatcher: Dispatcher = .sync) {
         assert(stackSize.size >= StackSize.minimal.size,
                "Stack size must be more or equal to minimal")
         self.context = CoroutineContext(stackSize: stackSize.size)
@@ -36,29 +38,15 @@ open class Coroutine {
         } ?? handler
     }
     
-    // MARK: - Perform
+    // MARK: - Start/resume
     
     @inline(__always) open func start(block: @escaping Block) {
         assert(!isCurrent, "Start must be called outside current coroutine")
-        performWithDispatcher { self.context.start(block: block) }
+        perform { self.context.start(block: block) }
     }
     
     @inline(__always) open func resume() {
-        performWithDispatcher(block: context.resume)
-    }
-    
-    @inline(__always) open func restart(with dispatcher: Dispatcher) {
-        self.dispatcher = dispatcher
-        suspend(with: resume)
-    }
-    
-    private func performWithDispatcher(block: @escaping () -> Bool) {
-        (dispatcher?.perform ?? { $0() }) { [unowned self] in
-            self.performAsCurrent {
-                let finished = block()
-                self.handler?(finished)
-            }
-        }
+        perform(block: context.resume)
     }
     
     // MARK: - Suspend
@@ -76,6 +64,22 @@ open class Coroutine {
             completion()
         }
         suspend()
+    }
+    
+    // MARK: - Dispatcher
+    
+    @inline(__always) open func restart(with dispatcher: Dispatcher) {
+        self.dispatcher = dispatcher
+        suspend(with: resume)
+    }
+    
+    private func perform(block: @escaping () -> Bool) {
+        dispatcher.perform { [unowned self] in
+            self.performAsCurrent {
+                let finished = block()
+                self.handler?(finished)
+            }
+        }
     }
     
 }

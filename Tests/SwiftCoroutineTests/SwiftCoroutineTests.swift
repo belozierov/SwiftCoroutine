@@ -70,13 +70,20 @@ class SwiftCoroutineTests: XCTestCase {
             sleep(3)
             return 6
         }
+        let item3 = CoLazyPromise<Int>(on: .global) {
+            sleep(1)
+            return 6
+        }
         let date = Date()
         coroutine {
             let current = try Coroutine.current()
             XCTAssertNotNil(current)
             delay(1)
             XCTAssertDuration(from: date, in: 1..<2)
-            delay(1)
+            coSubroutine {
+                XCTAssertEqual(try? item3.await(), 6)
+                XCTAssertTrue(current.isCurrent)
+            }
             XCTAssertDuration(from: date, in: 2..<3)
             try coroutine {
                 delay(2)
@@ -162,7 +169,7 @@ class SwiftCoroutineTests: XCTestCase {
             sleep(2)
             $0(.success(5))
         }
-        let item2 = CoLazyPromise<Int>(queue: .global()) {
+        let item2 = CoLazyPromise<Int>(on: .global) {
             sleep(1)
             $0(.success(6))
         }

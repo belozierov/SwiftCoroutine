@@ -9,7 +9,7 @@
 import Combine
 
 @available(OSX 10.15, iOS 13.0, *)
-extension Dispatcher {
+extension Coroutine.Dispatcher {
     
     @inlinable static func scheduler<S: Scheduler>(scheduler: S) -> Dispatcher {
         Dispatcher(dispatcher: scheduler.schedule)

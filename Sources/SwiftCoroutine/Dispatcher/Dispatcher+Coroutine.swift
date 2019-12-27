@@ -19,11 +19,11 @@ extension Coroutine {
 
 // MARK: - Async
 
-@inlinable public func async(on dispatcher: Dispatcher = .global, execute work: @escaping () -> Void) {
+@inlinable public func async(on dispatcher: Coroutine.Dispatcher = .global, execute work: @escaping () -> Void) {
     dispatcher.perform(work: work)
 }
 
-@inlinable public func async<T>(on dispatcher: Dispatcher = .global, execute work: @escaping () throws -> T) -> CoFuture<T> {
+@inlinable public func async<T>(on dispatcher: Coroutine.Dispatcher = .global, execute work: @escaping () throws -> T) -> CoFuture<T> {
     let item = CoPromise<T>()
     dispatcher.perform { item.perform(work) }
     return item
@@ -31,12 +31,12 @@ extension Coroutine {
 
 // MARK: - Coroutine
 
-@inlinable public func coroutine(on dispatcher: Dispatcher = .current,
+@inlinable public func coroutine(on dispatcher: Coroutine.Dispatcher = .current,
                                  execute work: @escaping () throws -> Void) {
     Coroutine.newFromPool(with: dispatcher).start { try? work() }
 }
 
-@inlinable public func coroutine<T>(on dispatcher: Dispatcher = .current,
+@inlinable public func coroutine<T>(on dispatcher: Coroutine.Dispatcher = .current,
                                     execute work: @escaping () throws -> T) -> CoFuture<T> {
     let item = CoPromise<T>()
     coroutine(on: dispatcher) { item.perform(work) }

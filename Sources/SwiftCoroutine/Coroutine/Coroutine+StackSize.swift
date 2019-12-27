@@ -14,10 +14,6 @@ extension Coroutine {
         let size: Int
     }
     
-    @inline(__always) public var stackSize: Int {
-        context.stackSize
-    }
-    
 }
 
 extension Coroutine.StackSize {

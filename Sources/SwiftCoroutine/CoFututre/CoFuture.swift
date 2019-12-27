@@ -10,6 +10,7 @@ import Foundation
 
 open class CoFuture<Output> {
     
+    public typealias Dispatcher = Coroutine.Dispatcher
     public typealias OutputResult = Result<Output, Error>
     public typealias Completion = (OutputResult) -> Void
     
@@ -65,7 +66,7 @@ extension CoFuture {
     }
     
     @inlinable func addCompletion(completion: @escaping Completion) {
-        withUnsafePointer(to: completion) { completions[$0] = completion }
+        withUnsafeBytes(of: completion) { completions[$0.map { $0 }] = completion }
     }
     
 }
