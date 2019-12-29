@@ -15,8 +15,8 @@ class CoroutineContextPool {
     private let mutex = NSLock()
     private let pool: CostIdentifierPool<Int, CoroutineContext>
     
-    init(stackSize: StackSize) {
-        pool = CostIdentifierPool(costLimit: stackSize.size)
+    init(stackSizeLimit: StackSize) {
+        pool = CostIdentifierPool(costLimit: stackSizeLimit.size)
         startDispatchSource()
     }
     

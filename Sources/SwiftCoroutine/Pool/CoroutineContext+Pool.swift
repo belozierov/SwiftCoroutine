@@ -8,7 +8,7 @@
 
 extension CoroutineContext {
     
-    fileprivate static let pool = CoroutineContextPool(stackSize: .poolSize)
+    fileprivate static let pool = CoroutineContextPool(stackSizeLimit: .poolSize)
     
 }
 
