@@ -21,19 +21,17 @@ class CoroutineContext {
     
     init(stackSize: Int, guardPage: Bool = true) {
         haveGuardPage = guardPage
-        stack = .allocate(byteCount: stackSize, alignment: .pageSize)
-        if guardPage { mprotect(stack.baseAddress, .pageSize, PROT_READ) }
+        if guardPage {
+            stack = .allocate(byteCount: stackSize + .pageSize, alignment: .pageSize)
+            mprotect(stack.baseAddress, .pageSize, PROT_READ)
+        } else {
+            stack = .allocate(byteCount: stackSize, alignment: .pageSize)
+        }
         returnPoint = .allocate(capacity: .environmentSize)
         resumePoint = .allocate(capacity: .environmentSize)
     }
     
-    @inlinable var stackSize: Int {
-        stack.count - (haveGuardPage ? .pageSize : 0)
-    }
-    
-    @inlinable var stackStart: UnsafeRawPointer {
-        .init(stack.baseAddress!.advanced(by: stack.count))
-    }
+    // MARK: - Operations
     
     @inlinable func start(block: @escaping Block) -> Bool {
         var blockRef: Block! = block
@@ -56,6 +54,16 @@ class CoroutineContext {
     
     @inlinable func suspend() {
         __save(resumePoint, returnPoint, -1)
+    }
+    
+    // MARK: - Stack
+    
+    @inlinable var stackSize: Int {
+        stack.count - (haveGuardPage ? .pageSize : 0)
+    }
+    
+    @inlinable var stackStart: UnsafeRawPointer {
+        .init(stack.baseAddress!.advanced(by: stack.count))
     }
     
     deinit {

@@ -18,7 +18,7 @@ class CoFutureTests: XCTestCase {
             sleep(1)
             return 1
         }
-        var transformed: CoFuture<String>! = promise
+        let transformed = promise
             .transformValue { $0 * 2 }
             .onError { _ in XCTFail() }
             .transformValue { $0 * 3 }
@@ -26,10 +26,7 @@ class CoFutureTests: XCTestCase {
             .onSuccess { _ in expectation.fulfill() }
             .transformValue { $0.description }
             .onResult { expectation.fulfill() }
-        weak var weakTransformed: CoFuture<String>? = transformed
         transformed.onResult(on: .global) {
-            transformed = nil
-            XCTAssertNil(weakTransformed)
             XCTAssertEqual(try? $0.get(), "6")
             expectation.fulfill()
         }

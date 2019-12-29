@@ -11,8 +11,6 @@
 		1A65BAC2239CEFED004C1716 /* CoroutineContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A65BABA239CE05C004C1716 /* CoroutineContext.swift */; };
 		1A65BACE239D9D79004C1716 /* Coroutine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A65BACD239D9D79004C1716 /* Coroutine.swift */; };
 		1A65BACF239D9D79004C1716 /* Coroutine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A65BACD239D9D79004C1716 /* Coroutine.swift */; };
-		1A739A6823AC13AB00165280 /* CoroutineContext+Pool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A739A6723AC13AB00165280 /* CoroutineContext+Pool.swift */; };
-		1A739A6923AC13AB00165280 /* CoroutineContext+Pool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A739A6723AC13AB00165280 /* CoroutineContext+Pool.swift */; };
 		1A739A6B23AC141500165280 /* Coroutine+Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A739A6A23AC141500165280 /* Coroutine+Debug.swift */; };
 		1A739A6C23AC141500165280 /* Coroutine+Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A739A6A23AC141500165280 /* Coroutine+Debug.swift */; };
 		1A739A7623ACE66B00165280 /* CoFutureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A739A7323ACE63E00165280 /* CoFutureTests.swift */; };
@@ -66,8 +64,6 @@
 		1AB1F6D623B675B600C2715D /* CoSubroutine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB1F6D423B675B600C2715D /* CoSubroutine.swift */; };
 		1AB2F6942395531400B7B1FD /* Generator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB2F6932395531400B7B1FD /* Generator.swift */; };
 		1AB2F6952395531600B7B1FD /* Generator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB2F6932395531400B7B1FD /* Generator.swift */; };
-		1AFF9F3B2387D873002DD893 /* Pool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFF9F3A2387D873002DD893 /* Pool.swift */; };
-		1AFF9F3C2387D873002DD893 /* Pool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFF9F3A2387D873002DD893 /* Pool.swift */; };
 		F8CD258F20199CF700952299 /* SwiftCoroutine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8CD258620199CF700952299 /* SwiftCoroutine.framework */; };
 		F8CD25AB20199D1000952299 /* SwiftCoroutine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8CD25A220199D1000952299 /* SwiftCoroutine.framework */; };
 		F8CD25E92019A01600952299 /* CCoroutine.c in Sources */ = {isa = PBXBuildFile; fileRef = F810EEFF1F8F2E1C00025AD1 /* CCoroutine.c */; };
@@ -99,7 +95,6 @@
 /* Begin PBXFileReference section */
 		1A65BABA239CE05C004C1716 /* CoroutineContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoroutineContext.swift; sourceTree = "<group>"; };
 		1A65BACD239D9D79004C1716 /* Coroutine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coroutine.swift; sourceTree = "<group>"; };
-		1A739A6723AC13AB00165280 /* CoroutineContext+Pool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoroutineContext+Pool.swift"; sourceTree = "<group>"; };
 		1A739A6A23AC141500165280 /* Coroutine+Debug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coroutine+Debug.swift"; sourceTree = "<group>"; };
 		1A739A7323ACE63E00165280 /* CoFutureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoFutureTests.swift; sourceTree = "<group>"; };
 		1A739A7823ACFAF100165280 /* CoFututre+Operators.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoFututre+Operators.swift"; sourceTree = "<group>"; };
@@ -126,7 +121,6 @@
 		1AB1F6D123B65FDE00C2715D /* Coroutine+Thread.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coroutine+Thread.swift"; sourceTree = "<group>"; };
 		1AB1F6D423B675B600C2715D /* CoSubroutine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoSubroutine.swift; sourceTree = "<group>"; };
 		1AB2F6932395531400B7B1FD /* Generator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Generator.swift; sourceTree = "<group>"; };
-		1AFF9F3A2387D873002DD893 /* Pool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pool.swift; sourceTree = "<group>"; };
 		F810EEFA1F8F2B3E00025AD1 /* LICENCE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENCE; sourceTree = "<group>"; };
 		F810EEFB1F8F2B4D00025AD1 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		F810EEFF1F8F2E1C00025AD1 /* CCoroutine.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = CCoroutine.c; sourceTree = "<group>"; };
@@ -229,7 +223,6 @@
 			isa = PBXGroup;
 			children = (
 				1A65BABA239CE05C004C1716 /* CoroutineContext.swift */,
-				1A739A6723AC13AB00165280 /* CoroutineContext+Pool.swift */,
 				1A65BACD239D9D79004C1716 /* Coroutine.swift */,
 				1A739A6A23AC141500165280 /* Coroutine+Debug.swift */,
 				1A739ACF23B1555A00165280 /* Coroutine+StackSize.swift */,
@@ -238,14 +231,6 @@
 				1AB1F6D423B675B600C2715D /* CoSubroutine.swift */,
 			);
 			path = Coroutine;
-			sourceTree = "<group>";
-		};
-		1AFF9F392387D86A002DD893 /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-				1AFF9F3A2387D873002DD893 /* Pool.swift */,
-			);
-			path = Helpers;
 			sourceTree = "<group>";
 		};
 		F810EEFD1F8F2D9000025AD1 /* CCoroutine */ = {
@@ -263,7 +248,6 @@
 				1A739ABF23B107AB00165280 /* Dispatcher */,
 				1A934F9A23901B0C00155B71 /* Combine */,
 				1A934F88238D130F00155B71 /* CoFututre */,
-				1AFF9F392387D86A002DD893 /* Helpers */,
 				1AFF9F352387D835002DD893 /* Coroutine */,
 			);
 			path = SwiftCoroutine;
@@ -536,8 +520,6 @@
 				1A739ABA23B0B89600165280 /* CoFututeComposite.swift in Sources */,
 				1A739AA823AE66B800165280 /* CoTransformFuture.swift in Sources */,
 				1A739AAB23AE749500165280 /* CoFututre+Await.swift in Sources */,
-				1AFF9F3B2387D873002DD893 /* Pool.swift in Sources */,
-				1A739A6823AC13AB00165280 /* CoroutineContext+Pool.swift in Sources */,
 				1A739ABD23B0FF6100165280 /* Dispatcher.swift in Sources */,
 				1AB2F6942395531400B7B1FD /* Generator.swift in Sources */,
 				1AB1F6D523B675B600C2715D /* CoSubroutine.swift in Sources */,
@@ -580,11 +562,9 @@
 				1A739A7A23ACFAF100165280 /* CoFututre+Operators.swift in Sources */,
 				1A739ABB23B0B89600165280 /* CoFututeComposite.swift in Sources */,
 				1A739AA923AE66B800165280 /* CoTransformFuture.swift in Sources */,
-				1AFF9F3C2387D873002DD893 /* Pool.swift in Sources */,
 				1A739AAC23AE749500165280 /* CoFututre+Await.swift in Sources */,
 				1A934FAA2390284100155B71 /* Publisher+Extensions.swift in Sources */,
 				1A739ABE23B0FF6100165280 /* Dispatcher.swift in Sources */,
-				1A739A6923AC13AB00165280 /* CoroutineContext+Pool.swift in Sources */,
 				1AB2F6952395531600B7B1FD /* Generator.swift in Sources */,
 				1AB1F6D623B675B600C2715D /* CoSubroutine.swift in Sources */,
 			);

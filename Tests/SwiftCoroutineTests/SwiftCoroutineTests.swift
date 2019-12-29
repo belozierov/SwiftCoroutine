@@ -80,7 +80,7 @@ class SwiftCoroutineTests: XCTestCase {
             XCTAssertNotNil(current)
             delay(1)
             XCTAssertDuration(from: date, in: 1..<2)
-            coSubroutine {
+            subroutine {
                 XCTAssertEqual(try? item3.await(), 6)
                 XCTAssertTrue(current.isCurrent)
             }

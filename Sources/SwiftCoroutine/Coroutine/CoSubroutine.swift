@@ -28,19 +28,26 @@ public struct CoSubroutine {
     
 }
 
-@inlinable public func coSubroutine<T>(_ block: () -> T) -> T {
+public func subroutine(stackSize: Coroutine.StackSize = .recommended, block: () -> Void) {
+    CoSubroutine(stackSize: stackSize).start(block)
+}
+
+@inlinable public func subroutine<T>(stackSize: Coroutine.StackSize = .recommended,
+                                     block: () -> T) -> T {
     var result: T!
-    coSubroutine { result = block() }
+    subroutine(stackSize: stackSize) { result = block() }
     return result
 }
 
-@inlinable public func coSubroutine<T>(_ block: () throws -> T) throws -> T {
+@inlinable public func subroutine<T>(stackSize: Coroutine.StackSize = .recommended,
+                                     block: () throws -> T) throws -> T {
     var result: Result<T, Error>!
-    coSubroutine { result = Result { try block() } }
+    subroutine(stackSize: stackSize) { result = Result { try block() } }
     return try result.get()
 }
 
-@inlinable public func coSubroutine<T>(_ block: @autoclosure () throws -> T) rethrows -> T {
-    try coSubroutine(block())
+@inlinable public func subroutine<T>(stackSize: Coroutine.StackSize = .recommended,
+                                       block: @autoclosure () throws -> T) rethrows -> T {
+    try subroutine(stackSize: stackSize, block: block())
 }
 

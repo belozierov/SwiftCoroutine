@@ -32,16 +32,16 @@ extension DispatchQueue {
     
     // MARK: - Coroutine
     
-    @inlinable public func coroutine(group: DispatchGroup? = nil, qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = [], execute work: @escaping () throws -> Void) {
+    @inlinable public func coroutine(group: DispatchGroup? = nil, qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = [], stackSize: Coroutine.StackSize = .recommended, execute work: @escaping () throws -> Void) {
         let dispatcher = Coroutine.Dispatcher
             .dispatchQueue(self, qos: qos, flags: flags, group: group)
-        SwiftCoroutine.coroutine(on: dispatcher, execute: work)
+        SwiftCoroutine.coroutine(on: dispatcher, stackSize: stackSize, execute: work)
     }
     
-    @inlinable public func coroutine<T>(group: DispatchGroup? = nil, qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = [], execute work: @escaping () throws -> T) -> CoFuture<T> {
+    @inlinable public func coroutine<T>(group: DispatchGroup? = nil, qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = [], stackSize: Coroutine.StackSize = .recommended, execute work: @escaping () throws -> T) -> CoFuture<T> {
         let dispatcher = Coroutine.Dispatcher
             .dispatchQueue(self, qos: qos, flags: flags, group: group)
-        return SwiftCoroutine.coroutine(on: dispatcher, execute: work)
+        return SwiftCoroutine.coroutine(on: dispatcher, stackSize: stackSize, execute: work)
     }
     
 }
