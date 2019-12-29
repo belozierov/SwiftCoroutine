@@ -205,4 +205,21 @@ class SwiftCoroutineTests: XCTestCase {
         wait(for: [expectation], timeout: 5)
     }
     
+    func testPoolPerformence() {
+        let withPool = performanceTest { Coroutine.newFromPool(dispatcher: $0) }
+        let withoutPool = performanceTest { Coroutine(dispatcher: $0) }
+        let percent = withoutPool / withPool - 1
+        print("withPool faster for \(Int(percent * 100))%")
+        XCTAssert(percent > 0)
+    }
+    
+    private func performanceTest(creator: (Coroutine.Dispatcher) -> Coroutine) -> Double {
+        let group = DispatchGroup()
+        let dispatcher = Coroutine.Dispatcher.dispatchQueue(.global(), group: group)
+        let date = Date()
+        for _ in 0..<10_000 { creator(dispatcher).start {} }
+        group.wait()
+        return Date().timeIntervalSince(date)
+    }
+    
 }

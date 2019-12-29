@@ -28,10 +28,6 @@ public struct CoSubroutine {
     
 }
 
-public func subroutine(stackSize: Coroutine.StackSize = .recommended, block: () -> Void) {
-    CoSubroutine(stackSize: stackSize).start(block)
-}
-
 @inlinable public func subroutine<T>(stackSize: Coroutine.StackSize = .recommended,
                                      block: () -> T) -> T {
     var result: T!

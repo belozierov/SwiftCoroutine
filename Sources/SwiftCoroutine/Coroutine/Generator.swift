@@ -17,7 +17,7 @@ open class Generator<Element> {
     private let iterator: Iterator
     private var state: State = .prepared
     private var _next: Element?
-    private lazy var coroutine = Coroutine(dispatcher: .sync)
+    private lazy var coroutine = Coroutine.newFromPool(dispatcher: .sync)
     
     public init(iterator: @escaping Iterator) {
         self.iterator = iterator
