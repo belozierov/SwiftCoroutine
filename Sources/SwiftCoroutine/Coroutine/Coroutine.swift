@@ -25,7 +25,7 @@ open class Coroutine {
         self.dispatcher = dispatcher
     }
     
-    public init(stackSize: StackSize = .recommended, dispatcher: Dispatcher = .sync) {
+    public init(dispatcher: Dispatcher = .sync, stackSize: StackSize = .recommended) {
         assert(stackSize.size >= StackSize.minimal.size,
                "Stack size must be more or equal to minimal")
         self.context = CoroutineContext(stackSize: stackSize.size)

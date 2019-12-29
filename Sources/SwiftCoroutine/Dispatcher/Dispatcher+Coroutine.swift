@@ -34,7 +34,7 @@ extension Coroutine {
 @inlinable public func coroutine(on dispatcher: Coroutine.Dispatcher = .current,
                                  stackSize: Coroutine.StackSize = .recommended,
                                  execute work: @escaping () throws -> Void) {
-    Coroutine.newFromPool(stackSize: stackSize, dispatcher: dispatcher).start { try? work() }
+    Coroutine.newFromPool(dispatcher: dispatcher, stackSize: stackSize).start { try? work() }
 }
 
 @inlinable public func coroutine<T>(on dispatcher: Coroutine.Dispatcher = .current,

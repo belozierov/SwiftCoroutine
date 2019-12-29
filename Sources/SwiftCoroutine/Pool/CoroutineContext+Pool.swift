@@ -14,8 +14,8 @@ extension CoroutineContext {
 
 extension Coroutine {
     
-    public static func newFromPool(stackSize: StackSize = .recommended,
-                                   dispatcher: Dispatcher) -> Coroutine {
+    public static func newFromPool(dispatcher: Dispatcher,
+                                   stackSize: StackSize = .recommended) -> Coroutine {
         let context = CoroutineContext.pool.pop(stackSize: stackSize)
         let coroutine = Coroutine(context: context, dispatcher: dispatcher)
         coroutine.addHandler { if $0 { CoroutineContext.pool.push(context) } }
