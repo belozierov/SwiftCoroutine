@@ -85,11 +85,15 @@ class SwiftCoroutineTests: XCTestCase {
                 XCTAssertTrue(current.isCurrent)
             }
             XCTAssertDuration(from: date, in: 2..<3)
-            try coroutine {
+            let future: CoFuture<Void> = coroutine {
                 delay(2)
                 XCTAssertFalse(current.isCurrent)
                 XCTAssertDuration(from: date, in: 4..<5)
-            }.await()
+            }
+            try future.await()
+            XCTAssertTrue(current.isCurrent)
+            XCTAssertDuration(from: date, in: 4..<5)
+            try future.wait()
             XCTAssertTrue(current.isCurrent)
             XCTAssertDuration(from: date, in: 4..<5)
             delay(1)
@@ -203,6 +207,14 @@ class SwiftCoroutineTests: XCTestCase {
             expectation.fulfill()
         }
         wait(for: [expectation], timeout: 5)
+    }
+    
+    func testFutureWait() {
+        let result = try? async { () -> Int in
+            sleep(1)
+            return 1
+        }.wait()
+        XCTAssertEqual(result, 1)
     }
     
     func testPoolPerformence() {

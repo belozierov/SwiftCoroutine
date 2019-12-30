@@ -70,6 +70,8 @@
 		1AB1F6D623B675B600C2715D /* CoSubroutine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB1F6D423B675B600C2715D /* CoSubroutine.swift */; };
 		1AB2F6942395531400B7B1FD /* Generator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB2F6932395531400B7B1FD /* Generator.swift */; };
 		1AB2F6952395531600B7B1FD /* Generator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB2F6932395531400B7B1FD /* Generator.swift */; };
+		1AECF5A923BA0E1D002A0493 /* CoFuture+Wait.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AECF5A823BA0E1D002A0493 /* CoFuture+Wait.swift */; };
+		1AECF5AA23BA0E1D002A0493 /* CoFuture+Wait.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AECF5A823BA0E1D002A0493 /* CoFuture+Wait.swift */; };
 		F8CD258F20199CF700952299 /* SwiftCoroutine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8CD258620199CF700952299 /* SwiftCoroutine.framework */; };
 		F8CD25AB20199D1000952299 /* SwiftCoroutine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8CD25A220199D1000952299 /* SwiftCoroutine.framework */; };
 		F8CD25E92019A01600952299 /* CCoroutine.c in Sources */ = {isa = PBXBuildFile; fileRef = F810EEFF1F8F2E1C00025AD1 /* CCoroutine.c */; };
@@ -130,6 +132,7 @@
 		1AB1F6D123B65FDE00C2715D /* Coroutine+Thread.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coroutine+Thread.swift"; sourceTree = "<group>"; };
 		1AB1F6D423B675B600C2715D /* CoSubroutine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoSubroutine.swift; sourceTree = "<group>"; };
 		1AB2F6932395531400B7B1FD /* Generator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Generator.swift; sourceTree = "<group>"; };
+		1AECF5A823BA0E1D002A0493 /* CoFuture+Wait.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoFuture+Wait.swift"; sourceTree = "<group>"; };
 		F810EEFA1F8F2B3E00025AD1 /* LICENCE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENCE; sourceTree = "<group>"; };
 		F810EEFB1F8F2B4D00025AD1 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		F810EEFF1F8F2E1C00025AD1 /* CCoroutine.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = CCoroutine.c; sourceTree = "<group>"; };
@@ -196,6 +199,7 @@
 			children = (
 				1A739AA123AE640F00165280 /* CoFuture.swift */,
 				1A739AAA23AE749500165280 /* CoFututre+Await.swift */,
+				1AECF5A823BA0E1D002A0493 /* CoFuture+Wait.swift */,
 				1A739A7823ACFAF100165280 /* CoFututre+Operators.swift */,
 				1A739AA423AE665100165280 /* CoPromise.swift */,
 				1A739AA723AE66B800165280 /* CoTransformFuture.swift */,
@@ -523,6 +527,7 @@
 				1A739AD023B1555A00165280 /* Coroutine+StackSize.swift in Sources */,
 				1A65BACE239D9D79004C1716 /* Coroutine.swift in Sources */,
 				1A6E1ACC23B8EC1300236A47 /* CoroutineContext+Pool.swift in Sources */,
+				1AECF5A923BA0E1D002A0493 /* CoFuture+Wait.swift in Sources */,
 				1A739AA223AE640F00165280 /* CoFuture.swift in Sources */,
 				1A9E142823B8A88100EE7DE9 /* CoroutineContextPool.swift in Sources */,
 				1A934F8C238D62C100155B71 /* CoSubscription.swift in Sources */,
@@ -570,6 +575,7 @@
 				1A739AD123B1555A00165280 /* Coroutine+StackSize.swift in Sources */,
 				1A65BACF239D9D79004C1716 /* Coroutine.swift in Sources */,
 				1A6E1ACD23B8EC1300236A47 /* CoroutineContext+Pool.swift in Sources */,
+				1AECF5AA23BA0E1D002A0493 /* CoFuture+Wait.swift in Sources */,
 				1A739AA323AE640F00165280 /* CoFuture.swift in Sources */,
 				1A9E142923B8A88100EE7DE9 /* CoroutineContextPool.swift in Sources */,
 				1A934FA023901B8F00155B71 /* CoFuture+Combine.swift in Sources */,
