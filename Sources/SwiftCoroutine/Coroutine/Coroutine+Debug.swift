@@ -12,12 +12,20 @@ import CCoroutine
 
 extension Coroutine {
     
-    @inline(never) public static var currentStackUsed: Int? {
-        try? Coroutine.current().currentContext.usedStackSpace
+    @inline(never) public static func currentStackUsed() throws -> Int {
+        try Coroutine.current().stackUsed(to: _frameAddress())
     }
     
-    @inline(never) public static var currentStackFreeSpace: Int? {
-        try? Coroutine.current().currentContext.freeStackSpace
+    @inline(never) public static func currentStackFreeSpace() throws -> Int {
+        try Coroutine.current().stackFreeSpace(to: _frameAddress())
+    }
+    
+    private func stackUsed(to pointer: UnsafeRawPointer) -> Int {
+        pointer.distance(to: currentContext.stackStart)
+    }
+    
+    private func stackFreeSpace(to pointer: UnsafeRawPointer) -> Int {
+        stackSize - stackUsed(to: pointer)
     }
     
     @inline(__always) public var stackSize: Int {
@@ -30,14 +38,4 @@ extension Coroutine {
     
 }
 
-extension CoroutineContext {
-    
-    @inline(never) fileprivate var usedStackSpace: Int {
-        _frameAddress().distance(to: stackStart)
-    }
-    
-    fileprivate var freeStackSpace: Int {
-        stackSize - usedStackSpace
-    }
-    
-}
+
