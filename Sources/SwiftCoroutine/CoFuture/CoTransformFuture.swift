@@ -1,29 +1,26 @@
 //
-//  CoTransformFuture.swift
+//  CoTransformFuture2.swift
 //  SwiftCoroutine
 //
-//  Created by Alex Belozierov on 21.12.2019.
+//  Created by Alex Belozierov on 31.12.2019.
 //  Copyright © 2019 Alex Belozierov. All rights reserved.
 //
 
 class CoTransformFuture<Input, Output>: CoFuture<Output> {
     
-    typealias InputResult = Result<Input, Error>
-    typealias Transformer = (InputResult) throws -> Output
+    typealias Transformer = (Result<Input, Error>) throws -> Output
     
-    private var parent: CoFuture<Input>
+    private let parent: CoFuture<Input>
     private let transformer: Transformer
     
     init(parent: CoFuture<Input>, transformer: @escaping Transformer) {
         self.parent = parent
         self.transformer = transformer
-        super.init()
+        super.init(mutex: parent.mutex)
         addToParent()
     }
     
-    // MARK: - Result
-    
-    @inlinable override var result: OutputResult? {
+    override var result: OutputResult? {
         parent.result.map { input in Result { try transformer(input) } }
     }
     
@@ -33,26 +30,20 @@ class CoTransformFuture<Input, Output>: CoFuture<Output> {
 
 extension CoTransformFuture {
     
-    // MARK: - Send input
-    
-    @inlinable func send(result: InputResult) {
-        send(result: Result { try transformer(result) })
-    }
-    
     // MARK: - Parent completion
-    
+
     private func addToParent() {
-        parent.completions[identifier] = { [unowned self] result in
-            self.send(result: Result { try self.transformer(result) })
+        parent.subscribe(with: identifier) { [unowned self] result in
+            self.complete(with: Result { try self.transformer(result) })
         }
     }
-    
+
     private func removeFromParent() {
-        parent.completions[identifier] = nil
+        parent.unsubscribe(identifier)
     }
-    
+
     private var identifier: Int {
         unsafeBitCast(self, to: Int.self)
     }
-    
+
 }

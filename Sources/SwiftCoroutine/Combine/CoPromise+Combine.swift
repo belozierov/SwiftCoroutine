@@ -14,7 +14,7 @@ extension CoPromise: Subject {
     public func send(completion: Subscribers.Completion<Error>) {
         switch completion {
         case .finished: break
-        case .failure(let error): send(error: error)
+        case .failure(let error): complete(with: .failure(error))
         }
     }
     

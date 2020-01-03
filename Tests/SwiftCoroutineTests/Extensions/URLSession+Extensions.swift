@@ -17,11 +17,11 @@ extension URLSession {
         let promise = CoPromise<DataResponse>()
         dataTask(with: url) {
             if let error = $2 {
-                promise.send(error: error)
+                promise.send(error)
             } else if let data = $0, let response = $1 {
                 promise.send((data, response))
             } else {
-                promise.send(error: URLError(.badServerResponse))
+                promise.send(URLError(.badServerResponse))
             }
         }.resume()
         return promise

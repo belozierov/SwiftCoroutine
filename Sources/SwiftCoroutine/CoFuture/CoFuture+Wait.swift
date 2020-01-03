@@ -6,7 +6,7 @@
 //  Copyright © 2019 Alex Belozierov. All rights reserved.
 //
 
-import Foundation
+import Dispatch
 
 extension CoFuture {
     
@@ -20,7 +20,7 @@ extension CoFuture {
         var result: OutputResult!
         let group = DispatchGroup()
         group.enter()
-        addCompletion {
+        addHandler {
             result = $0
             group.leave()
         }

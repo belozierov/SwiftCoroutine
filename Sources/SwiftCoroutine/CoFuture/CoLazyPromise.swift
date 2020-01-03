@@ -2,15 +2,15 @@
 //  CoLazyPromise.swift
 //  SwiftCoroutine
 //
-//  Created by Alex Belozierov on 21.12.2019.
+//  Created by Alex Belozierov on 31.12.2019.
 //  Copyright © 2019 Alex Belozierov. All rights reserved.
 //
 
 import Foundation
 
-open class CoLazyPromise<Output>: CoFuture<Output> {
+public class CoLazyPromise<Output>: CoFuture<Output> {
     
-    public typealias PromiseBlock = (@escaping Completion) -> Void
+    public typealias PromiseBlock = (@escaping OutputHandler) -> Void
     
     private let promise: PromiseBlock
     private var _result: OutputResult?
@@ -28,26 +28,22 @@ open class CoLazyPromise<Output>: CoFuture<Output> {
         self.init(on: dispatcher) { $0(Result(catching: block)) }
     }
     
-    open override var result: OutputResult? {
+    public override var result: OutputResult? {
         mutex.lock()
+        if !started {
+            started = true
+            mutex.unlock()
+            promise(complete)
+            mutex.lock()
+            defer { mutex.unlock() }
+            return _result
+        }
         defer { mutex.unlock() }
-        if let result = _result { return result }
-        if !started { start() }
         return _result
     }
     
-    override func send(result: OutputResult) {
-        mutex.lock()
+    override func saveResult(_ result: OutputResult) {
         _result = result
-        mutex.unlock()
-        super.send(result: result)
-    }
-    
-    private func start() {
-        started = true
-        mutex.unlock()
-        promise(send)
-        mutex.lock()
     }
     
 }

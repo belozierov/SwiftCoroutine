@@ -14,11 +14,9 @@ extension CoFuture: Publisher, Cancellable {
     public typealias Failure = Error
     
     public func receive<S: Subscriber>(subscriber: S) where Output == S.Input, Failure == S.Failure {
-        let subscription = CoSubscription { [weak self] in
-            self?.completions[$0] = nil
-        }
+        let subscription = CoSubscription { [weak self] in self?.unsubscribe($0) }
         subscriber.receive(subscription: subscription)
-        completions[subscription] = subscriber.finish
+        subscribe(with: subscription, handler: subscriber.finish)
     }
     
 }

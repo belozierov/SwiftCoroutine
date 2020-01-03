@@ -7,7 +7,7 @@
 //
 
 import Combine
-import Foundation
+import Dispatch
 
 @available(OSX 10.15, iOS 13.0, *)
 extension Publisher {

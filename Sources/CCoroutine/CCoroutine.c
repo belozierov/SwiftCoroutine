@@ -29,6 +29,10 @@ int __save(jmp_buf env, jmp_buf ret, int retVal) {
     longjmp(ret, retVal);
 }
 
-const void* _frameAddress(void) {
+const void* __frameAddress(void) {
     return __builtin_frame_address(1);
+}
+
+int __compare(_Atomic long* value, long* expected, long desired) {
+    return atomic_compare_exchange_strong(value, expected, desired);
 }

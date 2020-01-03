@@ -8,11 +8,11 @@
 
 open class Generator<Element> {
     
+    public typealias Iterator = ((Element?) -> Void) -> Void
+    
     private enum State {
         case prepared, started, finished
     }
-    
-    public typealias Iterator = ((Element?) -> Void) -> Void
     
     private let iterator: Iterator
     private var state: State = .prepared

@@ -13,11 +13,11 @@ import CCoroutine
 extension Coroutine {
     
     @inline(never) public static func currentStackUsed() throws -> Int {
-        try Coroutine.current().stackUsed(to: _frameAddress())
+        try Coroutine.current().stackUsed(to: __frameAddress())
     }
     
     @inline(never) public static func currentStackFreeSpace() throws -> Int {
-        try Coroutine.current().stackFreeSpace(to: _frameAddress())
+        try Coroutine.current().stackFreeSpace(to: __frameAddress())
     }
     
     private func stackUsed(to pointer: UnsafeRawPointer) -> Int {
@@ -37,5 +37,3 @@ extension Coroutine {
     }
     
 }
-
-

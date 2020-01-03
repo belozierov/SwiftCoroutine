@@ -15,10 +15,17 @@ open class Coroutine {
         case mustBeCalledInsideCoroutine
     }
     
+    public enum State: Int {
+        case prepared, running, suspended
+    }
+    
     let context: CoroutineContext
     var subRoutines = [CoSubroutine]()
     private var dispatcher: Dispatcher
     private var handler: Handler?
+    
+    @AtomicIntRepresentable
+    public private(set) var state: State = .prepared
     
     init(context: CoroutineContext, dispatcher: Dispatcher) {
         self.context = context
@@ -42,10 +49,12 @@ open class Coroutine {
     
     @inline(__always) open func start(block: @escaping Block) {
         assert(!isCurrent, "Start must be called outside current coroutine")
+        assert(state == .prepared, "Start must be called for prepared coroutine")
         perform { self.context.start(block: block) }
     }
     
     @inline(__always) open func resume() {
+        assert(state == .suspended, "Resume must be called for suspended coroutine")
         perform(block: context.resume)
     }
     
@@ -53,6 +62,7 @@ open class Coroutine {
     
     @inline(__always) open func suspend() {
         assert(isCurrent, "Suspend must be called inside current coroutine")
+        assert(state == .running, "Suspend must be called for running coroutine")
         context.suspend()
     }
     
@@ -69,14 +79,18 @@ open class Coroutine {
     // MARK: - Dispatcher
     
     @inline(__always) open func restart(with dispatcher: Dispatcher) {
+        assert(isCurrent, "Restart must be called inside current coroutine")
+        assert(state == .running, "Restart must be called for running coroutine")
         self.dispatcher = dispatcher
         suspend(with: resume)
     }
     
     private func perform(block: @escaping () -> Bool) {
+        state = .running
         dispatcher.perform { [unowned self] in
             self.performAsCurrent {
                 let finished = block()
+                self.state = finished ? .prepared : .suspended
                 self.handler?(finished)
             }
         }
