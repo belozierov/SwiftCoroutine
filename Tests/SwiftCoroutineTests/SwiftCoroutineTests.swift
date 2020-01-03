@@ -234,4 +234,18 @@ class SwiftCoroutineTests: XCTestCase {
         return Date().timeIntervalSince(date)
     }
     
+    func testCoroutineState() {
+        let cor = Coroutine()
+        XCTAssertEqual(cor.state, .prepared)
+        cor.start {
+            XCTAssertEqual(cor.state, .running)
+            cor.suspend {
+                XCTAssertEqual(cor.state, .suspended)
+                cor.resume()
+            }
+            XCTAssertEqual(cor.state, .running)
+        }
+        XCTAssertEqual(cor.state, .prepared)
+    }
+    
 }

@@ -6,7 +6,7 @@
 //  Copyright © 2019 Alex Belozierov. All rights reserved.
 //
 
-open class Coroutine {
+public class Coroutine {
     
     public typealias Block = () -> Void
     public typealias Handler = (Bool) -> Void
@@ -39,7 +39,7 @@ open class Coroutine {
         self.dispatcher = dispatcher
     }
     
-    open func addHandler(_ handler: @escaping Handler) {
+    public func addHandler(_ handler: @escaping Handler) {
         self.handler = self.handler.map {
             previous in { previous($0); handler($0) }
         } ?? handler
@@ -47,26 +47,26 @@ open class Coroutine {
     
     // MARK: - Start/resume
     
-    @inline(__always) open func start(block: @escaping Block) {
+    @inline(__always) public func start(block: @escaping Block) {
         assert(!isCurrent, "Start must be called outside current coroutine")
         assert(state == .prepared, "Start must be called for prepared coroutine")
         perform { self.context.start(block: block) }
     }
     
-    @inline(__always) open func resume() {
+    @inline(__always) public func resume() {
         assert(state == .suspended, "Resume must be called for suspended coroutine")
         perform(block: context.resume)
     }
     
     // MARK: - Suspend
     
-    @inline(__always) open func suspend() {
+    @inline(__always) public func suspend() {
         assert(isCurrent, "Suspend must be called inside current coroutine")
         assert(state == .running, "Suspend must be called for running coroutine")
         context.suspend()
     }
     
-    @inline(__always) open func suspend(with completion: @escaping Block) {
+    @inline(__always) public func suspend(with completion: @escaping Block) {
         let previousHandler = handler
         handler = { [unowned self] in
             self.handler = previousHandler
@@ -78,7 +78,7 @@ open class Coroutine {
     
     // MARK: - Dispatcher
     
-    @inline(__always) open func restart(with dispatcher: Dispatcher) {
+    @inline(__always) public func restart(with dispatcher: Dispatcher) {
         assert(isCurrent, "Restart must be called inside current coroutine")
         assert(state == .running, "Restart must be called for running coroutine")
         self.dispatcher = dispatcher
