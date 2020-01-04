@@ -28,8 +28,6 @@ public class CoFuture<Output> {
 
 extension CoFuture {
     
-    // MARK: - Completion
-    
     @usableFromInline func complete(with result: OutputResult) {
         mutex.lock()
         saveResult(result)
@@ -39,17 +37,19 @@ extension CoFuture {
         items.values.forEach { $0(result) }
     }
     
-    // MARK: - Cancel
+}
+
+extension CoFuture: CoCancellable {
+    
+    @inlinable public func cancel() {
+        complete(with: .failure(FutureError.cancelled))
+    }
     
     @inlinable public var isCancelled: Bool {
         if case .failure(let error as FutureError) = result {
             return error == .cancelled
         }
         return false
-    }
-    
-    @inlinable public func cancel() {
-        complete(with: .failure(FutureError.cancelled))
     }
     
 }

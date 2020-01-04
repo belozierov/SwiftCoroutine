@@ -15,6 +15,8 @@
 		1A43084623C094EC001A89EA /* DispatchSourceTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A43084423C094EC001A89EA /* DispatchSourceTimer.swift */; };
 		1A43084823C0955A001A89EA /* Coroutine+Delay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A43084723C0955A001A89EA /* Coroutine+Delay.swift */; };
 		1A43084923C0955A001A89EA /* Coroutine+Delay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A43084723C0955A001A89EA /* Coroutine+Delay.swift */; };
+		1A43084E23C111C8001A89EA /* CoCancellable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A43084D23C111C8001A89EA /* CoCancellable.swift */; };
+		1A43084F23C111C8001A89EA /* CoCancellable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A43084D23C111C8001A89EA /* CoCancellable.swift */; };
 		1A61C02E23BB985B007F488C /* CoTransformFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A61C02D23BB985B007F488C /* CoTransformFuture.swift */; };
 		1A61C02F23BB985B007F488C /* CoTransformFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A61C02D23BB985B007F488C /* CoTransformFuture.swift */; };
 		1A61C03323BB9926007F488C /* CoSubject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A61C03223BB9926007F488C /* CoSubject.swift */; };
@@ -115,6 +117,7 @@
 		1A03F81E23BB24E40072C843 /* AtomicInt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicInt.swift; sourceTree = "<group>"; };
 		1A43084423C094EC001A89EA /* DispatchSourceTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchSourceTimer.swift; sourceTree = "<group>"; };
 		1A43084723C0955A001A89EA /* Coroutine+Delay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coroutine+Delay.swift"; sourceTree = "<group>"; };
+		1A43084D23C111C8001A89EA /* CoCancellable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoCancellable.swift; sourceTree = "<group>"; };
 		1A61C02D23BB985B007F488C /* CoTransformFuture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoTransformFuture.swift; sourceTree = "<group>"; };
 		1A61C03223BB9926007F488C /* CoSubject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoSubject.swift; sourceTree = "<group>"; };
 		1A65BABA239CE05C004C1716 /* CoroutineContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoroutineContext.swift; sourceTree = "<group>"; };
@@ -213,6 +216,7 @@
 			children = (
 				1AB8B31023BA3A7F0052E72F /* CoPublisher.swift */,
 				1A61C03223BB9926007F488C /* CoSubject.swift */,
+				1A43084D23C111C8001A89EA /* CoCancellable.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -572,6 +576,7 @@
 				1A65BACE239D9D79004C1716 /* Coroutine.swift in Sources */,
 				1A9C14DB23BB4FC000E13203 /* CoLazyPromise.swift in Sources */,
 				1A6E1ACC23B8EC1300236A47 /* CoroutineContext+Pool.swift in Sources */,
+				1A43084E23C111C8001A89EA /* CoCancellable.swift in Sources */,
 				1AECF5A923BA0E1D002A0493 /* CoFuture+Wait.swift in Sources */,
 				1AB8B31123BA3A7F0052E72F /* CoPublisher.swift in Sources */,
 				1A9E142823B8A88100EE7DE9 /* CoroutineContextPool.swift in Sources */,
@@ -625,6 +630,7 @@
 				1A65BACF239D9D79004C1716 /* Coroutine.swift in Sources */,
 				1A9C14DC23BB4FC000E13203 /* CoLazyPromise.swift in Sources */,
 				1A6E1ACD23B8EC1300236A47 /* CoroutineContext+Pool.swift in Sources */,
+				1A43084F23C111C8001A89EA /* CoCancellable.swift in Sources */,
 				1AECF5AA23BA0E1D002A0493 /* CoFuture+Wait.swift in Sources */,
 				1AB8B31223BA3A7F0052E72F /* CoPublisher.swift in Sources */,
 				1A9E142923B8A88100EE7DE9 /* CoroutineContextPool.swift in Sources */,
