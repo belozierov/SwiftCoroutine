@@ -18,7 +18,7 @@ You can find some API similarity to the Kotlin coroutines, thanks to my friends 
 //it will also run on the main DispatchQueue
 coroutine {
     //your custom extension that returns CoFuture<Data>
-    let future = URLSession.shared.getData(with: imageURL)
+    let future = URLSession.shared.data(for: imageURL)
     
     //await result that suspends coroutine and doesn't block the thread
     let data = try future.await()

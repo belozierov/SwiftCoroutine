@@ -23,12 +23,13 @@ extension CoFuture {
     public func await(timeout: DispatchTime) throws -> Output {
         let coroutine = try Coroutine.current(), mutex = self.mutex
         var isTimeOut = false
-        let timer = DispatchSource.startTimer(timeout: timeout) {
+        let timer = DispatchSource.createTimer(timeout: timeout) {
             mutex.lock()
             isTimeOut = true
             mutex.unlock()
             if coroutine.state == .suspended { coroutine.resume() }
         }
+        timer.activate()
         defer { timer.cancel() }
         while true {
             mutex.lock()
@@ -45,14 +46,4 @@ extension CoFuture {
     
 }
 
-extension DispatchSource {
-    
-    fileprivate static func startTimer(timeout: DispatchTime, handler: @escaping () -> Void) -> DispatchSourceTimer {
-        let timer = DispatchSource.makeTimerSource()
-        timer.schedule(deadline: timeout, leeway: .milliseconds(50))
-        timer.setEventHandler(handler: handler)
-        timer.activate()
-        return timer
-    }
-    
-}
+

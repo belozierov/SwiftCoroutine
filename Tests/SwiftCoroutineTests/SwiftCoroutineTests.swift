@@ -17,20 +17,20 @@ class SwiftCoroutineTests: XCTestCase {
         var result = [Int]()
         coroutine {
             result.append(0)
-            delay(1)
+            try Coroutine.delay(1)
             XCTAssertDuration(from: date, in: 1..<2)
             result.append(3)
         }
         coroutine {
             result.append(1)
-            delay(3)
+            try Coroutine.delay(3)
             XCTAssertDuration(from: date, in: 3..<4)
             XCTAssertEqual(result, (0..<5).map { $0 })
             expectation.fulfill()
         }
         coroutine {
             result.append(2)
-            delay(2)
+            try Coroutine.delay(2)
             result.append(4)
             XCTAssertDuration(from: date, in: 2..<3)
         }
@@ -78,7 +78,7 @@ class SwiftCoroutineTests: XCTestCase {
         coroutine {
             let current = try Coroutine.current()
             XCTAssertNotNil(current)
-            delay(1)
+            try Coroutine.delay(1)
             XCTAssertDuration(from: date, in: 1..<2)
             subroutine {
                 XCTAssertEqual(try? item3.await(), 6)
@@ -86,7 +86,7 @@ class SwiftCoroutineTests: XCTestCase {
             }
             XCTAssertDuration(from: date, in: 2..<3)
             let future: CoFuture<Void> = coroutine {
-                delay(2)
+                try Coroutine.delay(2)
                 XCTAssertFalse(current.isCurrent)
                 XCTAssertDuration(from: date, in: 4..<5)
             }
@@ -96,7 +96,7 @@ class SwiftCoroutineTests: XCTestCase {
             try future.wait()
             XCTAssertTrue(current.isCurrent)
             XCTAssertDuration(from: date, in: 4..<5)
-            delay(1)
+            try Coroutine.delay(1)
             XCTAssertDuration(from: date, in: 5..<6)
             expectation.fulfill()
         }
@@ -107,7 +107,7 @@ class SwiftCoroutineTests: XCTestCase {
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             coroutine(on: .global) {
-                delay(2)
+                try Coroutine.delay(2)
                 XCTAssertDuration(from: date, in: 3..<4)
             }
         }
