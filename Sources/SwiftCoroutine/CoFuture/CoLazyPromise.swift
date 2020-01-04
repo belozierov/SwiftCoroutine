@@ -35,8 +35,6 @@ public class CoLazyPromise<Output>: CoFuture<Output> {
             mutex.unlock()
             promise(complete)
             mutex.lock()
-            defer { mutex.unlock() }
-            return _result
         }
         defer { mutex.unlock() }
         return _result

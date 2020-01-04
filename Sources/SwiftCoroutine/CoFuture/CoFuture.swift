@@ -10,6 +10,10 @@ import Foundation
 
 public class CoFuture<Output> {
     
+    public enum FutureError: Error {
+        case cancelled, timeout
+    }
+    
     let mutex: NSRecursiveLock
     private var subscriptions = [AnyHashable: OutputHandler]()
     
@@ -66,11 +70,11 @@ extension CoFuture: CoPublisher {
 
 extension CoFuture: Hashable {
     
-    public static func == (lhs: CoFuture, rhs: CoFuture) -> Bool {
+    @inlinable public static func == (lhs: CoFuture, rhs: CoFuture) -> Bool {
         lhs === rhs
     }
     
-    public func hash(into hasher: inout Hasher) {
+    @inlinable public func hash(into hasher: inout Hasher) {
         ObjectIdentifier(self).hash(into: &hasher)
     }
     
