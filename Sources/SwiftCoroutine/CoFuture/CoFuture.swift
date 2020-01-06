@@ -24,9 +24,17 @@ public class CoFuture<Output> {
     @inlinable public var result: OutputResult? { nil }
     @inlinable func saveResult(_ result: OutputResult) {}
     
+    @inlinable public func cancel() {
+        complete(with: .failure(FutureError.cancelled))
+    }
+    
 }
 
 extension CoFuture {
+    
+    @inlinable public var identifier: Int {
+        unsafeBitCast(self, to: Int.self)
+    }
     
     @usableFromInline func complete(with result: OutputResult) {
         mutex.lock()
@@ -40,10 +48,6 @@ extension CoFuture {
 }
 
 extension CoFuture: CoCancellable {
-    
-    @inlinable public func cancel() {
-        complete(with: .failure(FutureError.cancelled))
-    }
     
     @inlinable public var isCancelled: Bool {
         if case .failure(let error as FutureError) = result {

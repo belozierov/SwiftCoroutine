@@ -26,16 +26,9 @@ extension CoFuture {
     
     @discardableResult
     public func onResult(on dispatcher: Dispatcher = .sync, execute completion: @escaping OutputHandler) -> CoFuture<Output> {
-        let completion = { result in dispatcher.perform { completion(result) }}
-        mutex.lock()
-        if let result = result {
-            mutex.unlock()
-            completion(result)
-        } else {
-            addHandler(completion)
-            mutex.unlock()
+        CoHandleFuture(parent: self) { result in
+            dispatcher.dispatchBlock { completion(result) }
         }
-        return self
     }
     
     @inlinable @discardableResult

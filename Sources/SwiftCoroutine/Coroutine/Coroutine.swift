@@ -21,7 +21,7 @@ public class Coroutine {
     
     let context: CoroutineContext
     var subRoutines = [CoSubroutine]()
-    private var dispatcher: Dispatcher
+    private var dispatchBlock: Dispatcher.DispatchBlock
     private var handler: Handler?
     
     @AtomicIntRepresentable
@@ -29,14 +29,14 @@ public class Coroutine {
     
     init(context: CoroutineContext, dispatcher: Dispatcher) {
         self.context = context
-        self.dispatcher = dispatcher
+        dispatchBlock = dispatcher.dispatchBlock
     }
     
     public init(dispatcher: Dispatcher = .sync, stackSize: StackSize = .recommended) {
         assert(stackSize.size >= StackSize.minimal.size,
                "Stack size must be more or equal to minimal")
         self.context = CoroutineContext(stackSize: stackSize.size)
-        self.dispatcher = dispatcher
+        dispatchBlock = dispatcher.dispatchBlock
     }
     
     public func addHandler(_ handler: @escaping Handler) {
@@ -81,13 +81,13 @@ public class Coroutine {
     @inline(__always) public func restart(with dispatcher: Dispatcher) {
         assert(isCurrent, "Restart must be called inside current coroutine")
         assert(state == .running, "Restart must be called for running coroutine")
-        self.dispatcher = dispatcher
+        dispatchBlock = dispatcher.dispatchBlock
         suspend(with: resume)
     }
     
     private func perform(block: @escaping () -> Bool) {
         state = .running
-        dispatcher.perform { [unowned self] in
+        dispatchBlock { [unowned self] in
             self.performAsCurrent {
                 let finished = block()
                 self.state = finished ? .prepared : .suspended

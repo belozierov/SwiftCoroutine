@@ -20,12 +20,12 @@ extension Coroutine {
 // MARK: - Async
 
 @inlinable public func async(on dispatcher: Coroutine.Dispatcher = .global, execute work: @escaping () -> Void) {
-    dispatcher.perform(work: work)
+    dispatcher.dispatchBlock(work)
 }
 
 @inlinable public func async<T>(on dispatcher: Coroutine.Dispatcher = .global, execute work: @escaping () throws -> T) -> CoFuture<T> {
     let item = CoPromise<T>()
-    dispatcher.perform { item.perform(work) }
+    dispatcher.dispatchBlock { item.perform(work) }
     return item
 }
 

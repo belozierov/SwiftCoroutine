@@ -6,8 +6,6 @@
 //  Copyright © 2019 Alex Belozierov. All rights reserved.
 //
 
-import Foundation
-
 public class CoLazyPromise<Output>: CoFuture<Output> {
     
     public typealias PromiseBlock = (@escaping OutputHandler) -> Void
@@ -21,7 +19,7 @@ public class CoLazyPromise<Output>: CoFuture<Output> {
     }
     
     public init(on dispatcher: Dispatcher, promise: @escaping PromiseBlock) {
-        self.promise = { completion in dispatcher.perform { promise(completion) } }
+        self.promise = { completion in dispatcher.dispatchBlock { promise(completion) } }
     }
     
     public convenience init(on dispatcher: Dispatcher, block: @escaping () throws -> Output) {

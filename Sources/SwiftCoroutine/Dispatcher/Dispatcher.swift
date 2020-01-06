@@ -12,10 +12,10 @@ extension Coroutine {
     
     public struct Dispatcher {
         
-        private let dispatcher: DispatchBlock
+        @usableFromInline let dispatchBlock: DispatchBlock
         
-        public init(dispatcher: @escaping DispatchBlock) {
-            self.dispatcher = dispatcher
+        @inlinable public init(dispatcher: @escaping DispatchBlock) {
+            dispatchBlock = dispatcher
         }
         
     }
@@ -31,10 +31,6 @@ extension Coroutine.Dispatcher {
     public static let sync = Dispatcher { $0() }
     public static let main = Dispatcher.dispatchQueue(.main)
     public static let global = Dispatcher.dispatchQueue(.global())
-    
-    public func perform(work: @escaping Block) {
-        dispatcher(work)
-    }
     
 }
 

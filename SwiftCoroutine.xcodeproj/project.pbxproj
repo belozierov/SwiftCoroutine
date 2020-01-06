@@ -17,6 +17,8 @@
 		1A43084923C0955A001A89EA /* Coroutine+Delay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A43084723C0955A001A89EA /* Coroutine+Delay.swift */; };
 		1A43084E23C111C8001A89EA /* CoCancellable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A43084D23C111C8001A89EA /* CoCancellable.swift */; };
 		1A43084F23C111C8001A89EA /* CoCancellable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A43084D23C111C8001A89EA /* CoCancellable.swift */; };
+		1A43085123C35DDA001A89EA /* CoHandleFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A43085023C35DDA001A89EA /* CoHandleFuture.swift */; };
+		1A43085223C35DDA001A89EA /* CoHandleFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A43085023C35DDA001A89EA /* CoHandleFuture.swift */; };
 		1A61C02E23BB985B007F488C /* CoTransformFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A61C02D23BB985B007F488C /* CoTransformFuture.swift */; };
 		1A61C02F23BB985B007F488C /* CoTransformFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A61C02D23BB985B007F488C /* CoTransformFuture.swift */; };
 		1A61C03323BB9926007F488C /* CoSubject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A61C03223BB9926007F488C /* CoSubject.swift */; };
@@ -118,6 +120,7 @@
 		1A43084423C094EC001A89EA /* DispatchSourceTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchSourceTimer.swift; sourceTree = "<group>"; };
 		1A43084723C0955A001A89EA /* Coroutine+Delay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coroutine+Delay.swift"; sourceTree = "<group>"; };
 		1A43084D23C111C8001A89EA /* CoCancellable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoCancellable.swift; sourceTree = "<group>"; };
+		1A43085023C35DDA001A89EA /* CoHandleFuture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoHandleFuture.swift; sourceTree = "<group>"; };
 		1A61C02D23BB985B007F488C /* CoTransformFuture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoTransformFuture.swift; sourceTree = "<group>"; };
 		1A61C03223BB9926007F488C /* CoSubject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoSubject.swift; sourceTree = "<group>"; };
 		1A65BABA239CE05C004C1716 /* CoroutineContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoroutineContext.swift; sourceTree = "<group>"; };
@@ -260,6 +263,7 @@
 				1A9C14D423BB4F0400E13203 /* CoPromise.swift */,
 				1A9C14DA23BB4FC000E13203 /* CoLazyPromise.swift */,
 				1A61C02D23BB985B007F488C /* CoTransformFuture.swift */,
+				1A43085023C35DDA001A89EA /* CoHandleFuture.swift */,
 				1A9C14DD23BB824400E13203 /* CoFuture+Await.swift */,
 				1AECF5A823BA0E1D002A0493 /* CoFuture+Wait.swift */,
 				1A739A7823ACFAF100165280 /* CoFututre+Operators.swift */,
@@ -597,6 +601,7 @@
 				1A934F9C23901B2700155B71 /* CoFuture+Combine.swift in Sources */,
 				1A739ACA23B1123900165280 /* Dispatcher+Scheduler.swift in Sources */,
 				1A43084523C094EC001A89EA /* DispatchSourceTimer.swift in Sources */,
+				1A43085123C35DDA001A89EA /* CoHandleFuture.swift in Sources */,
 				1A65BABB239CE05D004C1716 /* CoroutineContext.swift in Sources */,
 				1A9C14D523BB4F0400E13203 /* CoPromise.swift in Sources */,
 				1A739A7923ACFAF100165280 /* CoFututre+Operators.swift in Sources */,
@@ -651,6 +656,7 @@
 				F8CD25ED2019A0F800952299 /* CCoroutine.c in Sources */,
 				1A739ACB23B1123900165280 /* Dispatcher+Scheduler.swift in Sources */,
 				1A43084623C094EC001A89EA /* DispatchSourceTimer.swift in Sources */,
+				1A43085223C35DDA001A89EA /* CoHandleFuture.swift in Sources */,
 				1A9C14D623BB4F0400E13203 /* CoPromise.swift in Sources */,
 				1A739A7A23ACFAF100165280 /* CoFututre+Operators.swift in Sources */,
 				1A739ABB23B0B89600165280 /* CoFututeComposite.swift in Sources */,

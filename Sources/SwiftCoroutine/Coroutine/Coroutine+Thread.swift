@@ -10,16 +10,16 @@ import Foundation
 
 extension Coroutine {
     
-    public static func current() throws -> Coroutine {
+    @inlinable public static func current() throws -> Coroutine {
         if let coroutine = Thread.current.currentCoroutine { return coroutine }
         throw CoroutineError.mustBeCalledInsideCoroutine
     }
     
-    public static var isInsideCoroutine: Bool {
+    @inlinable public static var isInsideCoroutine: Bool {
         Thread.current.currentCoroutine != nil
     }
     
-    public var isCurrent: Bool {
+    @inlinable public var isCurrent: Bool {
         self === Thread.current.currentCoroutine
     }
     
@@ -35,9 +35,9 @@ extension Coroutine {
 
 extension Thread {
     
-    fileprivate var currentCoroutine: Coroutine? {
-        @inline(__always) get { threadDictionary.value(forKey: #function) as? Coroutine }
-        @inline(__always) set { threadDictionary.setValue(newValue, forKey: #function) }
+    @inlinable var currentCoroutine: Coroutine? {
+        get { threadDictionary.value(forKey: #function) as? Coroutine }
+        set { threadDictionary.setValue(newValue, forKey: #function) }
     }
     
 }
