@@ -9,7 +9,7 @@
 import Combine
 
 @available(OSX 10.15, iOS 13.0, *)
-extension CoFuture: Publisher, Cancellable {
+extension CoFuture: Publisher {
     
     public typealias Failure = Error
     

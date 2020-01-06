@@ -24,10 +24,6 @@ public class CoFuture<Output> {
     @inlinable public var result: OutputResult? { nil }
     @inlinable func saveResult(_ result: OutputResult) {}
     
-    @inlinable public func cancel() {
-        complete(with: .failure(FutureError.cancelled))
-    }
-    
 }
 
 extension CoFuture {
@@ -48,6 +44,10 @@ extension CoFuture {
 }
 
 extension CoFuture: CoCancellable {
+    
+    @inlinable public func cancel() {
+        complete(with: .failure(FutureError.cancelled))
+    }
     
     @inlinable public var isCancelled: Bool {
         if case .failure(let error as FutureError) = result {

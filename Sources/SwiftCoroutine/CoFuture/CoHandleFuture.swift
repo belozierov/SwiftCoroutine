@@ -20,11 +20,6 @@ class CoHandleFuture<Output>: CoFuture<Output> {
         parent.result
     }
     
-    @inlinable override func cancel() {
-        parent.unsubscribe(identifier)
-        super.cancel()
-    }
-    
     private func subscribe(with handler: @escaping OutputHandler) {
         mutex.lock()
         if let result = result {
@@ -32,8 +27,14 @@ class CoHandleFuture<Output>: CoFuture<Output> {
             return handler(result)
         }
         subscribe(with: identifier, handler: handler)
-        parent.subscribe(with: identifier, handler: complete)
+        parent.subscribe(with: identifier) { [unowned self] in
+            self.complete(with: $0)
+        }
         mutex.unlock()
+    }
+    
+    deinit {
+        parent.unsubscribe(identifier)
     }
     
 }

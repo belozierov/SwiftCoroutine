@@ -53,8 +53,8 @@ class SwiftCoroutineTests: XCTestCase {
             guard let dataArray = try? future.await() else { return XCTFail() }
             XCTAssertEqual(dataArray.count, 3)
         }
-        future.onResult(on: .global) {
-            XCTAssertEqual(try? $0.get().count, 3)
+        future.notifyOnSuccess(on: .global) {
+            XCTAssertEqual($0.count, 3)
             expectation2.fulfill()
         }
         wait(for: [expectation, expectation2], timeout: 60)

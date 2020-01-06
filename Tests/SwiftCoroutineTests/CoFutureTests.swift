@@ -23,13 +23,11 @@ class CoFutureTests: XCTestCase {
             .onError { _ in XCTFail() }
             .transformValue { $0 * 3 }
             .onSuccess { XCTAssertEqual($0, 6) }
-            .onSuccess { XCTAssertEqual($0, 6) }
-            .onSuccess { XCTAssertEqual($0, 6) }
             .onSuccess { _ in expectation.fulfill() }
             .transformValue { $0.description }
             .onResult { expectation.fulfill() }
-        let _ = transformed.onResult(on: .global) {
-            XCTAssertEqual(try? $0.get(), "6")
+        transformed.notifyOnSuccess(on: .global) {
+            XCTAssertEqual($0, "6")
             expectation.fulfill()
         }
         wait(for: [expectation], timeout: 5)

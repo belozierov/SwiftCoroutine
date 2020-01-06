@@ -6,7 +6,9 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
-protocol CoCancellable {
+import Combine
+
+public protocol CoCancellable: Cancellable {
     
     func cancel()
     
