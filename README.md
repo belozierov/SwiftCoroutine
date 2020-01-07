@@ -39,7 +39,7 @@ coroutine {
 
 `SwiftCoroutine` is available through the [Swift Package Manager](https://swift.org/package-manager) for macOS and iOS.
 
-## Working with SwiftCoroutine
+## Working with Swift Coroutine
 
 ### Futures and promises
 
