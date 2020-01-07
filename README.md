@@ -55,7 +55,7 @@ func makeSomeFuture() -> CoFuture<Int> {
 }
 
 let future = makeSomeFuture().transformValue { $0.description } 
-future.onResult(on: .global) { result in
+future.notifyOnResult(on: .global) { result in
     //do some work with result of type Result<String, Error>
 }
 ```
