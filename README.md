@@ -1,5 +1,5 @@
 
-![SwiftCoroutine](../master/Sources/logo.png)
+![Swift Coroutine](../master/Sources/logo.png)
 
 Many languages such as Kotlin, JavaScript, Go, Rust, C ++, and others already have [coroutines](https://en.wikipedia.org/wiki/Coroutine) support, which makes the use of asynchronous code easier. Unfortunately, Apple is still behind on this feature. But this can be improved by a framework without the need to change the language.
 
