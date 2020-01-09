@@ -27,6 +27,7 @@ coroutine {
     
     //coroutine is performed on the main thread, that's why we can set the image in UIImageView
     self.imageView.image = UIImage(data: data)
+    
 }.onError { error in
     //error handling if needed
 }
