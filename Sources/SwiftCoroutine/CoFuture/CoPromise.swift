@@ -6,22 +6,10 @@
 //  Copyright © 2019 Alex Belozierov. All rights reserved.
 //
 
-public class CoPromise<Output>: CoFuture<Output> {
+final public class CoPromise<Output>: CoFuture<Output> {
     
-    private var _result: OutputResult?
-    
-    @inlinable public init() {
+    public init() {
         super.init()
-    }
-    
-    public override var result: Result<Output, Error>? {
-        mutex.lock()
-        defer { mutex.unlock() }
-        return _result
-    }
-    
-    override func saveResult(_ result: OutputResult) {
-        _result = result
     }
     
 }

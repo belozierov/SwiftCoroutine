@@ -19,14 +19,14 @@ class CoFutureTests: XCTestCase {
             return 1
         }
         let transformed = promise
-            .transformValue { $0 * 2 }
+            .transformOutput { $0 * 2 }
             .onError { _ in XCTFail() }
-            .transformValue { $0 * 3 }
+            .transformOutput { $0 * 3 }
             .onSuccess { XCTAssertEqual($0, 6) }
             .onSuccess { _ in expectation.fulfill() }
-            .transformValue { $0.description }
+            .transformOutput { $0.description }
             .onResult { expectation.fulfill() }
-        transformed.notifyOnSuccess(on: .global) {
+        transformed.onSuccess(on: .global) {
             XCTAssertEqual($0, "6")
             expectation.fulfill()
         }

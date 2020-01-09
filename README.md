@@ -26,6 +26,8 @@ coroutine {
     
     //coroutine is performed on the main thread, that's why we can set the image in UIImageView
     self.imageView.image = UIImage(data: data)
+}.onError { error in
+    //error handling if needed
 }
 ```
 
@@ -43,7 +45,7 @@ coroutine {
 
 ### Futures and promises
 
-Futures and promises are represented by the respective `CoFuture` class and its `CoPromise` and `CoLazyPromise` subclasses, which are generics to the type they return. They are thread-safe and have the support of the basic required functionality, including `await` mechanism, `onResult` on completion, and using the `transform` function you can build chains.
+Futures and promises are represented by the respective `CoFuture` class and its `CoPromise` subclass, which are generics to the type they return. They are thread-safe and have the support of the basic required functionality, including `await` mechanism, `onResult` on completion, and using the `transform` function you can build chains.
 
 ```swift
 func makeSomeFuture() -> CoFuture<Int> {
@@ -54,8 +56,8 @@ func makeSomeFuture() -> CoFuture<Int> {
     return promise
 }
 
-let future = makeSomeFuture().transformValue { $0.description } 
-future.notifyOnResult(on: .global) { result in
+let future = makeSomeFuture().transformOutput { $0.description } 
+future.onResult(on: .global) { result in
     //do some work with result of type Result<String, Error>
 }
 ```

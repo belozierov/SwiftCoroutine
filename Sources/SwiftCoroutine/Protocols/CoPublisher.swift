@@ -13,7 +13,7 @@ public protocol CoPublisher {
     typealias OutputHandler = (OutputResult) -> Void
     
     func subscribe(with identifier: AnyHashable, handler: @escaping OutputHandler)
-    func unsubscribe(_ identifier: AnyHashable)
+    func unsubscribe(_ identifier: AnyHashable) -> OutputHandler?
     func await() throws -> Output
     
 }

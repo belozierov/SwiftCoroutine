@@ -20,6 +20,10 @@ extension CoFuture {
         }
     }
     
+    @inlinable public func awaitResult() -> OutputResult {
+        Result(catching: await)
+    }
+    
     public func await(timeout: DispatchTime) throws -> Output {
         let coroutine = try Coroutine.current(), mutex = self.mutex
         var isTimeOut = false

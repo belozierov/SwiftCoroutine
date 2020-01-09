@@ -45,7 +45,7 @@ class SwiftCoroutineTests: XCTestCase {
             session.data(for: .testImageURL)
             session.data(for: .testImageURL)
             session.data(for: .testImageURL)
-        }.transformValue {
+        }.transformOutput {
             $0.map { $0.data }
         }
         coroutine {
@@ -53,7 +53,7 @@ class SwiftCoroutineTests: XCTestCase {
             guard let dataArray = try? future.await() else { return XCTFail() }
             XCTAssertEqual(dataArray.count, 3)
         }
-        future.notifyOnSuccess(on: .global) {
+        future.onSuccess(on: .global) {
             XCTAssertEqual($0.count, 3)
             expectation2.fulfill()
         }
@@ -70,10 +70,6 @@ class SwiftCoroutineTests: XCTestCase {
             sleep(3)
             return 6
         }
-        let item3 = CoLazyPromise<Int>(on: .global) {
-            sleep(1)
-            return 6
-        }
         let date = Date()
         coroutine {
             let current = try Coroutine.current()
@@ -81,6 +77,10 @@ class SwiftCoroutineTests: XCTestCase {
             try Coroutine.delay(1)
             XCTAssertDuration(from: date, in: 1..<2)
             subroutine {
+                let item3 = async { () -> Int in
+                    sleep(1)
+                    return 6
+                }
                 XCTAssertEqual(try? item3.await(), 6)
                 XCTAssertTrue(current.isCurrent)
             }
@@ -167,26 +167,6 @@ class SwiftCoroutineTests: XCTestCase {
         XCTAssertEqual(result, (0..<5).map { $0 })
     }
     
-    func testLazyPromise() {
-        let expectation = XCTestExpectation(description: "Lazy promise test")
-        let item1 = CoLazyPromise<Int> {
-            sleep(2)
-            $0(.success(5))
-        }
-        let item2 = CoLazyPromise<Int>(on: .global) {
-            sleep(1)
-            $0(.success(6))
-        }
-        let date = Date()
-        coroutine(on: .global) {
-            let result = try item1.await() + item2.await()
-            XCTAssertEqual(result, 11)
-            XCTAssertDuration(from: date, in: 3..<4)
-            expectation.fulfill()
-        }
-        wait(for: [expectation], timeout: 5)
-    }
-    
     func testAwaitTimeOut() {
         let expectation = XCTestExpectation(description: "Await timeout")
         let date = Date()
@@ -246,6 +226,23 @@ class SwiftCoroutineTests: XCTestCase {
             XCTAssertEqual(cor.state, .running)
         }
         XCTAssertEqual(cor.state, .prepared)
+    }
+    
+    func testCoroutineError() {
+        let expectation = XCTestExpectation(description: "Coroutine error test")
+        expectation.expectedFulfillmentCount = 2
+        coroutine {
+            try Coroutine.delay(1)
+            throw Coroutine.CoroutineError.mustBeCalledInsideCoroutine
+        }.onError {
+            if let error = $0 as? Coroutine.CoroutineError {
+                XCTAssertEqual(error, .mustBeCalledInsideCoroutine)
+            } else {
+                XCTFail()
+            }
+            expectation.fulfill()
+        }.onResult(execute: expectation.fulfill)
+        wait(for: [expectation], timeout: 5)
     }
     
 }

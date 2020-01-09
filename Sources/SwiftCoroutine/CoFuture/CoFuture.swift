@@ -15,38 +15,31 @@ public class CoFuture<Output> {
     }
     
     let mutex: NSRecursiveLock
-    private var subscriptions = [AnyHashable: OutputHandler]()
+    @RefBox var resultStorage: OutputResult?
+    @ArcRefBox var subscriptions: [AnyHashable: OutputHandler]?
     
-    @usableFromInline init(mutex: NSRecursiveLock = .init()) {
+    init(mutex: NSRecursiveLock = .init(),
+         resultStorage: RefBox<OutputResult?> = .init(),
+         subscriptions: ArcRefBox<[AnyHashable: OutputHandler]> = .init(value: [:])) {
         self.mutex = mutex
+        _resultStorage = resultStorage
+        _subscriptions = subscriptions
     }
     
-    @inlinable public var result: OutputResult? { nil }
-    @inlinable func saveResult(_ result: OutputResult) {}
+    @inlinable public func cancel() {
+        complete(with: .failure(FutureError.cancelled))
+    }
     
 }
 
 extension CoFuture {
     
-    @inlinable public var identifier: Int {
-        unsafeBitCast(self, to: Int.self)
-    }
+    // MARK: - Result
     
-    @usableFromInline func complete(with result: OutputResult) {
+    public var result: OutputResult? {
         mutex.lock()
-        saveResult(result)
-        let items = subscriptions
-        subscriptions.removeAll()
-        mutex.unlock()
-        items.values.forEach { $0(result) }
-    }
-    
-}
-
-extension CoFuture: CoCancellable {
-    
-    @inlinable public func cancel() {
-        complete(with: .failure(FutureError.cancelled))
+        defer { mutex.unlock() }
+        return resultStorage
     }
     
     @inlinable public var isCancelled: Bool {
@@ -56,6 +49,23 @@ extension CoFuture: CoCancellable {
         return false
     }
     
+    @usableFromInline func complete(with result: OutputResult) {
+        mutex.lock()
+        guard resultStorage == nil
+            else { return mutex.unlock() }
+        resultStorage = result
+        let handlers = subscriptions
+        subscriptions?.removeAll()
+        mutex.unlock()
+        handlers?.values.forEach { $0(result) }
+    }
+    
+    // MARK: - Identifier
+    
+    @inlinable public var identifier: Int {
+        unsafeBitCast(self, to: Int.self)
+    }
+    
 }
 
 extension CoFuture: CoPublisher {
@@ -63,14 +73,25 @@ extension CoFuture: CoPublisher {
     public typealias Output = Output
     
     public func subscribe(with identifier: AnyHashable, handler: @escaping OutputHandler) {
-        subscriptions[identifier] = handler
+        mutex.lock()
+        if let result = resultStorage {
+            mutex.unlock()
+            return handler(result)
+        }
+        subscriptions?[identifier] = handler
+        mutex.unlock()
     }
     
-    public func unsubscribe(_ identifier: AnyHashable) {
-        subscriptions[identifier] = nil
+    @discardableResult
+    public func unsubscribe(_ identifier: AnyHashable) -> OutputHandler? {
+        mutex.lock()
+        defer { mutex.unlock() }
+        return subscriptions?.removeValue(forKey: identifier)
     }
     
 }
+
+extension CoFuture: CoCancellable {}
 
 extension CoFuture: Hashable {
     
@@ -83,3 +104,5 @@ extension CoFuture: Hashable {
     }
     
 }
+
+
