@@ -16,7 +16,7 @@ final class CoHandleFuture<Output>: CoFuture<Output> {
     }
     
     @inlinable override func cancel() {
-        unsubscribe(identifier)?(.failure(FutureError.cancelled))
+        unsubscribe(identifier)?(.failure(CoFutureError.cancelled))
     }
     
 }

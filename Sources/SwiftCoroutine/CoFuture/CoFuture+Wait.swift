@@ -27,7 +27,7 @@ extension CoFuture {
         mutex.unlock()
         if let timeout = timeout {
             if group.wait(timeout: timeout) == .timedOut {
-                throw FutureError.timeout
+                throw CoFutureError.timeout
             }
         } else {
             group.wait()

@@ -10,10 +10,6 @@ import Foundation
 
 public class CoFuture<Output> {
     
-    public enum FutureError: Error {
-        case cancelled, timeout
-    }
-    
     let mutex: NSRecursiveLock
     @RefBox var resultStorage: OutputResult?
     @ArcRefBox var subscriptions: [AnyHashable: OutputHandler]?
@@ -27,7 +23,7 @@ public class CoFuture<Output> {
     }
     
     @inlinable public func cancel() {
-        complete(with: .failure(FutureError.cancelled))
+        complete(with: .failure(CoFutureError.cancelled))
     }
     
 }
@@ -43,7 +39,7 @@ extension CoFuture {
     }
     
     @inlinable public var isCancelled: Bool {
-        if case .failure(let error as FutureError) = result {
+        if case .failure(let error as CoFutureError) = result {
             return error == .cancelled
         }
         return false

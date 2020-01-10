@@ -37,7 +37,7 @@ extension CoFuture {
         defer { timer.cancel() }
         while true {
             mutex.lock()
-            if isTimeOut { throw FutureError.timeout }
+            if isTimeOut { throw CoFutureError.timeout }
             if let result = result { return try result.get() }
             coroutine.suspend {
                 self.subscribe(with: coroutine) {

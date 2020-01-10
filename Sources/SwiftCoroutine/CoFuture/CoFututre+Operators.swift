@@ -52,4 +52,12 @@ extension CoFuture {
         }
     }
     
+    @inlinable @discardableResult
+    public func onFutureError(_ futureError: CoFutureError, on dispatcher: Dispatcher = .sync, execute handler: @escaping () -> Void) -> CoFuture<Output> {
+        onResult(on: dispatcher) {
+            if case .failure(let error as CoFutureError) = $0,
+                error == futureError { handler() }
+        }
+    }
+    
 }

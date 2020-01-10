@@ -54,8 +54,4 @@ struct ArcRefBox<T> {
         .init(weak: _weak)
     }
     
-    @inlinable var isStrong: Bool {
-        strong == nil
-    }
-    
 }

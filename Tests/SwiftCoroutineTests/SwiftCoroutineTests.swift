@@ -93,9 +93,6 @@ class SwiftCoroutineTests: XCTestCase {
             try future.await()
             XCTAssertTrue(current.isCurrent)
             XCTAssertDuration(from: date, in: 4..<5)
-            try future.wait()
-            XCTAssertTrue(current.isCurrent)
-            XCTAssertDuration(from: date, in: 4..<5)
             try Coroutine.delay(1)
             XCTAssertDuration(from: date, in: 5..<6)
             expectation.fulfill()
@@ -175,14 +172,8 @@ class SwiftCoroutineTests: XCTestCase {
             return 5
         }
         coroutine {
-            do {
-                _ = try future.await(timeout: .now() + 1)
-                XCTFail()
-            } catch let error as CoFuture<Int>.FutureError {
-                XCTAssert(error == .timeout)
-            } catch {
-                XCTFail()
-            }
+            _ = try future.await(timeout: .now() + 1)
+        }.onFutureError(.timeout) {
             XCTAssertDuration(from: date, in: 1..<2)
             expectation.fulfill()
         }
@@ -226,23 +217,6 @@ class SwiftCoroutineTests: XCTestCase {
             XCTAssertEqual(cor.state, .running)
         }
         XCTAssertEqual(cor.state, .prepared)
-    }
-    
-    func testCoroutineError() {
-        let expectation = XCTestExpectation(description: "Coroutine error test")
-        expectation.expectedFulfillmentCount = 2
-        coroutine {
-            try Coroutine.delay(1)
-            throw Coroutine.CoroutineError.mustBeCalledInsideCoroutine
-        }.onError {
-            if let error = $0 as? Coroutine.CoroutineError {
-                XCTAssertEqual(error, .mustBeCalledInsideCoroutine)
-            } else {
-                XCTFail()
-            }
-            expectation.fulfill()
-        }.onResult(execute: expectation.fulfill)
-        wait(for: [expectation], timeout: 5)
     }
     
 }
