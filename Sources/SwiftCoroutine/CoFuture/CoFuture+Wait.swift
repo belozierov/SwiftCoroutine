@@ -12,11 +12,6 @@ extension CoFuture {
     
     public func wait(timeout: DispatchTime? = nil) throws -> Output {
         assert(!Coroutine.isInsideCoroutine, "Use await inside coroutine")
-        mutex.lock()
-        if let result = result {
-            mutex.unlock()
-            return try result.get()
-        }
         var result: OutputResult!
         let group = DispatchGroup()
         group.enter()
@@ -24,7 +19,6 @@ extension CoFuture {
             result = $0
             group.leave()
         }
-        mutex.unlock()
         if let timeout = timeout {
             if group.wait(timeout: timeout) == .timedOut {
                 throw CoFutureError.timeout

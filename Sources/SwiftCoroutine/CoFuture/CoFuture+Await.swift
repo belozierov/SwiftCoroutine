@@ -6,7 +6,7 @@
 //  Copyright © 2019 Alex Belozierov. All rights reserved.
 //
 
-import Dispatch
+import Foundation
 
 extension CoFuture {
     
@@ -25,7 +25,7 @@ extension CoFuture {
     }
     
     public func await(timeout: DispatchTime) throws -> Output {
-        let coroutine = try Coroutine.current(), mutex = self.mutex
+        let coroutine = try Coroutine.current(), mutex = NSLock()
         var isTimeOut = false
         let timer = DispatchSource.createTimer(timeout: timeout) {
             mutex.lock()

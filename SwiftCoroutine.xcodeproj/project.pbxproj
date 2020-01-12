@@ -31,8 +31,8 @@
 		1A6E1ACD23B8EC1300236A47 /* CoroutineContext+Pool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6E1ACB23B8EC1300236A47 /* CoroutineContext+Pool.swift */; };
 		1A739A6B23AC141500165280 /* Coroutine+Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A739A6A23AC141500165280 /* Coroutine+Debug.swift */; };
 		1A739A6C23AC141500165280 /* Coroutine+Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A739A6A23AC141500165280 /* Coroutine+Debug.swift */; };
-		1A739A7623ACE66B00165280 /* CoFutureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A739A7323ACE63E00165280 /* CoFutureTests.swift */; };
-		1A739A7723ACE66C00165280 /* CoFutureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A739A7323ACE63E00165280 /* CoFutureTests.swift */; };
+		1A739A7623ACE66B00165280 /* CoFutureTests2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A739A7323ACE63E00165280 /* CoFutureTests2.swift */; };
+		1A739A7723ACE66C00165280 /* CoFutureTests2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A739A7323ACE63E00165280 /* CoFutureTests2.swift */; };
 		1A739A7923ACFAF100165280 /* CoFututre+Operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A739A7823ACFAF100165280 /* CoFututre+Operators.swift */; };
 		1A739A7A23ACFAF100165280 /* CoFututre+Operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A739A7823ACFAF100165280 /* CoFututre+Operators.swift */; };
 		1A739ABA23B0B89600165280 /* CoFututeComposite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A739AB923B0B89600165280 /* CoFututeComposite.swift */; };
@@ -84,10 +84,22 @@
 		1AB8B30E23BA31510052E72F /* CoGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB8B30C23BA31510052E72F /* CoGenerator.swift */; };
 		1AB8B31123BA3A7F0052E72F /* CoPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB8B31023BA3A7F0052E72F /* CoPublisher.swift */; };
 		1AB8B31223BA3A7F0052E72F /* CoPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB8B31023BA3A7F0052E72F /* CoPublisher.swift */; };
+		1AEC382023CA01320000101A /* CoFutureOperatorsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEC381F23CA01320000101A /* CoFutureOperatorsTests.swift */; };
+		1AEC382123CA01320000101A /* CoFutureOperatorsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEC381F23CA01320000101A /* CoFutureOperatorsTests.swift */; };
+		1AEC382323CA02C90000101A /* XCTOrderedExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEC382223CA02C90000101A /* XCTOrderedExpectation.swift */; };
+		1AEC382423CA02C90000101A /* XCTOrderedExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEC382223CA02C90000101A /* XCTOrderedExpectation.swift */; };
 		1AECF5A923BA0E1D002A0493 /* CoFuture+Wait.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AECF5A823BA0E1D002A0493 /* CoFuture+Wait.swift */; };
 		1AECF5AA23BA0E1D002A0493 /* CoFuture+Wait.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AECF5A823BA0E1D002A0493 /* CoFuture+Wait.swift */; };
 		1AFFF6ED23C8BDEA0079FF73 /* CoFutureError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFFF6EC23C8BDEA0079FF73 /* CoFutureError.swift */; };
 		1AFFF6EE23C8BDEA0079FF73 /* CoFutureError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFFF6EC23C8BDEA0079FF73 /* CoFutureError.swift */; };
+		1AFFF6F123C9002C0079FF73 /* CoFutureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFFF6F023C9002C0079FF73 /* CoFutureTests.swift */; };
+		1AFFF6F223C9002C0079FF73 /* CoFutureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFFF6F023C9002C0079FF73 /* CoFutureTests.swift */; };
+		1AFFF6F423C907280079FF73 /* CoPromiseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFFF6F323C907280079FF73 /* CoPromiseTests.swift */; };
+		1AFFF6F523C907280079FF73 /* CoPromiseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFFF6F323C907280079FF73 /* CoPromiseTests.swift */; };
+		1AFFF6F723C909C40079FF73 /* CoTransformFutureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFFF6F623C909C40079FF73 /* CoTransformFutureTests.swift */; };
+		1AFFF6F823C909C40079FF73 /* CoTransformFutureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFFF6F623C909C40079FF73 /* CoTransformFutureTests.swift */; };
+		1AFFF6FA23C9E74D0079FF73 /* CoHandleFutureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFFF6F923C9E74C0079FF73 /* CoHandleFutureTests.swift */; };
+		1AFFF6FB23C9E74D0079FF73 /* CoHandleFutureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AFFF6F923C9E74C0079FF73 /* CoHandleFutureTests.swift */; };
 		F8CD258F20199CF700952299 /* SwiftCoroutine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8CD258620199CF700952299 /* SwiftCoroutine.framework */; };
 		F8CD25AB20199D1000952299 /* SwiftCoroutine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8CD25A220199D1000952299 /* SwiftCoroutine.framework */; };
 		F8CD25E92019A01600952299 /* CCoroutine.c in Sources */ = {isa = PBXBuildFile; fileRef = F810EEFF1F8F2E1C00025AD1 /* CCoroutine.c */; };
@@ -129,7 +141,7 @@
 		1A65BACD239D9D79004C1716 /* Coroutine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coroutine.swift; sourceTree = "<group>"; };
 		1A6E1ACB23B8EC1300236A47 /* CoroutineContext+Pool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoroutineContext+Pool.swift"; sourceTree = "<group>"; };
 		1A739A6A23AC141500165280 /* Coroutine+Debug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coroutine+Debug.swift"; sourceTree = "<group>"; };
-		1A739A7323ACE63E00165280 /* CoFutureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoFutureTests.swift; sourceTree = "<group>"; };
+		1A739A7323ACE63E00165280 /* CoFutureTests2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoFutureTests2.swift; sourceTree = "<group>"; };
 		1A739A7823ACFAF100165280 /* CoFututre+Operators.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoFututre+Operators.swift"; sourceTree = "<group>"; };
 		1A739AB923B0B89600165280 /* CoFututeComposite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoFututeComposite.swift; sourceTree = "<group>"; };
 		1A739ABC23B0FF6100165280 /* Dispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dispatcher.swift; sourceTree = "<group>"; };
@@ -155,8 +167,14 @@
 		1AB2F6932395531400B7B1FD /* Generator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Generator.swift; sourceTree = "<group>"; };
 		1AB8B30C23BA31510052E72F /* CoGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoGenerator.swift; sourceTree = "<group>"; };
 		1AB8B31023BA3A7F0052E72F /* CoPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoPublisher.swift; sourceTree = "<group>"; };
+		1AEC381F23CA01320000101A /* CoFutureOperatorsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoFutureOperatorsTests.swift; sourceTree = "<group>"; };
+		1AEC382223CA02C90000101A /* XCTOrderedExpectation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCTOrderedExpectation.swift; sourceTree = "<group>"; };
 		1AECF5A823BA0E1D002A0493 /* CoFuture+Wait.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoFuture+Wait.swift"; sourceTree = "<group>"; };
 		1AFFF6EC23C8BDEA0079FF73 /* CoFutureError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoFutureError.swift; sourceTree = "<group>"; };
+		1AFFF6F023C9002C0079FF73 /* CoFutureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoFutureTests.swift; sourceTree = "<group>"; };
+		1AFFF6F323C907280079FF73 /* CoPromiseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoPromiseTests.swift; sourceTree = "<group>"; };
+		1AFFF6F623C909C40079FF73 /* CoTransformFutureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoTransformFutureTests.swift; sourceTree = "<group>"; };
+		1AFFF6F923C9E74C0079FF73 /* CoHandleFutureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoHandleFutureTests.swift; sourceTree = "<group>"; };
 		F810EEFA1F8F2B3E00025AD1 /* LICENCE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENCE; sourceTree = "<group>"; };
 		F810EEFB1F8F2B4D00025AD1 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		F810EEFF1F8F2E1C00025AD1 /* CCoroutine.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = CCoroutine.c; sourceTree = "<group>"; };
@@ -256,6 +274,7 @@
 				1A934FB7239029B700155B71 /* URLSession+Extensions.swift */,
 				1A934FBA23902A5300155B71 /* URL+Extensions.swift */,
 				1A934FC3239031C000155B71 /* XCTAssertContains.swift */,
+				1AEC382223CA02C90000101A /* XCTOrderedExpectation.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -309,6 +328,18 @@
 			path = Pool;
 			sourceTree = "<group>";
 		};
+		1AFFF6EF23C900120079FF73 /* CoFutureTests */ = {
+			isa = PBXGroup;
+			children = (
+				1AFFF6F023C9002C0079FF73 /* CoFutureTests.swift */,
+				1AFFF6F323C907280079FF73 /* CoPromiseTests.swift */,
+				1AFFF6F623C909C40079FF73 /* CoTransformFutureTests.swift */,
+				1AFFF6F923C9E74C0079FF73 /* CoHandleFutureTests.swift */,
+				1AEC381F23CA01320000101A /* CoFutureOperatorsTests.swift */,
+			);
+			path = CoFutureTests;
+			sourceTree = "<group>";
+		};
 		F810EEFD1F8F2D9000025AD1 /* CCoroutine */ = {
 			isa = PBXGroup;
 			children = (
@@ -336,11 +367,12 @@
 		F810EF0B1F8F302700025AD1 /* SwiftCoroutineTests */ = {
 			isa = PBXGroup;
 			children = (
+				1AFFF6EF23C900120079FF73 /* CoFutureTests */,
 				1A934FB6239029A300155B71 /* Extensions */,
 				F810EF0E1F8F302700025AD1 /* Info.plist */,
 				F810EF0C1F8F302700025AD1 /* SwiftCoroutineTests.swift */,
 				1A934FB1239028CA00155B71 /* CombineTests.swift */,
-				1A739A7323ACE63E00165280 /* CoFutureTests.swift */,
+				1A739A7323ACE63E00165280 /* CoFutureTests2.swift */,
 			);
 			path = SwiftCoroutineTests;
 			sourceTree = "<group>";
@@ -623,8 +655,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1AFFF6FA23C9E74D0079FF73 /* CoHandleFutureTests.swift in Sources */,
 				1A934FC4239031C000155B71 /* XCTAssertContains.swift in Sources */,
-				1A739A7623ACE66B00165280 /* CoFutureTests.swift in Sources */,
+				1AFFF6F123C9002C0079FF73 /* CoFutureTests.swift in Sources */,
+				1A739A7623ACE66B00165280 /* CoFutureTests2.swift in Sources */,
+				1AFFF6F723C909C40079FF73 /* CoTransformFutureTests.swift in Sources */,
+				1AEC382023CA01320000101A /* CoFutureOperatorsTests.swift in Sources */,
+				1AEC382323CA02C90000101A /* XCTOrderedExpectation.swift in Sources */,
+				1AFFF6F423C907280079FF73 /* CoPromiseTests.swift in Sources */,
 				F8CD25F92019A19A00952299 /* SwiftCoroutineTests.swift in Sources */,
 				1A934FBB23902A5300155B71 /* URL+Extensions.swift in Sources */,
 				1A934FB4239028E900155B71 /* CombineTests.swift in Sources */,
@@ -679,8 +717,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1AFFF6FB23C9E74D0079FF73 /* CoHandleFutureTests.swift in Sources */,
 				1A934FC5239031C000155B71 /* XCTAssertContains.swift in Sources */,
-				1A739A7723ACE66C00165280 /* CoFutureTests.swift in Sources */,
+				1AFFF6F223C9002C0079FF73 /* CoFutureTests.swift in Sources */,
+				1A739A7723ACE66C00165280 /* CoFutureTests2.swift in Sources */,
+				1AFFF6F823C909C40079FF73 /* CoTransformFutureTests.swift in Sources */,
+				1AEC382123CA01320000101A /* CoFutureOperatorsTests.swift in Sources */,
+				1AEC382423CA02C90000101A /* XCTOrderedExpectation.swift in Sources */,
+				1AFFF6F523C907280079FF73 /* CoPromiseTests.swift in Sources */,
 				1A934FBC23902A5300155B71 /* URL+Extensions.swift in Sources */,
 				1A94E5C223A3E6A300812AFD /* SwiftCoroutineTests.swift in Sources */,
 				1A94E5C323A3E6A600812AFD /* CombineTests.swift in Sources */,

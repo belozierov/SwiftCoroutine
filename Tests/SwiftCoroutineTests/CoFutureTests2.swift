@@ -9,7 +9,7 @@
 import XCTest
 import SwiftCoroutine
 
-class CoFutureTests: XCTestCase {
+class CoFutureTests2: XCTestCase {
     
     func testTransform() {
         let expectation = XCTestExpectation(description: "Test Transform")
@@ -25,7 +25,7 @@ class CoFutureTests: XCTestCase {
             .onSuccess { XCTAssertEqual($0, 6) }
             .onSuccess { _ in expectation.fulfill() }
             .transformOutput { $0.description }
-            .onResult { expectation.fulfill() }
+            .onCompletion { expectation.fulfill() }
         transformed.onSuccess(on: .global) {
             XCTAssertEqual($0, "6")
             expectation.fulfill()

@@ -8,15 +8,22 @@
 
 final class CoHandleFuture<Output>: CoFuture<Output> {
     
+    private let subscribeIdentifier: AnyHashable
+    
     @inlinable init(parent: CoFuture<Output>, handler: @escaping OutputHandler) {
+        subscribeIdentifier = parent.addHandler(handler)
         super.init(mutex: parent.mutex,
                    resultStorage: parent.$resultStorage,
                    subscriptions: parent.$subscriptions.weak)
-        subscribe(with: identifier, handler: handler)
     }
     
     @inlinable override func cancel() {
-        unsubscribe(identifier)?(.failure(CoFutureError.cancelled))
+        mutex.lock()
+        guard resultStorage == nil else { return mutex.unlock() }
+        newResultStorage(with: .failure(CoFutureError.cancelled))
+        let handler = subscriptions?.removeValue(forKey: subscribeIdentifier)
+        mutex.unlock()
+        handler?(.failure(CoFutureError.cancelled))
     }
     
 }

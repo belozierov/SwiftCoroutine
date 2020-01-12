@@ -10,12 +10,11 @@ import Foundation
 
 public class CoFuture<Output> {
     
-    let mutex: NSRecursiveLock
+    let mutex: NSLock
     @RefBox var resultStorage: OutputResult?
     @ArcRefBox var subscriptions: [AnyHashable: OutputHandler]?
     
-    init(mutex: NSRecursiveLock = .init(),
-         resultStorage: RefBox<OutputResult?> = .init(),
+    init(mutex: NSLock = .init(), resultStorage: RefBox<OutputResult?> = .init(),
          subscriptions: ArcRefBox<[AnyHashable: OutputHandler]> = .init(value: [:])) {
         self.mutex = mutex
         _resultStorage = resultStorage
@@ -30,19 +29,10 @@ public class CoFuture<Output> {
 
 extension CoFuture {
     
-    // MARK: - Result
-    
     public var result: OutputResult? {
         mutex.lock()
         defer { mutex.unlock() }
         return resultStorage
-    }
-    
-    @inlinable public var isCancelled: Bool {
-        if case .failure(let error as CoFutureError) = result {
-            return error == .cancelled
-        }
-        return false
     }
     
     @usableFromInline func complete(with result: OutputResult) {
@@ -56,10 +46,8 @@ extension CoFuture {
         handlers?.values.forEach { $0(result) }
     }
     
-    // MARK: - Identifier
-    
-    @inlinable public var identifier: Int {
-        unsafeBitCast(self, to: Int.self)
+    func newResultStorage(with value: OutputResult?) {
+        _resultStorage = .init(wrappedValue: value)
     }
     
 }
@@ -87,7 +75,16 @@ extension CoFuture: CoPublisher {
     
 }
 
-extension CoFuture: CoCancellable {}
+extension CoFuture: CoCancellable {
+    
+    @inlinable public var isCancelled: Bool {
+        if case .failure(let error as CoFutureError) = result {
+            return error == .cancelled
+        }
+        return false
+    }
+    
+}
 
 extension CoFuture: Hashable {
     

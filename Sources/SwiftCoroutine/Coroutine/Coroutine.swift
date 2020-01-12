@@ -100,11 +100,11 @@ public class Coroutine {
 
 extension Coroutine: Hashable {
     
-    public static func == (lhs: Coroutine, rhs: Coroutine) -> Bool {
+    @inlinable public static func == (lhs: Coroutine, rhs: Coroutine) -> Bool {
         lhs === rhs
     }
     
-    public func hash(into hasher: inout Hasher) {
+    @inlinable public func hash(into hasher: inout Hasher) {
         ObjectIdentifier(self).hash(into: &hasher)
     }
     

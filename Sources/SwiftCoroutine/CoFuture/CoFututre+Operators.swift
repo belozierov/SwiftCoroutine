@@ -30,7 +30,7 @@ extension CoFuture {
     }
     
     @inlinable @discardableResult
-    public func onResult(on dispatcher: Dispatcher = .sync, execute completion: @escaping () -> Void) -> CoFuture<Output> {
+    public func onCompletion(on dispatcher: Dispatcher = .sync, execute completion: @escaping () -> Void) -> CoFuture<Output> {
         onResult(on: dispatcher) { _ in completion() }
     }
     

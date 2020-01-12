@@ -9,18 +9,18 @@
 final class CoTransformFuture<Input, Output>: CoFuture<Output> {
     
     typealias Transformer = (Result<Input, Error>) throws -> Output
-    private let unsubscriber: (AnyHashable) -> Void
+    private weak var parent: CoFuture<Input>?
     
     @inlinable init(parent: CoFuture<Input>, transformer: @escaping Transformer) {
-        unsubscriber = { [weak parent] in parent?.unsubscribe($0) }
+        self.parent = parent
         super.init(mutex: parent.mutex)
-        parent.subscribe(with: identifier) { result in
+        parent.subscribe(with: self) { [unowned self] result in
             self.complete(with: Result { try transformer(result) })
         }
     }
     
     override func cancel() {
-        unsubscriber(identifier)
+        parent?.unsubscribe(self)
         super.cancel()
     }
     
