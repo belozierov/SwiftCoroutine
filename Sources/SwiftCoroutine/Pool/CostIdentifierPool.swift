@@ -19,6 +19,12 @@ class CostIdentifierPool<Cost: AdditiveArithmetic & Comparable & Hashable, Eleme
             self.next = next
         }
         
+        func free() {
+            elements = []
+            next = nil
+            previous?.next = nil
+        }
+        
     }
     
     private let costLimit: Cost
@@ -62,6 +68,7 @@ class CostIdentifierPool<Cost: AdditiveArithmetic & Comparable & Hashable, Eleme
     
     public func removeAll() {
         currentCost = .zero
+        pool.forEach { $0.value.free() }
         pool.removeAll()
         head = nil
         tail = nil
@@ -71,6 +78,7 @@ class CostIdentifierPool<Cost: AdditiveArithmetic & Comparable & Hashable, Eleme
         while currentCost > costLimit, let node = tail {
             defer { removeTailIfEmpty() }
             while node.elements.popLast() != nil {
+                node.free()
                 currentCost -= node.cost
                 if currentCost <= costLimit { return }
             }
