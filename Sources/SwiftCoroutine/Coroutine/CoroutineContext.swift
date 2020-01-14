@@ -18,6 +18,7 @@ class CoroutineContext {
     let haveGuardPage: Bool
     private let stack: UnsafeMutableRawBufferPointer
     private let returnPoint, resumePoint: UnsafeMutablePointer<Int32>
+    private var block: Block?
     
     init(stackSize: Int, guardPage: Bool = true) {
         haveGuardPage = guardPage
@@ -31,22 +32,26 @@ class CoroutineContext {
         resumePoint = .allocate(capacity: .environmentSize)
     }
     
-    // MARK: - Operations
+    // MARK: - Start
     
     @inlinable func start(block: @escaping Block) -> Bool {
-        var blockRef: Block! = block
-        return withUnsafePointer(to: { [unowned(unsafe) self] in
-            blockRef()
-            blockRef = nil
-            longjmp(self.returnPoint, .finished)
-        }, start)
+        self.block = block
+        return __start(returnPoint, stackStart,
+                       Unmanaged.passUnretained(self).toOpaque()) {
+            longjmp(Unmanaged<CoroutineContext>
+                .fromOpaque($0!)
+                .takeUnretainedValue()
+                .performBlock(), .finished)
+        } == .finished
      }
     
-    private func start(with block: UnsafePointer<Block>) -> Bool {
-        __start(returnPoint, stackStart, block) {
-            $0?.assumingMemoryBound(to: Block.self).pointee()
-        } == .finished
+    private func performBlock() -> UnsafeMutablePointer<Int32> {
+        block?()
+        block = nil
+        return returnPoint
     }
+    
+    // MARK: - Operations
     
     @inlinable func resume() -> Bool {
         __save(returnPoint, resumePoint, -1) == .finished
