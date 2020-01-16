@@ -2,6 +2,7 @@
   Title: SwiftCoroutine
   Description: Swift coroutines for iOS and macOS.
   Author: belozierov
+  Keywords: swift, coroutines, coroutine, async/await
   -->
   
 ![Swift Coroutine](../master/Sources/logo.png)
