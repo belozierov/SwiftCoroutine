@@ -1,2 +1,10 @@
+title: SwiftCoroutine
+email: belozierov@gmail.com
+author: belozierov
+github_username: belozierov
+description: Swift coroutines for iOS and macOS.
+languages: en
+keywords: "swift, coroutines, coroutine, async/await"
+
 theme: jekyll-theme-slate
 google_site_verification: G9YSO-KR4MdVsSACh4zuSr-tXsddqozB0NWWXBhdjR8
