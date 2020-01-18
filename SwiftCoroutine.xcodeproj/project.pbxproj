@@ -9,8 +9,8 @@
 /* Begin PBXBuildFile section */
 		1A03F81123BA95340072C843 /* CoFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A03F81023BA95340072C843 /* CoFuture.swift */; };
 		1A03F81223BA95340072C843 /* CoFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A03F81023BA95340072C843 /* CoFuture.swift */; };
-		1A03F81F23BB24E40072C843 /* AtomicInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A03F81E23BB24E40072C843 /* AtomicInt.swift */; };
-		1A03F82023BB24E40072C843 /* AtomicInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A03F81E23BB24E40072C843 /* AtomicInt.swift */; };
+		1A03F81F23BB24E40072C843 /* AtomicIntRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A03F81E23BB24E40072C843 /* AtomicIntRepresentable.swift */; };
+		1A03F82023BB24E40072C843 /* AtomicIntRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A03F81E23BB24E40072C843 /* AtomicIntRepresentable.swift */; };
 		1A43084523C094EC001A89EA /* DispatchSourceTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A43084423C094EC001A89EA /* DispatchSourceTimer.swift */; };
 		1A43084623C094EC001A89EA /* DispatchSourceTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A43084423C094EC001A89EA /* DispatchSourceTimer.swift */; };
 		1A43084823C0955A001A89EA /* Coroutine+Delay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A43084723C0955A001A89EA /* Coroutine+Delay.swift */; };
@@ -138,7 +138,7 @@
 
 /* Begin PBXFileReference section */
 		1A03F81023BA95340072C843 /* CoFuture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoFuture.swift; sourceTree = "<group>"; };
-		1A03F81E23BB24E40072C843 /* AtomicInt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicInt.swift; sourceTree = "<group>"; };
+		1A03F81E23BB24E40072C843 /* AtomicIntRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicIntRepresentable.swift; sourceTree = "<group>"; };
 		1A43084423C094EC001A89EA /* DispatchSourceTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchSourceTimer.swift; sourceTree = "<group>"; };
 		1A43084723C0955A001A89EA /* Coroutine+Delay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coroutine+Delay.swift"; sourceTree = "<group>"; };
 		1A43084D23C111C8001A89EA /* CoCancellable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoCancellable.swift; sourceTree = "<group>"; };
@@ -241,7 +241,7 @@
 		1A03F81D23BB24C90072C843 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				1A03F81E23BB24E40072C843 /* AtomicInt.swift */,
+				1A03F81E23BB24E40072C843 /* AtomicIntRepresentable.swift */,
 				1A43084423C094EC001A89EA /* DispatchSourceTimer.swift */,
 				1AA2016423C774D100F71894 /* RefBox.swift */,
 			);
@@ -667,7 +667,7 @@
 				1A9C14D523BB4F0400E13203 /* CoPromise.swift in Sources */,
 				1A739A7923ACFAF100165280 /* CoFututre+Operators.swift in Sources */,
 				1A739ABA23B0B89600165280 /* CoFututeComposite.swift in Sources */,
-				1A03F81F23BB24E40072C843 /* AtomicInt.swift in Sources */,
+				1A03F81F23BB24E40072C843 /* AtomicIntRepresentable.swift in Sources */,
 				1A9C14DE23BB824400E13203 /* CoFuture+Await.swift in Sources */,
 				1A739ABD23B0FF6100165280 /* Dispatcher.swift in Sources */,
 				1AB2F6942395531400B7B1FD /* Generator.swift in Sources */,
@@ -732,7 +732,7 @@
 				1A9C14D623BB4F0400E13203 /* CoPromise.swift in Sources */,
 				1A739A7A23ACFAF100165280 /* CoFututre+Operators.swift in Sources */,
 				1A739ABB23B0B89600165280 /* CoFututeComposite.swift in Sources */,
-				1A03F82023BB24E40072C843 /* AtomicInt.swift in Sources */,
+				1A03F82023BB24E40072C843 /* AtomicIntRepresentable.swift in Sources */,
 				1A934FAA2390284100155B71 /* Publisher+Extensions.swift in Sources */,
 				1A9C14DF23BB824400E13203 /* CoFuture+Await.swift in Sources */,
 				1A739ABE23B0FF6100165280 /* Dispatcher.swift in Sources */,

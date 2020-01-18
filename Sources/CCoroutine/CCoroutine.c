@@ -7,6 +7,7 @@
 //
 
 #include "CCoroutine.h"
+#import <stdatomic.h>
 
 int __start(jmp_buf ret, const void* stack, const void* param, const void (*block)(const void*)) {
     int n = setjmp(ret);
@@ -34,5 +35,5 @@ const void* __frameAddress(void) {
 }
 
 int __compare(_Atomic long* value, long* expected, long desired) {
-    return atomic_compare_exchange_strong(value, expected, desired);
+    return atomic_compare_exchange_weak(value, expected, desired);
 }

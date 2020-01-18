@@ -9,7 +9,6 @@
 #ifndef CCoroutine_h
 #define CCoroutine_h
 #include <setjmp.h>
-#import <stdatomic.h>
 
 int __start(jmp_buf ret, const void* stack, const void* param, const void (*block)(const void*));
 int __save(jmp_buf env, jmp_buf ret, int retVal);
