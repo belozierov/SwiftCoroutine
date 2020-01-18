@@ -1,4 +1,10 @@
-
+<!--
+  Title: SwiftCoroutine
+  Description: Swift coroutines for iOS and macOS.
+  Author: belozierov
+  Keywords: swift, coroutines, coroutine, async/await
+  -->
+  
 ![Swift Coroutine](../master/Sources/logo.png)
 
 ##
@@ -133,7 +139,7 @@ cor2.start {
 //call 6
 ```
 
-### Generators
+### Generators (alpha version)
 
 The framework also includes the `Generator` class that allows yield values after each iteration similar to C#, Python, etc. [generators](https://en.wikipedia.org/wiki/Generator_(computer_programming)).
 
