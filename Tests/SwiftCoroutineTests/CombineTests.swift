@@ -21,7 +21,7 @@ class CombineTests: XCTestCase {
     }
 
     func testCompineSubscriptions() {
-        let publisher = session.data(for: .testImageURL).map(\.data)
+        let publisher = session.dataTaskFuture(for: .testImageURL).map(\.data)
         testImageDownload(publisher: publisher)
     }
     

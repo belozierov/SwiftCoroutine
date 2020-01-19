@@ -25,6 +25,10 @@ public class CoFuture<Output> {
         complete(with: .failure(CoFutureError.cancelled))
     }
     
+    @inlinable public func cancelUpstream() {
+        cancel()
+    }
+    
 }
 
 extension CoFuture {
@@ -48,6 +52,25 @@ extension CoFuture {
     
     func newResultStorage(with value: OutputResult?) {
         _resultStorage = .init(wrappedValue: value)
+    }
+    
+}
+
+extension CoFuture {
+    
+    public convenience init(result: OutputResult) {
+        self.init()
+        complete(with: result)
+    }
+    
+    public convenience init(output: Output) {
+        self.init()
+        complete(with: .success(output))
+    }
+    
+    public convenience init(error: Error) {
+        self.init()
+        complete(with: .failure(error))
     }
     
 }

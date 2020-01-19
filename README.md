@@ -25,11 +25,11 @@ You can find some API similarity to the Kotlin coroutines, thanks to my friends 
 //If coroutine is started with default parameters on the main thread,
 //it will also run on the main DispatchQueue
 coroutine {
-    //your custom extension that returns CoFuture<Data>
-    let future = URLSession.shared.data(for: imageURL)
+    //extension that returns CoFuture<(Data, URLResponse)>
+    let future = URLSession.shared.dataTaskFuture(for: imageURL)
     
     //await result that suspends coroutine and doesn't block the thread
-    let data = try future.await()
+    let data = try future.await().data
     
     //coroutine is performed on the main thread, that's why we can set the image in UIImageView
     self.imageView.image = UIImage(data: data)

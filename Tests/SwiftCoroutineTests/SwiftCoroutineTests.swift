@@ -42,9 +42,9 @@ class SwiftCoroutineTests: XCTestCase {
         let expectation2 = XCTestExpectation(description: "Notifiy")
         let session = URLSession.shared
         let future = compose {
-            session.data(for: .testImageURL)
-            session.data(for: .testImageURL)
-            session.data(for: .testImageURL)
+            session.dataTaskFuture(for: .testImageURL)
+            session.dataTaskFuture(for: .testImageURL)
+            session.dataTaskFuture(for: .testImageURL)
         }.transformOutput {
             $0.map { $0.data }
         }

@@ -19,9 +19,13 @@ final class CoTransformFuture<Input, Output>: CoFuture<Output> {
         }
     }
     
-    override func cancel() {
+    @inlinable override func cancel() {
         parent?.unsubscribe(self)
         super.cancel()
+    }
+    
+    @inlinable public override func cancelUpstream() {
+        parent?.cancelUpstream() ?? cancel()
     }
     
 }

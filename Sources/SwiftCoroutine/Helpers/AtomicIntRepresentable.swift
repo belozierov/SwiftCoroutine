@@ -13,19 +13,19 @@ import CCoroutine
 @propertyWrapper
 public struct AtomicIntRepresentable<T: RawRepresentable> where T.RawValue == Int {
     
-    @usableFromInline var _value: Int
+    @usableFromInline private(set) var rawValue: Int
     
-    @inlinable public init(wrappedValue value: T) {
-        _value = value.rawValue
+    public init(wrappedValue value: T) {
+        rawValue = value.rawValue
     }
     
-    @inlinable public var wrappedValue: T {
-        get { T(rawValue: _value)! }
+     public var wrappedValue: T {
+        @inlinable get { T(rawValue: rawValue)! }
         set {
-            let value = OpaquePointer(UnsafeMutablePointer(&_value))
+            let value = OpaquePointer(UnsafeMutablePointer(&rawValue))
             let newValue = newValue.rawValue
             var oldValue: Int
-            repeat { oldValue = _value }
+            repeat { oldValue = rawValue }
                 while __compare(value, &oldValue, newValue) == 0
         }
     }

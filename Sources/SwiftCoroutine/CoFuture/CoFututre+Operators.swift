@@ -8,8 +8,6 @@
 
 extension CoFuture {
     
-    public typealias Dispatcher = Coroutine.Dispatcher
-    
     // MARK: - Transform
     
     public func transform<T>(_ transformer: @escaping (OutputResult) throws -> T) -> CoFuture<T> {
@@ -58,6 +56,11 @@ extension CoFuture {
             if case .failure(let error as CoFutureError) = $0,
                 error == futureError { handler() }
         }
+    }
+    
+    @inlinable @discardableResult
+    public func onCancel(on dispatcher: Dispatcher = .sync, execute handler: @escaping () -> Void) -> CoFuture<Output> {
+        onFutureError(.cancelled, execute: handler)
     }
     
 }

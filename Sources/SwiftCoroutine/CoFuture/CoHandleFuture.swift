@@ -9,9 +9,11 @@
 final class CoHandleFuture<Output>: CoFuture<Output> {
     
     private let subscribeIdentifier: AnyHashable
+    private weak var parent: CoFuture<Output>?
     
     @inlinable init(parent: CoFuture<Output>, handler: @escaping OutputHandler) {
         subscribeIdentifier = parent.addHandler(handler)
+        self.parent = parent
         super.init(mutex: parent.mutex,
                    resultStorage: parent.$resultStorage,
                    subscriptions: parent.$subscriptions.weak)
@@ -24,6 +26,10 @@ final class CoHandleFuture<Output>: CoFuture<Output> {
         let handler = subscriptions?.removeValue(forKey: subscribeIdentifier)
         mutex.unlock()
         handler?(.failure(CoFutureError.cancelled))
+    }
+    
+    @inlinable override func cancelUpstream() {
+        parent?.cancelUpstream() ?? cancel()
     }
     
 }
