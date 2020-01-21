@@ -21,11 +21,11 @@ open class CoFuture<Output> {
         _subscriptions = subscriptions
     }
     
-    @inlinable public func cancel() {
+    @inlinable open func cancel() {
         complete(with: .failure(CoFutureError.cancelled))
     }
     
-    @inlinable public func cancelUpstream() {
+    @inlinable open func cancelUpstream() {
         cancel()
     }
     
