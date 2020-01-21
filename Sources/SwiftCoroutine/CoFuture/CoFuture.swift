@@ -60,17 +60,15 @@ extension CoFuture {
     
     public convenience init(result: OutputResult) {
         self.init()
-        complete(with: result)
+        resultStorage = result
     }
     
-    public convenience init(output: Output) {
-        self.init()
-        complete(with: .success(output))
+    @inlinable public convenience init(output: Output) {
+        self.init(result: .success(output))
     }
     
-    public convenience init(error: Error) {
-        self.init()
-        complete(with: .failure(error))
+    @inlinable public convenience init(error: Error) {
+        self.init(result: .failure(error))
     }
     
 }

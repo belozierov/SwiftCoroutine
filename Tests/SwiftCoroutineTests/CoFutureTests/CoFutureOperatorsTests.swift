@@ -63,7 +63,7 @@ class CoFutureOperatorsTests: XCTestCase {
 
     func testHandlersCancel() {
         let exp = expectation(description: "testHandlersCancel")
-        exp.expectedFulfillmentCount = 25
+        exp.expectedFulfillmentCount = 31
         let promise = CoPromise<Int>()
         let transform = promise.transformOutput { $0 + 1 }
         let handler = transform.onCompletion(execute: exp.fulfill)
@@ -73,6 +73,7 @@ class CoFutureOperatorsTests: XCTestCase {
             future.onCompletion(execute: exp.fulfill)
             future.onError { _ in exp.fulfill() }
             future.onFutureError(.cancelled, execute: exp.fulfill)
+            future.onCancel(execute: exp.fulfill)
         }
         [promise, transform, handler].forEach(testTransform)
         promise.cancel()

@@ -6,7 +6,7 @@
 //  Copyright © 2019 Alex Belozierov. All rights reserved.
 //
 
-public class Coroutine {
+final public class Coroutine {
     
     public typealias Block = () -> Void
     public typealias Handler = (Bool) -> Void
@@ -32,11 +32,12 @@ public class Coroutine {
         dispatchBlock = dispatcher.dispatchBlock
     }
     
-    public init(dispatcher: Dispatcher = .sync, stackSize: StackSize = .recommended) {
+    public convenience
+    init(dispatcher: Dispatcher = .sync, stackSize: StackSize = .recommended) {
         assert(stackSize.size >= StackSize.minimal.size,
                "Stack size must be more or equal to minimal")
-        self.context = CoroutineContext(stackSize: stackSize.size)
-        dispatchBlock = dispatcher.dispatchBlock
+        let context = CoroutineContext(stackSize: stackSize.size)
+        self.init(context: context, dispatcher: dispatcher)
     }
     
     public func addHandler(_ handler: @escaping Handler) {

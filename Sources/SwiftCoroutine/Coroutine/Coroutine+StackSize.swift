@@ -11,7 +11,7 @@ import Darwin
 extension Coroutine {
     
     public struct StackSize {
-        let size: Int
+        public let size: Int
     }
     
 }
