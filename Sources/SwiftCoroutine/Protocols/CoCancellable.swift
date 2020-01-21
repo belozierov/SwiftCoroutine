@@ -8,7 +8,7 @@
 
 import Combine
 
-public protocol CoCancellable: Cancellable {
+public protocol CoCancellable: Cancellable, Hashable {
     
     func cancel()
     
