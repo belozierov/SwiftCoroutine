@@ -17,7 +17,7 @@ public protocol CoCancellable: Cancellable, Hashable {
 
 extension CoCancellable where Self: AnyObject {
     
-    @inlinable var anyCoCancellable: AnyCoCancellable {
+    @inlinable public var anyCoCancellable: AnyCoCancellable {
         AnyCoCancellable(self)
     }
     
