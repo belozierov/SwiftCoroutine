@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class CoFuture<Output> {
+open class CoFuture<Output> {
     
     let mutex: NSLock
     @RefBox var resultStorage: OutputResult?

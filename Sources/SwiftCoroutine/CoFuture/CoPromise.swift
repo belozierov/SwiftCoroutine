@@ -6,7 +6,7 @@
 //  Copyright © 2019 Alex Belozierov. All rights reserved.
 //
 
-public class CoPromise<Output>: CoFuture<Output> {
+open class CoPromise<Output>: CoFuture<Output> {
     
     public init() {
         super.init()
