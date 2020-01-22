@@ -6,6 +6,7 @@
 //  Copyright © 2019 Alex Belozierov. All rights reserved.
 //
 
+#if canImport(Combine)
 import XCTest
 import Combine
 import SwiftCoroutine
@@ -35,3 +36,4 @@ class CombineTests: XCTestCase {
     }
     
 }
+#endif
