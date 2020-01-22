@@ -6,6 +6,8 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
+#if !canImport(Combine)
+
 import Combine
 
 public protocol CoCancellable: Cancellable, Hashable {
@@ -14,6 +16,17 @@ public protocol CoCancellable: Cancellable, Hashable {
     func cancelUpstream()
     
 }
+
+#else
+
+public protocol CoCancellable: Hashable {
+
+    func cancel()
+    func cancelUpstream()
+
+}
+
+#endif
 
 extension CoCancellable where Self: AnyObject {
     
@@ -47,5 +60,5 @@ final public class AnyCoCancellable: CoCancellable {
     @inlinable public func hash(into hasher: inout Hasher) {
         ObjectIdentifier(self).hash(into: &hasher)
     }
-    
+
 }

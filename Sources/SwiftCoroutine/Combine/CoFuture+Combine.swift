@@ -6,6 +6,7 @@
 //  Copyright © 2019 Alex Belozierov. All rights reserved.
 //
 
+#if canImport(Combine)
 import Combine
 
 @available(OSX 10.15, iOS 13.0, *)
@@ -35,3 +36,4 @@ extension Subscriber {
     }
     
 }
+#endif

@@ -6,6 +6,7 @@
 //  Copyright © 2019 Alex Belozierov. All rights reserved.
 //
 
+#if canImport(Combine)
 import Combine
 import Dispatch
 
@@ -26,3 +27,4 @@ extension Publisher {
     }
     
 }
+#endif
