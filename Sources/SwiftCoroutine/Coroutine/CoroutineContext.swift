@@ -13,10 +13,12 @@ import CCoroutine
 #if os(macOS)
 import Darwin
 
+fileprivate typealias ResumePoint = UnsafeMutablePointer<Int32>
 fileprivate let pagesize = _SC_PAGESIZE
 #else
 import Glibc
 
+fileprivate typealias ResumePoint = UnsafeMutablePointer<__jmp_buf_tag>
 fileprivate let pagesize = Int32(_SC_PAGESIZE)
 #endif
 
@@ -26,7 +28,7 @@ class CoroutineContext {
     
     let haveGuardPage: Bool
     private let stack: UnsafeMutableRawBufferPointer
-    private let returnPoint, resumePoint: UnsafeMutablePointer<Int32>
+    private let returnPoint, resumePoint: ResumePoint
     private var block: Block?
     
     init(stackSize: Int, guardPage: Bool = true) {
