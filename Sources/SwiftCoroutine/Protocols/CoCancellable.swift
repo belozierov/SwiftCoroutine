@@ -6,7 +6,7 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
-#if !canImport(Combine)
+#if canImport(Combine)
 
 import Combine
 
