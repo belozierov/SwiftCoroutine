@@ -10,6 +10,7 @@
 import Foundation.NSURLSession
 #else
 import FoundationNetworking
+import Foundation
 #endif
 
 extension URLSession {
