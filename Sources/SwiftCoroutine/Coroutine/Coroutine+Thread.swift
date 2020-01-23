@@ -43,7 +43,7 @@ extension Thread {
     #else
     @inlinable var currentCoroutine: Coroutine? {
         get { threadDictionary.value(forKey: #function) as? Coroutine }
-        set { threadDictionary.setObject(newValue, forKey: #function) }
+        set { threadDictionary.setObject(newValue as Any, forKey: #function) }
     }
     #endif
 }
