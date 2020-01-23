@@ -9,9 +9,8 @@
 #if os(macOS)
 import Foundation.NSURLSession
 #else
-import class Foundation.URLSession
-import class Foundation.URLRequest
-import class Foundation.URLResponse
+import typealias Foundation.URLSession
+import typealias Foundation.URLResponse
 #endif
 
 extension URLSession {
