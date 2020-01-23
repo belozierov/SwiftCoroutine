@@ -3,7 +3,7 @@ on: [push]
 jobs:
   Bionic:
     container: 
-      image: swift:5.1-bionic
+      image: swift:5.1.3-bionic
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
