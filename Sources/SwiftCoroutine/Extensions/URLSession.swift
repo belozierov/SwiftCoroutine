@@ -6,7 +6,13 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
+#if os(macOS)
 import Foundation.NSURLSession
+#else
+import class Foundation.URLSession
+import class Foundation.URLRequest
+import class Foundation.URLResponse
+#endif
 
 extension URLSession {
     
