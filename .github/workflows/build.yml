@@ -1,0 +1,13 @@
+name: build
+on: [push]
+jobs:
+  Bionic:
+    container: 
+      image: swift:5.1-bionic
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Update Dependencies
+      run: swift package update
+    - name: Build
+      run: swift build
