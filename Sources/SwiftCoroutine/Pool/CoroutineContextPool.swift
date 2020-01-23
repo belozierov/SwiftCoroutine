@@ -9,6 +9,12 @@
 import Foundation
 import Dispatch
 
+#if os(macOS)
+fileprivate typealias PressureSource = DispatchSourceMemoryPressure
+#else
+fileprivate typealias PressureSource = DispatchSourceMachReceive
+#endif
+
 class CoroutineContextPool {
     
     typealias StackSize = Coroutine.StackSize
@@ -44,7 +50,7 @@ class CoroutineContextPool {
     
     // MARK: - DispatchSourceMemoryPressure
     
-    private lazy var memoryPressureSource: DispatchSourceMemoryPressure = {
+    private lazy var memoryPressureSource: PressureSource = {
         let source = DispatchSource.makeMemoryPressureSource(eventMask: [.warning, .critical])
         source.setEventHandler { [unowned self] in self.reset() }
         return source
