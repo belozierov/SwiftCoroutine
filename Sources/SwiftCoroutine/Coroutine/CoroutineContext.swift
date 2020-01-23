@@ -56,7 +56,7 @@ class CoroutineContext {
         } == .finished
      }
     
-    private func performBlock() -> UnsafeMutablePointer<Int32> {
+    private func performBlock() -> ResumePoint {
         block?()
         block = nil
         return returnPoint
