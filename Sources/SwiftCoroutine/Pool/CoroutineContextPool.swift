@@ -9,11 +9,11 @@
 import Foundation
 import Dispatch
 
-#if os(macOS)
-fileprivate typealias PressureSource = DispatchSourceMemoryPressure
-#else
-fileprivate typealias PressureSource = DispatchSourceMachReceive
-#endif
+//#if os(macOS)
+//fileprivate typealias PressureSource = DispatchSourceMemoryPressure
+//#else
+//fileprivate typealias PressureSource = DispatchSourceMachReceive
+//#endif
 
 class CoroutineContextPool {
     
@@ -50,18 +50,18 @@ class CoroutineContextPool {
     
     // MARK: - DispatchSourceMemoryPressure
     
-    private lazy var memoryPressureSource: PressureSource = {
+    private lazy var memoryPressureSource: String = {
         let source = DispatchSource.makeMemoryPressureSource(eventMask: [.warning, .critical])
         source.setEventHandler { [unowned self] in self.reset() }
         return source
     }()
     
     private func startDispatchSource() {
-        if #available(OSX 10.12, iOS 10.0, *) {
-            memoryPressureSource.activate()
-        } else {
-            memoryPressureSource.resume()
-        }
+//        if #available(OSX 10.12, iOS 10.0, *) {
+//            memoryPressureSource.activate()
+//        } else {
+//            memoryPressureSource.resume()
+//        }
     }
     
 }
