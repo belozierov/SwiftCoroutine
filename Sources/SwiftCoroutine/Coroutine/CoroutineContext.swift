@@ -12,8 +12,12 @@ import CCoroutine
 
 #if os(macOS)
 import Darwin
+
+fileprivate let pagesize = _SC_PAGESIZE
 #else
 import Glibc
+
+fileprivate let pagesize = Int32(_SC_PAGESIZE)
 #endif
 
 class CoroutineContext {
@@ -86,7 +90,7 @@ class CoroutineContext {
 
 extension Int {
     
-    static let pageSize = sysconf(_SC_PAGESIZE)
+    static let pageSize = Int(sysconf(pagesize))
     fileprivate static let environmentSize = MemoryLayout<jmp_buf>.size
     
 }

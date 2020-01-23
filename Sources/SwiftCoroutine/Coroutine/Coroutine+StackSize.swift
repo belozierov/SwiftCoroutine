@@ -26,7 +26,7 @@ extension Coroutine.StackSize {
     public static let minimal = Coroutine.StackSize(size: Int(MINSIGSTKSZ))
     
     public static func pages(_ number: Int) -> Coroutine.StackSize {
-        .init(size: number * .pageSize)
+        .init(size: number * Int.pageSize)
     }
     
 }
