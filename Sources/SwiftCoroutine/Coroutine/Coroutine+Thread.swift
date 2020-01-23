@@ -34,10 +34,16 @@ extension Coroutine {
 }
 
 extension Thread {
-    
+
+    #if os(macOS)
     @inlinable var currentCoroutine: Coroutine? {
         get { threadDictionary.value(forKey: #function) as? Coroutine }
         set { threadDictionary.setValue(newValue, forKey: #function) }
     }
-    
+    #else
+    @inlinable var currentCoroutine: Coroutine? {
+        get { threadDictionary.value(forKey: #function) as? Coroutine }
+        set { threadDictionary.setObject(newValue, forKey: #function) }
+    }
+    #endif
 }
