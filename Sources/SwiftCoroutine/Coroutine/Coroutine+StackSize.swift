@@ -6,7 +6,11 @@
 //  Copyright © 2019 Alex Belozierov. All rights reserved.
 //
 
+#if os(macOS)
 import Darwin
+#else
+import Glibc
+#endif
 
 extension Coroutine {
     
