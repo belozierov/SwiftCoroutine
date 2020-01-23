@@ -9,7 +9,7 @@
 #if os(macOS)
 import Foundation.NSURLSession
 #else
-import Foundation
+import FoundationNetworking
 #endif
 
 extension URLSession {
