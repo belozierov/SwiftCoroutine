@@ -9,7 +9,12 @@
 #if SWIFT_PACKAGE
 import CCoroutine
 #endif
+
+#if os(macOS)
 import Darwin
+#else
+import Glibc
+#endif
 
 class CoroutineContext {
     
