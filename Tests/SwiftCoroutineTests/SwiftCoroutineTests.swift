@@ -9,6 +9,11 @@
 import XCTest
 import SwiftCoroutine
 
+#if !os(macOS)
+import FoundationNetworking
+import Foundation
+#endif
+
 class SwiftCoroutineTests: XCTestCase {
     
     func testCoroutineSwitch() {
