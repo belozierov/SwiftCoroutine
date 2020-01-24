@@ -15,7 +15,7 @@ class XCTOrderedExpectation {
     init(description: String = "Ordered expectation", count: Int) {
         expectations = (0..<count)
             .map { "\(description) \($0)" }
-            .map(XCTestExpectation.init)
+            .map(XCTestExpectation.init(description:))
     }
     
     init(expectations: [XCTestExpectation]) {
