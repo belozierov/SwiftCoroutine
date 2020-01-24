@@ -27,9 +27,9 @@ extension CoPublisher {
         subscribe(with: identifier) { _ in handler() }
     }
     
-    @inlinable @discardableResult
+    @discardableResult
     public func addHandler(_ handler: @escaping OutputHandler) -> HandlerIdentifier {
-        let identifier = withUnsafeBytes(of: handler) { $0.map { $0 } }
+        let identifier = UniqueIdentifier()
         subscribe(with: identifier, handler: handler)
         return identifier
     }

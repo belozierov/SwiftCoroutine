@@ -62,24 +62,26 @@ class CoFutureOperatorsTests: XCTestCase {
     }
 
     func testHandlersCancel() {
-        let exp = expectation(description: "testHandlersCancel")
-        exp.expectedFulfillmentCount = 31
-        let promise = CoPromise<Int>()
-        let transform = promise.transformOutput { $0 + 1 }
-        let handler = transform.onCompletion(execute: exp.fulfill)
-        func testTransform<T>(_ future: CoFuture<T>) {
-            future.onResult { _ in exp.fulfill() }
-            future.onSuccess { _ in XCTFail() }
-            future.onCompletion(execute: exp.fulfill)
-            future.onError { _ in exp.fulfill() }
-            future.onFutureError(.cancelled, execute: exp.fulfill)
-            future.onCancel(execute: exp.fulfill)
+        for _ in 0..<1_000 {
+            let exp = expectation(description: "testHandlersCancel")
+            exp.expectedFulfillmentCount = 31
+            let promise = CoPromise<Int>()
+            let transform = promise.transformOutput { $0 + 1 }
+            let handler = transform.onCompletion(execute: exp.fulfill)
+            func testTransform<T>(_ future: CoFuture<T>) {
+                future.onResult { _ in exp.fulfill() }
+                future.onSuccess { _ in XCTFail() }
+                future.onCompletion(execute: exp.fulfill)
+                future.onError { _ in exp.fulfill() }
+                future.onFutureError(.cancelled, execute: exp.fulfill)
+                future.onCancel(execute: exp.fulfill)
+            }
+            [promise, transform, handler].forEach(testTransform)
+            promise.cancel()
+            promise.send(1)
+            [promise, transform, handler].forEach(testTransform)
+            wait(for: [exp], timeout: 1)
         }
-        [promise, transform, handler].forEach(testTransform)
-        promise.cancel()
-        promise.send(1)
-        [promise, transform, handler].forEach(testTransform)
-        wait(for: [exp], timeout: 3)
     }
     
 }

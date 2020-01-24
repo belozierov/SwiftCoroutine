@@ -60,7 +60,7 @@ extension CoFuture {
     
     @inlinable @discardableResult
     public func onCancel(on dispatcher: Dispatcher = .sync, execute handler: @escaping () -> Void) -> CoFuture<Output> {
-        onFutureError(.cancelled, execute: handler)
+        onFutureError(.cancelled, on: dispatcher, execute: handler)
     }
     
 }

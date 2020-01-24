@@ -43,6 +43,10 @@
 		1A65BACF239D9D79004C1716 /* Coroutine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A65BACD239D9D79004C1716 /* Coroutine.swift */; };
 		1A6E1ACC23B8EC1300236A47 /* CoroutineContext+Pool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6E1ACB23B8EC1300236A47 /* CoroutineContext+Pool.swift */; };
 		1A6E1ACD23B8EC1300236A47 /* CoroutineContext+Pool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6E1ACB23B8EC1300236A47 /* CoroutineContext+Pool.swift */; };
+		1A70822023D9D9BE00E656E0 /* UniqueIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A70821F23D9D9BE00E656E0 /* UniqueIdentifier.swift */; };
+		1A70822123D9D9BE00E656E0 /* UniqueIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A70821F23D9D9BE00E656E0 /* UniqueIdentifier.swift */; };
+		1A70823423DB7D7E00E656E0 /* AtomicInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A70823323DB7D7E00E656E0 /* AtomicInt.swift */; };
+		1A70823523DB7D7E00E656E0 /* AtomicInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A70823323DB7D7E00E656E0 /* AtomicInt.swift */; };
 		1A7203CA23D46F2100EEC978 /* URLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7203C923D46F2100EEC978 /* URLSession.swift */; };
 		1A7203CB23D46F2100EEC978 /* URLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7203C923D46F2100EEC978 /* URLSession.swift */; };
 		1A7203CD23D4762A00EEC978 /* CoFuture+Handlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7203CC23D4762A00EEC978 /* CoFuture+Handlers.swift */; };
@@ -163,6 +167,8 @@
 		1A65BABA239CE05C004C1716 /* CoroutineContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoroutineContext.swift; sourceTree = "<group>"; };
 		1A65BACD239D9D79004C1716 /* Coroutine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coroutine.swift; sourceTree = "<group>"; };
 		1A6E1ACB23B8EC1300236A47 /* CoroutineContext+Pool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoroutineContext+Pool.swift"; sourceTree = "<group>"; };
+		1A70821F23D9D9BE00E656E0 /* UniqueIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniqueIdentifier.swift; sourceTree = "<group>"; };
+		1A70823323DB7D7E00E656E0 /* AtomicInt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicInt.swift; sourceTree = "<group>"; };
 		1A7203C923D46F2100EEC978 /* URLSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSession.swift; sourceTree = "<group>"; };
 		1A7203CC23D4762A00EEC978 /* CoFuture+Handlers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoFuture+Handlers.swift"; sourceTree = "<group>"; };
 		1A739A6A23AC141500165280 /* Coroutine+Debug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coroutine+Debug.swift"; sourceTree = "<group>"; };
@@ -253,9 +259,10 @@
 		1A03F81D23BB24C90072C843 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				1A03F81E23BB24E40072C843 /* AtomicIntRepresentable.swift */,
+				1A70823223DB7D7100E656E0 /* Atomic */,
 				1A43084423C094EC001A89EA /* DispatchSourceTimer.swift */,
 				1AA2016423C774D100F71894 /* RefBox.swift */,
+				1A70821F23D9D9BE00E656E0 /* UniqueIdentifier.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -279,6 +286,15 @@
 				1A43084D23C111C8001A89EA /* CoCancellable.swift */,
 			);
 			path = Protocols;
+			sourceTree = "<group>";
+		};
+		1A70823223DB7D7100E656E0 /* Atomic */ = {
+			isa = PBXGroup;
+			children = (
+				1A70823323DB7D7E00E656E0 /* AtomicInt.swift */,
+				1A03F81E23BB24E40072C843 /* AtomicIntRepresentable.swift */,
+			);
+			path = Atomic;
 			sourceTree = "<group>";
 		};
 		1A7203C823D46F0800EEC978 /* Extensions */ = {
@@ -671,6 +687,7 @@
 				1A934F8C238D62C100155B71 /* CoSubscription.swift in Sources */,
 				1A9E142523B7F3DB00EE7DE9 /* CostIdentifierPool.swift in Sources */,
 				1AB1F6D223B65FDE00C2715D /* Coroutine+Thread.swift in Sources */,
+				1A70822023D9D9BE00E656E0 /* UniqueIdentifier.swift in Sources */,
 				1A61C03323BB9926007F488C /* CoSubject.swift in Sources */,
 				1AB8B30D23BA31510052E72F /* CoGenerator.swift in Sources */,
 				1A739AC123B107C300165280 /* Dispatcher+Coroutine.swift in Sources */,
@@ -685,6 +702,7 @@
 				F8CD25E92019A01600952299 /* CCoroutine.c in Sources */,
 				1A03F81123BA95340072C843 /* CoFuture.swift in Sources */,
 				1A934F9C23901B2700155B71 /* CoFuture+Combine.swift in Sources */,
+				1A70823423DB7D7E00E656E0 /* AtomicInt.swift in Sources */,
 				1A7203CA23D46F2100EEC978 /* URLSession.swift in Sources */,
 				1A739ACA23B1123900165280 /* Dispatcher+Scheduler.swift in Sources */,
 				1A43084523C094EC001A89EA /* DispatchSourceTimer.swift in Sources */,
@@ -741,6 +759,7 @@
 				1A934FA023901B8F00155B71 /* CoFuture+Combine.swift in Sources */,
 				1A9E142623B7F3DB00EE7DE9 /* CostIdentifierPool.swift in Sources */,
 				1AB1F6D323B65FDE00C2715D /* Coroutine+Thread.swift in Sources */,
+				1A70822123D9D9BE00E656E0 /* UniqueIdentifier.swift in Sources */,
 				1A61C03423BB9926007F488C /* CoSubject.swift in Sources */,
 				1AB8B30E23BA31510052E72F /* CoGenerator.swift in Sources */,
 				1A739AC223B107C300165280 /* Dispatcher+Coroutine.swift in Sources */,
@@ -755,6 +774,7 @@
 				1A739AC523B107F800165280 /* Dispatcher+DispatchQueue.swift in Sources */,
 				1A03F81223BA95340072C843 /* CoFuture.swift in Sources */,
 				F8CD25ED2019A0F800952299 /* CCoroutine.c in Sources */,
+				1A70823523DB7D7E00E656E0 /* AtomicInt.swift in Sources */,
 				1A7203CB23D46F2100EEC978 /* URLSession.swift in Sources */,
 				1A739ACB23B1123900165280 /* Dispatcher+Scheduler.swift in Sources */,
 				1A43084623C094EC001A89EA /* DispatchSourceTimer.swift in Sources */,
