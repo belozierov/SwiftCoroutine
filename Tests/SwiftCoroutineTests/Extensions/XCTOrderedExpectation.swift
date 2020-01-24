@@ -12,10 +12,17 @@ class XCTOrderedExpectation {
     
     fileprivate let expectations: [XCTestExpectation]
     
-    init(description: String = "Ordered expectation", count: Int) {
+    init(description: String = "Ordered expectation", count: Int, file: StaticString = #file, line: Int = #line) {
+
+        #if os(macOS)
         expectations = (0..<count)
             .map { "\(description) \($0)" }
             .map(XCTestExpectation.init(description:))
+        #else
+        expectations = (0..<count)
+            .map { ("\(description) \($0)", file, line) }
+            .map(XCTestExpectation.init(description:file:line:))
+        #endif
     }
     
     init(expectations: [XCTestExpectation]) {
