@@ -1,0 +1,13 @@
+name: build
+on: [push]
+jobs:
+  Catalina:
+    runs-on: macOS-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Update Dependencies
+      run: swift package update
+    - name: Build
+      run: swift build
+    - name: Test
+      run: swift test --enable-test-discovery
