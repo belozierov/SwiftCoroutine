@@ -8,7 +8,7 @@
 ![Swift Coroutine](../master/Sources/logo.png)
 
 ##
-Many languages such as Kotlin, JavaScript, Go, Rust, C ++, and others already have [coroutines](https://en.wikipedia.org/wiki/Coroutine) support, which makes the use of asynchronous code easier. Unfortunately, Apple is still behind on this feature. But this can be improved by a framework without the need to change the language.
+Many languages such as Kotlin, JavaScript, Go, Rust, C++, and others already have [coroutines](https://en.wikipedia.org/wiki/Coroutine) support, which makes the use of asynchronous code easier. Unfortunately, Apple is still behind on this feature. But this can be improved by a framework without the need to change the language.
 
 This is the first implementation of [coroutines](https://en.wikipedia.org/wiki/Coroutine) for Swift with macOS and iOS support of 64-bit systems (since support for 32-bit systems is no longer really relevant). The stackful coroutine approach is used because it has a minimal context switching overhead, high performance, and is best suited for implementation as a third-party framework.
 
