@@ -46,7 +46,7 @@ class SwiftCoroutineTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Compose execute")
         let expectation2 = XCTestExpectation(description: "Notifiy")
         let session = URLSession.shared
-        let future = compose {
+        let future = compose { () -> [CoFuture<URLSession.DataResponse>] in
             session.dataTaskFuture(for: .testImageURL)
             session.dataTaskFuture(for: .testImageURL)
             session.dataTaskFuture(for: .testImageURL)
