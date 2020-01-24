@@ -50,7 +50,7 @@ class CoFutureOperatorsTests: XCTestCase {
         func testTransform<T>(_ future: CoFuture<T>) {
             future.onResult { _ in exp.fulfill() }
             future.onSuccess { _ in exp.fulfill() }
-            future.onCompletion(execute: exp.fulfill)
+            future.onCompletion(execute: { exp.fulfill() })
             future.onError { _ in XCTFail() }
             future.onFutureError(.cancelled) { XCTFail() }
         }
@@ -70,10 +70,10 @@ class CoFutureOperatorsTests: XCTestCase {
         func testTransform<T>(_ future: CoFuture<T>) {
             future.onResult { _ in exp.fulfill() }
             future.onSuccess { _ in XCTFail() }
-            future.onCompletion(execute: exp.fulfill)
+            future.onCompletion(execute: { exp.fulfill() })
             future.onError { _ in exp.fulfill() }
             future.onFutureError(.cancelled, execute: { exp.fulfill() })
-            future.onCancel(execute: exp.fulfill)
+            future.onCancel(execute: { exp.fulfill() })
         }
         [promise, transform, handler].forEach(testTransform)
         promise.cancel()
