@@ -145,7 +145,7 @@ class SwiftCoroutineTests: XCTestCase {
         #if os(macOS)
         group.notify(queue: .global(), execute: expectation.fulfill)
         #else
-        group.notify(queue: .global(), work: expectation.fulfill)
+        group.notify(queue: .global(), work: DispatchWorkItem { expectation.fulfill() })
         #endif
 
         wait(for: [expectation], timeout: 60)
