@@ -11,3 +11,5 @@ jobs:
       run: swift package update
     - name: Build
       run: swift build
+    - name: Test
+      run: swift test --enable-test-discovery
