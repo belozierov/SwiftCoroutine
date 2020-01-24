@@ -9,12 +9,6 @@
 import Foundation
 import Dispatch
 
-//#if os(macOS)
-//fileprivate typealias PressureSource = DispatchSourceMemoryPressure
-//#else
-//fileprivate typealias PressureSource = DispatchSourceMachReceive
-//#endif
-
 class CoroutineContextPool {
     
     typealias StackSize = Coroutine.StackSize
@@ -49,19 +43,25 @@ class CoroutineContextPool {
     }
     
     // MARK: - DispatchSourceMemoryPressure
-    
-    private lazy var memoryPressureSource: String = {
+
+    // We can ignore this on Linux because we never actually get a memory warning. Instead the OS just kills the process.
+    // https://forums.swift.org/t/what-should-i-use-in-place-of-dispatchsource-makememorypressuresource-on-linux/32936/2
+    #if os(macOS)
+    private lazy var memoryPressureSource: DispatchSourceMemoryPressure = {
         let source = DispatchSource.makeMemoryPressureSource(eventMask: [.warning, .critical])
         source.setEventHandler { [unowned self] in self.reset() }
         return source
     }()
+    #endif
     
     private func startDispatchSource() {
-//        if #available(OSX 10.12, iOS 10.0, *) {
-//            memoryPressureSource.activate()
-//        } else {
-//            memoryPressureSource.resume()
-//        }
+        #if os(macOS)
+        if #available(OSX 10.12, iOS 10.0, *) {
+            memoryPressureSource.activate()
+        } else {
+            memoryPressureSource.resume()
+        }
+        #endif
     }
     
 }
