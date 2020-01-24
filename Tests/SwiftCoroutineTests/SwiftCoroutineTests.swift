@@ -141,7 +141,13 @@ class SwiftCoroutineTests: XCTestCase {
                 XCTAssertFalse(Thread.isMainThread)
             }
         }
+
+        #if os(macOS)
         group.notify(queue: .global(), execute: expectation.fulfill)
+        #else
+        group.notify(queue: .global(), work: expectation.fulfill)
+        #endif
+
         wait(for: [expectation], timeout: 60)
     }
     
