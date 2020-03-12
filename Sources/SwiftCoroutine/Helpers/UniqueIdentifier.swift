@@ -2,13 +2,14 @@
 //  UniqueIdentifier.swift
 //  SwiftCoroutine
 //
-//  Created by Alex Belozierov on 23.01.2020.
+//  Created by Alex Belozierov on 01.02.2020.
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
+@usableFromInline
 struct UniqueIdentifier: Hashable {
     
     private static var counter = AtomicInt(wrappedValue: .min)
-    private let id = counter.increase()
+    let id = counter.increase()
     
 }

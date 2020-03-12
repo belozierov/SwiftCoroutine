@@ -10,8 +10,8 @@
 import CCoroutine
 #endif
 
-@propertyWrapper
-public struct AtomicInt {
+@propertyWrapper @usableFromInline
+struct AtomicInt {
     
     private var value: Int
     

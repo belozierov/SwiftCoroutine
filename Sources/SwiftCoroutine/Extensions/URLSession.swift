@@ -20,15 +20,15 @@ extension URLSession {
         let promise = CoPromise<DataResponse>()
         let task = dataTask(with: urlRequest) {
             if let error = $2 {
-                promise.send(error)
+                promise.fail(error)
             } else if let data = $0, let response = $1 {
-                promise.send((data, response))
+                promise.success((data, response))
             } else {
-                promise.send(URLError(.badServerResponse))
+                promise.fail(URLError(.badServerResponse))
             }
         }
         task.resume()
-        promise.addCancelHandler(execute: task.cancel)
+        promise.whenCancelled(task.cancel)
         return promise
     }
     

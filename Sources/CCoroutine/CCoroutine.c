@@ -10,7 +10,7 @@
 #import <stdatomic.h>
 
 int __start(jmp_buf ret, const void* stack, const void* param, const void (*block)(const void*)) {
-    int n = setjmp(ret);
+    int n = _setjmp(ret);
     if (n) return n;
     #if defined(__x86_64__)
     __asm__ ("movq %0, %%rsp" :: "g"(stack));
@@ -24,14 +24,16 @@ int __start(jmp_buf ret, const void* stack, const void* param, const void (*bloc
     return 0;
 }
 
-int __save(jmp_buf env, jmp_buf ret, int retVal) {
-    int n = setjmp(env);
-    if (n) return n;
-    longjmp(ret, retVal);
+void __suspend(struct __CoroutineEnvironment* data, jmp_buf ret, int retVal) {
+    if (_setjmp(data->env)) return;
+    char x; data->sp = (void*)&x;
+    _longjmp(ret, retVal);
 }
 
-const void* __frameAddress(void) {
-    return __builtin_frame_address(1);
+int __save(jmp_buf env, jmp_buf ret, int retVal) {
+    int n = _setjmp(ret);
+    if (n) return n;
+    _longjmp(env, retVal);
 }
 
 int __compare(_Atomic long* value, long* expected, long desired) {

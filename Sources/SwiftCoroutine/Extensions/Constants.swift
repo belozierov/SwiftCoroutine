@@ -1,0 +1,17 @@
+//
+//  Constants.swift
+//  SwiftCoroutine
+//
+//  Created by Alex Belozierov on 10.03.2020.
+//  Copyright © 2020 Alex Belozierov. All rights reserved.
+//
+
+import Darwin
+
+extension Int {
+    
+    static let pageSize = sysconf(_SC_PAGESIZE)
+    static let processorsNumber = sysconf(_SC_NPROCESSORS_ONLN)
+    static let environmentSize = MemoryLayout<jmp_buf>.size
+    
+}

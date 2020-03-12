@@ -6,17 +6,17 @@
 //  Copyright © 2019 Alex Belozierov. All rights reserved.
 //
 
-@propertyWrapper
-public struct AtomicIntRepresentable<T: RawRepresentable> where T.RawValue == Int {
+@propertyWrapper @usableFromInline
+struct AtomicIntRepresentable<T: RawRepresentable> where T.RawValue == Int {
     
     @usableFromInline
     @AtomicInt private(set) var rawValue: Int
     
-    public init(wrappedValue value: T) {
+    init(wrappedValue value: T) {
         rawValue = value.rawValue
     }
     
-     public var wrappedValue: T {
+    var wrappedValue: T {
         @inlinable get { T(rawValue: rawValue)! }
         set { rawValue = newValue.rawValue }
     }
