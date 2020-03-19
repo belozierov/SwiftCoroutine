@@ -14,13 +14,14 @@ public struct Coroutine {
     
     @usableFromInline let coroutine: CoroutineProtocol
     
-    @usableFromInline init(coroutine: CoroutineProtocol) {
+    @inlinable init(coroutine: CoroutineProtocol) {
         self.coroutine = coroutine
     }
     
     public init(stackSize: StackSize = .recommended, scheduler: TaskScheduler = .immediate, task: @escaping () -> Void) {
         let context = CoroutineContext(stackSize: stackSize.size)
         coroutine = StackfullCoroutine(context: context, scheduler: scheduler)
+        context.block = task
     }
     
     @inlinable public var state: State {
@@ -30,28 +31,17 @@ public struct Coroutine {
     // MARK: - resume
     
     @inlinable public func resume() throws {
-        switch coroutine.state {
-        case .prepared: coroutine.start()
-        case .suspended: coroutine.resume()
-        default: throw CoroutineError.wrongState
-        }
+        try coroutine.resume()
     }
     
     // MARK: - suspend
     
-    @inlinable public func suspend() throws {
-        try validateSuspend()
-        coroutine.suspend()
+    @inlinable public static func suspend() throws {
+        try current().coroutine.suspend()
     }
     
-    @inlinable public func suspend(with completion: @escaping () -> Void) throws {
-        try validateSuspend()
-        coroutine.suspend(with: completion)
-    }
-    
-    @inlinable func validateSuspend() throws {
-        guard isCurrent else { throw CoroutineError.mustBeCalledInsideCoroutine }
-        guard state == .running else { throw CoroutineError.wrongState }
+    @inlinable public static func suspend(with completion: @escaping () -> Void) throws {
+        try current().coroutine.suspend(with: completion)
     }
     
 }

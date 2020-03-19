@@ -6,6 +6,10 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
+/// A promise to provide a result later.
+///
+/// `CoPromise` is subclass of `CoFuture`, що має методи, які дозволяють fulfill it. Це дозволяє інкапсулювати result provider.
+/// Ви можете тільки один раз засетати результат в `CoPromise`, всі інші рази будуть ігноруватись.
 public final class CoPromise<Value>: CoFuture<Value> {}
 
 extension CoPromise {
@@ -23,7 +27,7 @@ extension CoPromise {
     }
     
     @inlinable public func complete(with future: CoFuture<Value>) {
-        future.whenComplete(complete)
+        future.whenComplete(setResult)
     }
     
 }

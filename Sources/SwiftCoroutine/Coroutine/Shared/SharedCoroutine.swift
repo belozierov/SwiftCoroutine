@@ -21,7 +21,7 @@ final class SharedCoroutine: CoroutineProtocol {
     let scheduler: TaskScheduler
     
     @AtomicIntRepresentable private(set) var state: State = .prepared
-    private(set) var environment: UnsafeMutablePointer<__CoroutineEnvironment>!
+    private(set) var environment: UnsafeMutablePointer<CoroutineContext.SuspendData>!
     private var stackBuffer: StackBuffer!
     private var completion: (() -> Void)?
     
@@ -42,8 +42,6 @@ final class SharedCoroutine: CoroutineProtocol {
     
     // MARK: - start
     
-    func start() {}
-    
     func _start(_ task: @escaping () -> Void) {
         state = .running
         perform { queue.start(task) }
@@ -51,8 +49,9 @@ final class SharedCoroutine: CoroutineProtocol {
     
     // MARK: - resume
     
-    func resume() {
-        state = .running
+    func resume() throws {
+        guard $state.update(from: .suspended, to: .running)
+            else { throw CoroutineError.wrongState }
         dispatcher.resume(self)
     }
     
@@ -62,13 +61,15 @@ final class SharedCoroutine: CoroutineProtocol {
     
     // MARK: - suspend
     
-    func suspend() {
-        state = .suspending
+    func suspend() throws {
+        guard $state.update(from: .running, to: .suspending)
+            else { throw CoroutineError.wrongState }
         _suspend()
     }
     
-    func suspend(with completion: @escaping () -> Void) {
-        state = .suspending
+    func suspend(with completion: @escaping () -> Void) throws {
+        guard $state.update(from: .running, to: .suspending)
+            else { throw CoroutineError.wrongState }
         self.completion = completion
         _suspend()
     }
@@ -82,7 +83,7 @@ final class SharedCoroutine: CoroutineProtocol {
     }
     
     deinit {
-        environment?.pointee.env?.deallocate()
+        environment?.pointee.env.deallocate()
         environment?.deallocate()
     }
     

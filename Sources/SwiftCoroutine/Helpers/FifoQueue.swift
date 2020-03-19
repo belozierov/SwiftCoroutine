@@ -30,8 +30,4 @@ struct FifoQueue<T> {
         }
     }
     
-    var isEmpty: Bool {
-        input.isEmpty && output.isEmpty
-    }
-    
 }

@@ -2,11 +2,12 @@
 //  URLSession.swift
 //  SwiftCoroutine
 //
-//  Created by Alex Belozierov on 19.01.2020.
+//  Created by Alex Belozierov on 14.03.2020.
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
 import Foundation.NSURLSession
+import SwiftCoroutine
 
 extension URLSession {
     
@@ -16,7 +17,7 @@ extension URLSession {
         dataTaskFuture(for: URLRequest(url: url))
     }
     
-    public func dataTaskFuture(for urlRequest: URLRequest) -> CoFuture<DataResponse> {
+    public func dataTaskFuture(for urlRequest: URLRequest) -> CoFuture<(data: Data, response: URLResponse)> {
         let promise = CoPromise<DataResponse>()
         let task = dataTask(with: urlRequest) {
             if let error = $2 {
@@ -28,7 +29,7 @@ extension URLSession {
             }
         }
         task.resume()
-        promise.whenCancelled(task.cancel)
+        promise.whenCanceled(task.cancel)
         return promise
     }
     

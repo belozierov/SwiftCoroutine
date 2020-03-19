@@ -15,11 +15,11 @@ struct AtomicInt {
     
     private var value: Int
     
-    public init(wrappedValue value: Int) {
+    init(wrappedValue value: Int) {
         self.value = value
     }
     
-     public var wrappedValue: Int {
+    var wrappedValue: Int {
         get { value }
         set {
             let pointer = OpaquePointer(UnsafeMutablePointer(&value))
@@ -29,12 +29,26 @@ struct AtomicInt {
         }
     }
     
-    public mutating func increase() -> Int {
+    @inlinable var projectedValue: AtomicInt {
+        get { self }
+        set { self = newValue }
+    }
+    
+    @discardableResult mutating func increase() -> Int {
         let pointer = OpaquePointer(UnsafeMutablePointer(&value))
-        var oldValue = value, newValue: Int;
+        var oldValue = value, newValue: Int
         repeat { newValue = oldValue + 1 }
             while __compare(pointer, &oldValue, newValue) == 0
         return newValue
+    }
+    
+    mutating func update(from: Int, to: Int) -> Bool {
+        let pointer = OpaquePointer(UnsafeMutablePointer(&value))
+        var oldValue = value
+        repeat {
+            if oldValue != from { return false }
+        } while __compare(pointer, &oldValue, to) == 0
+        return true
     }
     
 }

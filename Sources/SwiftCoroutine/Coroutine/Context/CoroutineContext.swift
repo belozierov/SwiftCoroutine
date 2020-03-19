@@ -54,12 +54,17 @@ final class CoroutineContext {
     
     // MARK: - Operations
     
+    struct SuspendData {
+        let env: UnsafeMutablePointer<Int32>
+        var sp: UnsafeMutableRawPointer!
+    }
+    
     @inlinable func resume(from env: UnsafeMutablePointer<Int32>) -> Bool {
         __save(env, returnEnv, .suspended) == .finished
     }
     
-    @inlinable func suspend(to env: UnsafeMutablePointer<__CoroutineEnvironment>) {
-        __suspend(env, returnEnv, .suspended)
+    @inlinable func suspend(to data: UnsafeMutablePointer<SuspendData>) {
+        __suspend(data.pointee.env, &data.pointee.sp, returnEnv, .suspended)
     }
     
     @inlinable func suspend(to env: UnsafeMutablePointer<Int32>) {
@@ -76,6 +81,14 @@ final class CoroutineContext {
 extension Int32 {
     
     fileprivate static let suspended: Int32 = -1
-    fileprivate static let finished: Int32 = -1
+    fileprivate static let finished: Int32 = 1
+    
+}
+
+extension CoroutineContext.SuspendData {
+    
+    init() {
+        self = .init(env: .allocate(capacity: .environmentSize), sp: nil)
+    }
     
 }

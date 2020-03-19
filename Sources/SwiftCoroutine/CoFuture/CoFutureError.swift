@@ -7,5 +7,5 @@
 //
 
 public enum CoFutureError: Error {
-    case cancelled, timeout
+    case canceled, timeout
 }

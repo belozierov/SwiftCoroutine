@@ -10,7 +10,8 @@ import Foundation
 
 public struct TaskScheduler {
     
-    public static let main = TaskScheduler.runLoop(.main)
+    public static let main = TaskScheduler(scheduler: RunLoop.main.perform,
+                                           isCurrent: { pthread_main_np() != 0 })
     
     public static let global: TaskScheduler = {
         let queue = OperationQueue()
@@ -26,13 +27,8 @@ public struct TaskScheduler {
     @usableFromInline let scheduler: Scheduler
     @usableFromInline let getIsCurrent: () -> Bool
     
-    @inlinable public init(scheduler: @escaping (@escaping () -> Void) -> Void) {
-        self.scheduler = scheduler
-        getIsCurrent = { false }
-    }
-    
     @inlinable public init(scheduler: @escaping (@escaping () -> Void) -> Void,
-                           isCurrent: @escaping () -> Bool) {
+                           isCurrent: @escaping () -> Bool = { false }) {
         self.scheduler = scheduler
         getIsCurrent = isCurrent
     }
@@ -60,7 +56,9 @@ public struct TaskScheduler {
     // MARK: - DispatchQueue
     
     @inlinable public static func dispatchQueue(_ queue: DispatchQueue, qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = [], group: DispatchGroup? = nil) -> TaskScheduler {
-        TaskScheduler { queue.async(group: group, qos: qos, flags: flags, execute: $0) }
+        TaskScheduler(scheduler: {
+            queue.async(group: group, qos: qos, flags: flags, execute: $0)
+        })
     }
     
     // MARK: - OperationQueue

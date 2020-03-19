@@ -20,23 +20,29 @@ final class StackfullCoroutine: CoroutineProtocol {
         self.completion = completion.map { completion in { if $0 { completion() } } }
     }
     
-    func start() {
-        state = .running
-        perform(block: context.start)
+    func resume() throws {
+        while true {
+            switch state {
+            case .prepared where $state.update(from: .prepared, to: .running):
+                return perform(block: context.start)
+            case .suspended where $state.update(from: .suspended, to: .running):
+                return perform { self.context.resume(from: self.resumeEnv) }
+            default:
+                throw CoroutineError.wrongState
+            }
+        }
     }
     
-    func resume() {
-        state = .running
-        perform { self.context.resume(from: self.resumeEnv) }
-    }
-    
-    func suspend() {
+    func suspend() throws {
+        guard $state.update(from: .running, to: .suspending)
+            else { throw CoroutineError.wrongState }
         state = .suspending
         _suspend()
     }
     
-    func suspend(with completion: @escaping () -> Void) {
-        state = .suspending
+    func suspend(with completion: @escaping () -> Void) throws {
+        guard $state.update(from: .running, to: .suspending)
+            else { throw CoroutineError.wrongState }
         let previousCompletion = self.completion
         self.completion = { [unowned self] _ in
             self.completion = previousCompletion
@@ -54,8 +60,8 @@ final class StackfullCoroutine: CoroutineProtocol {
         func execute() {
             performAsCurrent {
                 let isFinished = block()
-                completion?(isFinished)
                 state = isFinished ? .finished : .suspended
+                completion?(isFinished)
             }
         }
         scheduler.isCurrent ? execute() : scheduler.execute(execute)

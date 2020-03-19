@@ -21,6 +21,15 @@ struct AtomicIntRepresentable<T: RawRepresentable> where T.RawValue == Int {
         set { rawValue = newValue.rawValue }
     }
     
+    @inlinable var projectedValue: AtomicIntRepresentable {
+        get { self }
+        set { self = newValue }
+    }
+    
+    mutating func update(from: T, to: T) -> Bool {
+        $rawValue.update(from: from.rawValue, to: to.rawValue)
+    }
+    
 }
 
 

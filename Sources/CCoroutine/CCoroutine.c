@@ -24,9 +24,9 @@ int __start(jmp_buf ret, const void* stack, const void* param, const void (*bloc
     return 0;
 }
 
-void __suspend(struct __CoroutineEnvironment* data, jmp_buf ret, int retVal) {
-    if (_setjmp(data->env)) return;
-    char x; data->sp = (void*)&x;
+void __suspend(jmp_buf env, void** sp, jmp_buf ret, int retVal) {
+    if (_setjmp(env)) return;
+    char x; *sp = (void*)&x;
     _longjmp(ret, retVal);
 }
 

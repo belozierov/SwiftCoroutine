@@ -8,9 +8,9 @@
 
 import Darwin
 
-final class PsxLock {
+@usableFromInline struct PsxLock {
     
-    private let mutex: UnsafeMutablePointer<pthread_mutex_t>
+    @usableFromInline let mutex: UnsafeMutablePointer<pthread_mutex_t>
     
     @inlinable init() {
         mutex = .allocate(capacity: 1)
@@ -31,7 +31,7 @@ final class PsxLock {
         return try block()
     }
     
-    deinit {
+    @inlinable func free() {
         pthread_mutex_destroy(mutex)
         mutex.deallocate()
     }

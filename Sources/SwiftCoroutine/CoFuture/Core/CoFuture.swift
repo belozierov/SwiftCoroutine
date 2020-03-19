@@ -6,67 +6,185 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
-import Darwin
-
 protocol _CoFutureCancellable: class {
     
     func cancel()
     
 }
 
+///
+///Holder for a result that will be provided later.
+///
+///`CoFuture` and it's subclass `CoPromise` є імплементацією Future/Promise підходу.
+///Це дозволяє виконувати асинхронно роботу immediately повернувши `CoFuture`, яке can
+///be observed to be notified when result will be available. For example:
+///
+///```
+///extension URLSession {
+///
+///    typealias DataResponse = (data: Data, response: URLResponse)
+///
+///    func dataTaskFuture(for urlRequest: URLRequest) -> CoFuture<DataResponse> {
+///        let promise = CoPromise<DataResponse>()
+///        let task = dataTask(with: urlRequest) {
+///            if let error = $2 {
+///                promise.fail(error)
+///            } else if let data = $0, let response = $1 {
+///                promise.success((data, response))
+///            } else {
+///                promise.fail(URLError(.badServerResponse))
+///            }
+///        }
+///        task.resume()
+///        //cancel task if future will cancel
+///        promise.whenCanceled(task.cancel)
+///        return promise
+///    }
+///
+///}
+///```
+///
+///За допомогою `whenComplete()` ви можете додати callback або використати `await()`
+///в середині коротини для отримання результату. `CoFuture` є повністю thread-safe.
+///
+///## Features
+///
+///### **Best performance**
+///Основною ціллю при створенні `CoFuture` було досягнення найкращої швидкодії.
+///Було витрачено багато часу і перебрано багато варіантів для цього(для того щоб знайти найкращий).
+///Як результат `CoFuture` є швидшим ніж аналогічні рішення:
+///
+///- CoFuture - 0.089  c.
+///- Combine Future - 0.234 c. **(2.6x slower)**
+///- Найпопулярніша Swift Future/Promise library on GitHub - 0.521 c. **(5.9x slower)**
+///
+///Тести для `CoFuture` та Combine `Future` ви можете знайти в файлі `CoFuturePerformanceTests`.
+///Тест проводився на MacBook Pro (13-inch, 2017, Two Thunderbolt 3 ports) у release mode.
+///
+///### **Build chains**
+///За допомогою `flatMap()` ви можете створювати chain of `CoFuture`, that allows you to do
+///more asynchronous processing. Або ви можете використати `map()` для  синхронного трансформування.
+///В кінці ви можете використати `whenSuccess()` or `whenFailure()` для observing callback with the result or error.
+///
+///```
+/////some future that will return URLRequest
+///let requestFuture: CoFuture<URLRequest>
+///
+///requestFuture.flatMap { request in
+///    URLSession.shared.dataTaskFuture(for: request)
+///}.flatMap { data, response in
+///    TaskScheduler.global.submit {
+///        //do some work on global queue that return some result
+///    }
+///}.map {
+///    transformData($0)
+///}.whenComplete { result in
+///    //result handler
+///}
+///```
+///
+///### **Cancellable**
+///За допомогою `cancel()` ви можете завершити весь upstream chain of CoFutures.
+///Також ви можете handle cancelling і завершити пов’язані таски.
+///
+///```
+///let future = URLSession.shared.dataTaskFuture(for: request)
+///
+///future.whenCanceled {
+///    //handle when canceled
+///}
+///
+/////will also cancel URLSessionDataTask
+///future.cancel()
+///```
+///
+///### **Awaitable**
+///Ви можете використовувати `await()` всередині `Coroutine` для реалізації async/await патерну для отримання
+///результату. Вона дозволяє працювати з асинхронним кодом в синхронній манері без блокування потоку.
+///
+///```
+/////execute coroutine on main thread
+///CoroutineDispatcher.main.execute {
+///    //extension that returns CoFuture<URLSession.DataResponse>
+///    let future = URLSession.shared.dataTaskFuture(for: request)
+///
+///    //await result that suspends coroutine and doesn't block the thread
+///    let data = try future.await().data
+///
+///    //set the image on main thread
+///    self.imageView.image = UIImage(data: data)
+///}
+///```
+///
+///### **Combine ready**
+/// `CoFuture`легко інтегрується з Combine, так за допомогою `publisher()` ви можете створити `Publisher`,
+/// який transmit результат як тільки він буде готовий. Крім цього до`Publisher` був доданий extension
+/// `subscribeCoFuture()`, який дає можливість subscribe `CoFuture`, який отримає лише один результат.
+/// Ви можете використовувати `await()` для цього `CoFuture`, щоб отримати результат для `Publisher`
+/// всередині коротини.
+///
+///```
+///CoroutineDispatcher.main.execute {
+///    //returns Publishers.MapKeyPath<URLSession.DataTaskPublisher, Data>
+///    let publisher = URLSession.shared.dataTaskPublisher(for: request).map(\.data)
+///    //await data without blocking the thread
+///    let data = try publisher.await()
+///    //do some work with data
+///}
+///```
+///
 public class CoFuture<Value> {
     
-    private let mutex: Mutex?
+    private let mutex: PsxLock?
     private var parent: UnownedCancellable?
     private var callbacks: ContiguousArray<Child>?
     final private(set) var _result: Optional<Result<Value, Error>>
     
-    @usableFromInline init(mutex: Mutex?, result: Result<Value, Error>?) {
+    @usableFromInline init(mutex: PsxLock?, result: Result<Value, Error>?) {
         self.mutex = mutex
         _result = result
     }
     
     deinit {
-        callbacks?.forEach { $0.callback(.failure(CoFutureError.cancelled)) }
-        destroyMutex()
+        callbacks?.forEach { $0.callback(.failure(CoFutureError.canceled)) }
+        mutex?.free()
     }
     
 }
 
 extension CoFuture {
     
+    /// Initializes a future with result.
+    /// - Parameter result: The result provided by this future.
     @inlinable public convenience init(result: Result<Value, Error>) {
         self.init(mutex: nil, result: result)
     }
     
+    /// Initializes a future with success value.
+    /// - Parameter value: The value provided by this future.
     @inlinable public convenience init(value: Value) {
         self.init(result: .success(value))
     }
     
+    /// Initializes a future with error.
+    /// - Parameter error: The error provided by this future.
     @inlinable public convenience init(error: Error) {
         self.init(result: .failure(error))
     }
     
     // MARK: - Mutex
     
-    @usableFromInline typealias Mutex = UnsafeMutablePointer<pthread_mutex_t>
-    
     func lock() {
-        if let mutex = mutex { pthread_mutex_lock(mutex) }
+        mutex?.lock()
     }
     
     func unlock() {
-        if let mutex = mutex { pthread_mutex_unlock(mutex) }
+        mutex?.unlock()
     }
     
-    private func destroyMutex() {
-        guard let mutex = mutex else { return }
-        pthread_mutex_destroy(mutex)
-        mutex.deallocate()
-    }
+    // MARK: - result
     
-    // MARK: - Result
-    
+    /// Returns completed result or nil if this future has not completed yet.
     public var result: Result<Value, Error>? {
         lock()
         defer { unlock() }
@@ -110,20 +228,25 @@ extension CoFuture: _CoFutureCancellable {
     }
     
     // MARK: - cancel
-    
-    public func cancel() {
-        if let parent = parent {
-            parent.cancellable.cancel()
-        } else {
-            setResult(.failure(CoFutureError.cancelled))
-        }
-    }
-    
+
+    /// Returns `true` when the current future is canceled.
     @inlinable public var isCanceled: Bool {
         if case .failure(let error as CoFutureError)? = result {
-            return error == .cancelled
+            return error == .canceled
         }
         return false
+    }
+    
+    /// Cancel цей та всі пов'язані future, засетавши всім результат з CoFutureError.canceled.
+    public func cancel() {
+        lock()
+        if _result != nil { return unlock() }
+        if let parent = parent {
+            unlock()
+            parent.cancellable.cancel()
+        } else {
+            lockedComplete(with: .failure(CoFutureError.canceled))
+        }
     }
     
 }
@@ -131,23 +254,7 @@ extension CoFuture: _CoFutureCancellable {
 extension CoPromise {
     
     @inlinable public convenience init() {
-        let mutex = Mutex.allocate(capacity: 1)
-        pthread_mutex_init(mutex, nil)
-        self.init(mutex: mutex, result: nil)
-    }
-    
-}
-
-extension CoFuture: Hashable {
-    
-    // MARK: - Hashable
-    
-    @inlinable public static func == (lhs: CoFuture, rhs: CoFuture) -> Bool {
-        lhs === rhs
-    }
-    
-    @inlinable public func hash(into hasher: inout Hasher) {
-        ObjectIdentifier(self).hash(into: &hasher)
+        self.init(mutex: .init(), result: nil)
     }
     
 }

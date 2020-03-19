@@ -45,4 +45,23 @@ class CoFutureFlatMapTests: XCTestCase {
         XCTAssertEqual(flat._result, 5)
     }
     
+    func testNestedFlatMap() {
+        let exp = expectation(description: "test")
+        let promise = CoPromise<Int>()
+        promise.flatMap { value in
+            self.future(with: value + 1, delay: 1)
+        }.whenSuccess { value in
+            XCTAssertEqual(value, 1)
+            exp.fulfill()
+        }
+        promise.success(0)
+        wait(for: [exp], timeout: 2)
+    }
+    
+    private func future<T>(with value: T, delay: Int) -> CoFuture<T> {
+        let promise = CoPromise<T>()
+        DispatchQueue.global().asyncAfter(deadline: .now() + 1) { promise.success(value) }
+        return promise
+    }
+    
 }

@@ -15,10 +15,10 @@ class CoFutureCancelTests: XCTestCase {
         let exp = expectation(description: #function)
         exp.expectedFulfillmentCount = 2
         let future = CoPromise<Bool>()
-        future.whenCancelled(exp.fulfill)
+        future.whenCanceled(exp.fulfill)
         XCTAssertFalse(future.isCanceled)
         future.cancel()
-        future.whenCancelled(exp.fulfill)
+        future.whenCanceled(exp.fulfill)
         XCTAssertTrue(future.isCanceled)
         wait(for: [exp], timeout: 1)
     }
@@ -29,35 +29,6 @@ class CoFutureCancelTests: XCTestCase {
         map.cancel()
         XCTAssertTrue(future.isCanceled)
         XCTAssertTrue(map.isCanceled)
-    }
-    
-    func testCancel3() {
-        let future = CoPromise<Int>()
-        future.whenComplete { _ in }
-        let map = future.map { $0 + 1 }
-        map.cancel()
-        XCTAssertFalse(future.isCanceled)
-        XCTAssertTrue(map.isCanceled)
-    }
-    
-    func testCancel4() {
-        let future = CoPromise<Int>()
-        future.whenComplete { _ in }
-        let map = future.map { $0 + 1 }
-        map.cancel()
-        XCTAssertTrue(future.isCanceled)
-        XCTAssertTrue(map.isCanceled)
-    }
-    
-    func testCancel5() {
-        let future = CoPromise<Int>()
-        future.whenComplete { _ in }
-        let map = future.map { $0 + 1 }
-        let map2 = map.map { $0 + 1 }
-        map.cancel()
-        XCTAssertFalse(future.isCanceled)
-        XCTAssertTrue(map.isCanceled)
-        XCTAssertTrue(map2.isCanceled)
     }
     
 }

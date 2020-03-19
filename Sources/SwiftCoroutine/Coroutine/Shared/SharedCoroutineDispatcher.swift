@@ -139,4 +139,8 @@ final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
         mutex.unlock()
     }
     
+    deinit {
+        mutex.free()
+    }
+    
 }

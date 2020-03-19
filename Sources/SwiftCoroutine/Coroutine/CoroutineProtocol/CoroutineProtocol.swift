@@ -13,10 +13,9 @@
     
     var state: State { get }
     
-    func start()
-    func resume()
-    func suspend()
-    func suspend(with completion: @escaping () -> Void)
+    func resume() throws
+    func suspend() throws
+    func suspend(with completion: @escaping () -> Void) throws
     
 }
 
