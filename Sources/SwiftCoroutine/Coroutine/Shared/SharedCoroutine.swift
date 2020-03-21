@@ -119,6 +119,9 @@ extension SharedCoroutine {
     }
     
     func restoreStack() {
+        if stackBuffer == nil {
+            fatalError()
+        }
         environment.pointee.sp.copyMemory(from: stackBuffer.stack, byteCount: stackBuffer.size)
         stackBuffer.stack.deallocate()
         stackBuffer = nil
