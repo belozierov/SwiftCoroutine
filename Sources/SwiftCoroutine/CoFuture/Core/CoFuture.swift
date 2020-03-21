@@ -73,7 +73,7 @@ protocol _CoFutureCancellable: class {
 ///requestFuture.flatMap { request in
 ///    URLSession.shared.dataTaskFuture(for: request)
 ///}.flatMap { data, response in
-///    TaskScheduler.global.submit {
+///    CoFuture(on: .global) {
 ///        //do some work on global queue that return some result
 ///    }
 ///}.map {
@@ -153,6 +153,18 @@ public class CoFuture<Value> {
 }
 
 extension CoFuture {
+    
+    @inlinable public convenience
+    init(on scheduler: TaskScheduler = .immediate, completion: @escaping (CoPromise<Value>) -> Void) {
+        self.init(mutex: .init(), result: nil)
+        scheduler.execute { completion(unsafeDowncast(self, to: CoPromise<Value>.self)) }
+    }
+    
+    @inlinable public convenience
+    init(on scheduler: TaskScheduler, completion: @escaping () throws -> Value) {
+        self.init(mutex: .init(), result: nil)
+        scheduler.execute { self.setResult(Result { try completion() }) }
+    }
     
     /// Initializes a future with result.
     /// - Parameter result: The result provided by this future.

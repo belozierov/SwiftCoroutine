@@ -34,14 +34,6 @@ struct AtomicInt {
         set { self = newValue }
     }
     
-    @discardableResult mutating func increase() -> Int {
-        let pointer = OpaquePointer(UnsafeMutablePointer(&value))
-        var oldValue = value, newValue: Int
-        repeat { newValue = oldValue + 1 }
-            while __compare(pointer, &oldValue, newValue) == 0
-        return newValue
-    }
-    
     mutating func update(from: Int, to: Int) -> Bool {
         let pointer = OpaquePointer(UnsafeMutablePointer(&value))
         var oldValue = value
@@ -49,6 +41,16 @@ struct AtomicInt {
             if oldValue != from { return false }
         } while __compare(pointer, &oldValue, to) == 0
         return true
+    }
+    
+    mutating func update(_ transform: (Int) -> Int) -> (old: Int, new: Int) {
+        let pointer = OpaquePointer(UnsafeMutablePointer(&value))
+        var oldValue = value, newValue: Int
+        repeat {
+            newValue = transform(oldValue)
+//            if oldValue == newValue { return (newValue, newValue) }
+        } while __compare(pointer, &oldValue, newValue) == 0
+        return (oldValue, newValue)
     }
     
 }

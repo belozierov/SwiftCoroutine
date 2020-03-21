@@ -12,19 +12,6 @@ import Dispatch
 
 class TestAtomic: XCTestCase {
     
-    func testIntAtomic() {
-        let group = DispatchGroup()
-        for _ in 0..<100_000 { group.enter() }
-        var atomic = AtomicInt(wrappedValue: 0)
-        XCTAssertEqual(atomic.wrappedValue, 0)
-        DispatchQueue.concurrentPerform(iterations: 100_000) { _ in
-            atomic.increase()
-            group.leave()
-        }
-        group.wait()
-        XCTAssertEqual(atomic.wrappedValue, 100_000)
-    }
-    
     func testUpdate() {
         measure {
             let group = DispatchGroup()

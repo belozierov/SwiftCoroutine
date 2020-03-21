@@ -23,7 +23,6 @@ final class SharedCoroutine: CoroutineProtocol {
     @AtomicIntRepresentable private(set) var state: State = .prepared
     private(set) var environment: UnsafeMutablePointer<CoroutineContext.SuspendData>!
     private var stackBuffer: StackBuffer!
-    private var completion: (() -> Void)?
     
     init(dispatcher: SharedCoroutineDispatcher, queue: SharedCoroutineQueue, scheduler: TaskScheduler) {
         self.dispatcher = dispatcher
@@ -31,12 +30,17 @@ final class SharedCoroutine: CoroutineProtocol {
         self.scheduler = scheduler
     }
     
+//    private func perform(_ block: () -> Bool) {
+//        performAsCurrent { _perform(block) }
+//    }
+    
     private func perform(_ block: () -> Bool) {
-        performAsCurrent {
-            let isFinished = block()
-            state = isFinished ? .finished : .suspended
-            completion?()
-            completion = nil
+        let isFinished = block()
+        if $state.update({
+            if $0 == .restarting { return .suspended }
+            return isFinished ? .finished : .suspended
+        }).old == .restarting {
+            perform { queue.resume(self) }
         }
     }
     
@@ -44,19 +48,25 @@ final class SharedCoroutine: CoroutineProtocol {
     
     func _start(_ task: @escaping () -> Void) {
         state = .running
-        perform { queue.start(task) }
+        performAsCurrent { perform { queue.start(task) } }
     }
     
     // MARK: - resume
     
     func resume() throws {
-        guard $state.update(from: .suspended, to: .running)
-            else { throw CoroutineError.wrongState }
-        dispatcher.resume(self)
+        if $state.update({
+            switch $0 {
+            case .suspended: return .running
+            case .suspending: return .restarting
+            default: return $0
+            }
+        }).old == .suspended {
+            dispatcher.resume(self)
+        }
     }
     
     func _resume() {
-        perform { queue.resume(self) }
+        performAsCurrent { perform { queue.resume(self) } }
     }
     
     // MARK: - suspend
@@ -67,19 +77,29 @@ final class SharedCoroutine: CoroutineProtocol {
         _suspend()
     }
     
-    func suspend(with completion: @escaping () -> Void) throws {
-        guard $state.update(from: .running, to: .suspending)
-            else { throw CoroutineError.wrongState }
-        self.completion = completion
-        _suspend()
-    }
-    
     private func _suspend() {
         if environment == nil {
             environment = .allocate(capacity: 1)
             environment.initialize(to: .init())
         }
         queue.suspend(self)
+    }
+    
+    // MARK: - await
+    
+    func await<T>(_ callback: (@escaping (T) -> Void) -> Void) throws -> T {
+        var result: T?
+        callback {
+            result = $0
+            if self.$state.update({ $0 == .suspended ? .running : .restarting }).old == .suspended {
+                self.dispatcher.resume(self)
+            }
+        }
+        if $state.update({ $0 == .running ? .suspending : .running }).new == .suspending {
+            _suspend()
+        }
+        if let result = result { return result }
+        throw CoroutineError.wrongState
     }
     
     deinit {

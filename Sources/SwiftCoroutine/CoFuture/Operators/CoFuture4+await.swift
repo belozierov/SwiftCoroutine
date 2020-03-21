@@ -11,16 +11,16 @@ extension CoFuture {
     // MARK: - await
     
     public func await() throws -> Value {
-        let coroutine = try Coroutine.current()
         lock()
         if let result = _result {
             unlock()
             return try result.get()
         }
-        append { _ in try? coroutine.resume() }
-        try coroutine.coroutine.suspend(with: unlock)
-        if let result = _result { return try result.get() }
-        throw CoroutineError.wrongState
+        return try Coroutine.current().coroutine
+            .await { (callback: @escaping (Result<Value, Error>) -> Void) in
+                self.append(callback: callback)
+                self.unlock()
+        }.get()
     }
     
 }

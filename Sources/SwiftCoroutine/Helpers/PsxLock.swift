@@ -25,12 +25,6 @@ import Darwin
         pthread_mutex_unlock(mutex)
     }
     
-    @inlinable func perform<T>(_ block: () throws -> T) rethrows -> T {
-        lock()
-        defer { unlock() }
-        return try block()
-    }
-    
     @inlinable func free() {
         pthread_mutex_destroy(mutex)
         mutex.deallocate()

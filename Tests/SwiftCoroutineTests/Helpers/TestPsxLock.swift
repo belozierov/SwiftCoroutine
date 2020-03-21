@@ -18,7 +18,9 @@ class TestPsxLock: XCTestCase {
         var int = 0
         XCTAssertEqual(int, 0)
         DispatchQueue.concurrentPerform(iterations: 10_000) { _ in
-            mutex.perform { int += 1 }
+            mutex.lock()
+            int += 1
+            mutex.unlock()
             group.leave()
         }
         group.wait()

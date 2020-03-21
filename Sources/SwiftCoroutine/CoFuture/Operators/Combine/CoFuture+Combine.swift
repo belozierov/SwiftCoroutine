@@ -16,7 +16,7 @@ extension CoFuture: Cancellable {
     
     /// Returns a publisher that emits result of this `CoFuture`.
     public func publisher() -> AnyPublisher<Value, Error> {
-        .init(CoFuturePublisher(future: self))
+        CoFuturePublisher(future: self).eraseToAnyPublisher()
     }
     
 }
@@ -27,16 +27,12 @@ extension Publisher {
     /// Attaches `CoFuture` as a subscriber and returns it. `CoFuture` will receive result only once.
     public func subscribeCoFuture() -> CoFuture<Output> {
         let promise = CoPromise<Output>()
-        var cancellable: AnyCancellable!
-        cancellable = mapError { $0 }.sink(receiveCompletion: { result in
+        let cancellable = mapError { $0 }.sink(receiveCompletion: { result in
             switch result {
             case .finished: promise.cancel()
             case .failure(let error): promise.fail(error)
             }
-        }, receiveValue: { value in
-            promise.success(value)
-            cancellable.cancel()
-        })
+        }, receiveValue: promise.success)
         promise.whenCanceled(cancellable.cancel)
         return promise
     }

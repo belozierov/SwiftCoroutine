@@ -56,5 +56,59 @@ class CoFutureAwaitTests: XCTestCase {
         wait(for: [exp], timeout: 5)
         XCTAssertTrue(array.enumerated().allSatisfy { $0.element == $0.offset })
     }
+    
+//    func testAbc() {
+//        measure {
+//            for i in 0..<100_00 {
+//                CoroutineTaskExecutor.defaultShared.execute(on: .immediate) {
+//                    let result: Int = try! Coroutine.await { completion in
+//                        DispatchQueue.global().asyncAfter(deadline: .now() + 0.001) {
+//                            completion(i)
+//                        }
+//                    }
+//                    if result != i { fatalError() }
+//                }
+//            }
+//        }
+//    }
+//
+//    func testAbc2() {
+//        measure {
+//            for i in 0..<100_00 {
+//                CoroutineTaskExecutor.defaultShared.execute(on: .immediate) {
+//                    let result: Int = try! Coroutine.await2 { completion in
+//                        DispatchQueue.global().asyncAfter(deadline: .now() + 0.001) {
+//                            completion(i)
+//                        }
+//                    }
+//                    if result != i { fatalError() }
+//                }
+//            }
+//        }
+//    }
+    
+    func testFoo() {
+        measure {
+            for i in 0..<10_000 {
+                let promise = CoPromise<Int>()
+                CoroutineTaskExecutor.defaultShared.execute(on: .immediate) {
+                    XCTAssertEqual(try? promise.await(), i)
+                }
+                promise.success(i)
+            }
+        }
+    }
+    
+    func testFoo2() {
+        measure {
+            for i in 0..<10_000 {
+                let promise = CoPromise<Int>()
+                CoroutineTaskExecutor.defaultShared.execute(on: .immediate) {
+                    XCTAssertEqual(try? promise.await(), i)
+                }
+                promise.success(i)
+            }
+        }
+    }
 
 }

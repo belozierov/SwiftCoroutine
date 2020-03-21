@@ -17,7 +17,8 @@ extension Coroutine {
         let timer = DispatchSource.createTimer(timeout: time) {
             do { try coroutine.resume() } catch { print(error) }
         }
-        try Coroutine.suspend(with: timer.activate)
+        timer.activate()
+        try Coroutine.suspend()
     }
     
 }

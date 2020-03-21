@@ -15,11 +15,16 @@
     
     func resume() throws
     func suspend() throws
-    func suspend(with completion: @escaping () -> Void) throws
+    
+    func await<T>(_ callback: (@escaping (T) -> Void) -> Void) throws -> T
     
 }
 
 extension CoroutineProtocol {
+    
+    func await<T>(_ callback: (@escaping (T) -> Void) -> Void) throws -> T {
+        fatalError()
+    }
     
     func performAsCurrent<T>(_ block: () -> T) -> T {
         let wrapper = ThreadCoroutineWrapper.current

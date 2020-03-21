@@ -6,8 +6,6 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
-import Foundation
-
 extension CoFuture: Hashable {
     
     // MARK: - hashable

@@ -37,7 +37,7 @@ final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
                 start(task: .init(scheduler: scheduler, task: task), on: queue)
                 performNext(for: queue)
             }
-            scheduler.isCurrent ? perform() : scheduler.execute(perform)
+            scheduler.isCurrent() ? perform() : scheduler.execute(perform)
         } else {
             tasks.push(.init(scheduler: scheduler, task: task))
             mutex.unlock()
@@ -75,7 +75,7 @@ final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
                 coroutine._resume()
                 performNext(for: coroutine.queue)
             }
-            coroutine.scheduler.isCurrent ? perform() : coroutine.scheduler.execute(perform)
+            coroutine.scheduler.isCurrent() ? perform() : coroutine.scheduler.execute(perform)
         }
     }
     
@@ -84,7 +84,7 @@ final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
             mutex.lock()
             if let coroutine = queue.pop() {
                 mutex.unlock()
-                if coroutine.scheduler.isCurrent {
+                if coroutine.scheduler.isCurrent() {
                     coroutine._resume()
                 } else {
                     return coroutine.scheduler.execute {
@@ -94,7 +94,7 @@ final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
                 }
             } else if let task = tasks.pop() {
                 mutex.unlock()
-                if task.scheduler.isCurrent {
+                if task.scheduler.isCurrent() {
                     start(task: task, on: queue)
                 } else {
                     return task.scheduler.execute {

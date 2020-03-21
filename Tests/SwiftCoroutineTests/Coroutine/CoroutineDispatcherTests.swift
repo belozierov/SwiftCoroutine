@@ -33,19 +33,19 @@ class CoroutineDispatcherTests: XCTestCase {
         }
     }
     
-   func testMeasure3() {
-        let group = DispatchGroup()
-        measure {
-            for _ in 0..<10_000 {
-                group.enter()
-                CoroutineDispatcher.global.execute {
-                    let coroutine = try! Coroutine.current()
-                    try! Coroutine.suspend { try! coroutine.resume() }
-                    group.leave()
-                }
-            }
-            group.wait()
-        }
-    }
+//   func testMeasure3() {
+//        let group = DispatchGroup()
+//        measure {
+//            for _ in 0..<10_000 {
+//                group.enter()
+//                CoroutineDispatcher.global.execute {
+//                    let coroutine = try! Coroutine.current()
+//                    try! Coroutine.suspend { try! coroutine.resume() }
+//                    group.leave()
+//                }
+//            }
+//            group.wait()
+//        }
+//    }
     
 }

@@ -9,7 +9,7 @@
 public struct Coroutine {
     
     public enum State: Int {
-        case prepared, running, suspending, suspended, finished
+        case prepared, running, suspending, suspended, finished, restarting
     }
     
     @usableFromInline let coroutine: CoroutineProtocol
@@ -40,8 +40,10 @@ public struct Coroutine {
         try current().coroutine.suspend()
     }
     
-    @inlinable public static func suspend(with completion: @escaping () -> Void) throws {
-        try current().coroutine.suspend(with: completion)
+    // MARK: - await
+    
+    @inlinable static func await<T>(_ callback: (@escaping (T) -> Void) -> Void) throws -> T {
+        try current().coroutine.await(callback)
     }
     
 }

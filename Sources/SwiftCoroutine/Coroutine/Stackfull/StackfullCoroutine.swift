@@ -64,7 +64,7 @@ final class StackfullCoroutine: CoroutineProtocol {
                 completion?(isFinished)
             }
         }
-        scheduler.isCurrent ? execute() : scheduler.execute(execute)
+        scheduler.isCurrent() ? execute() : scheduler.execute(execute)
     }
     
     deinit {

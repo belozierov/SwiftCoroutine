@@ -30,6 +30,11 @@ struct AtomicIntRepresentable<T: RawRepresentable> where T.RawValue == Int {
         $rawValue.update(from: from.rawValue, to: to.rawValue)
     }
     
+    mutating func update(_ transform: (T) -> T) -> (old: T, new: T) {
+        let (old, new) = $rawValue.update { transform(T(rawValue: $0)!).rawValue }
+        return (T(rawValue: old)!, T(rawValue: new)!)
+    }
+    
 }
 
 

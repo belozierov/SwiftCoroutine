@@ -51,24 +51,24 @@ class CoroutineTests: XCTestCase {
         }.resume()
     }
     
-    func testStates() {
-        let exp = expectation(description: "testStates")
-        let coroutine = Coroutine {
-            let coroutine = try? Coroutine.current()
-            XCTAssertEqual(coroutine?.state, .running)
-            try? Coroutine.suspend {
-                XCTAssertEqual(coroutine?.state, .suspended)
-                exp.fulfill()
-            }
-            XCTAssertEqual(coroutine?.state, .running)
-        }
-        XCTAssertEqual(coroutine.state, .prepared)
-        try? coroutine.resume()
-        XCTAssertEqual(coroutine.state, .suspended)
-        try? coroutine.resume()
-        XCTAssertEqual(coroutine.state, .finished)
-        wait(for: [exp], timeout: 1)
-    }
+//    func testStates() {
+//        let exp = expectation(description: "testStates")
+//        let coroutine = Coroutine {
+//            let coroutine = try? Coroutine.current()
+//            XCTAssertEqual(coroutine?.state, .running)
+//            try? Coroutine.suspend {
+//                XCTAssertEqual(coroutine?.state, .suspended)
+//                exp.fulfill()
+//            }
+//            XCTAssertEqual(coroutine?.state, .running)
+//        }
+//        XCTAssertEqual(coroutine.state, .prepared)
+//        try? coroutine.resume()
+//        XCTAssertEqual(coroutine.state, .suspended)
+//        try? coroutine.resume()
+//        XCTAssertEqual(coroutine.state, .finished)
+//        wait(for: [exp], timeout: 1)
+//    }
     
     func testHashable() {
         let coroutine1 = Coroutine {}

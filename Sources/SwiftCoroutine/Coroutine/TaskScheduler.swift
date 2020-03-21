@@ -24,27 +24,13 @@ public struct TaskScheduler {
     
     @usableFromInline typealias Scheduler = (@escaping () -> Void) -> Void
     
-    @usableFromInline let scheduler: Scheduler
-    @usableFromInline let getIsCurrent: () -> Bool
+    @usableFromInline let execute: Scheduler
+    @usableFromInline let isCurrent: () -> Bool
     
     @inlinable public init(scheduler: @escaping (@escaping () -> Void) -> Void,
                            isCurrent: @escaping () -> Bool = { false }) {
-        self.scheduler = scheduler
-        getIsCurrent = isCurrent
-    }
-    
-    @inlinable public var isCurrent: Bool {
-        getIsCurrent()
-    }
-    
-    @inlinable public func execute(_ task: @escaping () -> Void) {
-        scheduler(task)
-    }
-    
-    @inlinable public func submit<T>(_ task: @escaping () throws -> T) -> CoFuture<T> {
-        let promise = CoPromise<T>()
-        scheduler { promise.complete(with: Result { try task() }) }
-        return promise
+        self.execute = scheduler
+        self.isCurrent = isCurrent
     }
     
     // MARK: - RunLoop
@@ -64,7 +50,9 @@ public struct TaskScheduler {
     // MARK: - OperationQueue
     
     @inlinable public static func operationQueue(_ queue: OperationQueue) -> TaskScheduler {
-        TaskScheduler(scheduler: queue.addOperation) { OperationQueue.current == queue }
+        TaskScheduler(scheduler: { task in
+            autoreleasepool { queue.addOperation(task) }
+        }, isCurrent: { OperationQueue.current == queue })
     }
     
 }
