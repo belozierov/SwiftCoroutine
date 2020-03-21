@@ -42,7 +42,7 @@ public struct Coroutine {
     
     // MARK: - await
     
-    @inlinable static func await<T>(_ callback: (@escaping (T) -> Void) -> Void) throws -> T {
+    @inlinable public static func await<T>(_ callback: (@escaping (T) -> Void) -> Void) throws -> T {
         try current().coroutine.await(callback)
     }
     
