@@ -3,12 +3,10 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 48;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1A03F81F23BB24E40072C843 /* AtomicIntRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A03F81E23BB24E40072C843 /* AtomicIntRepresentable.swift */; };
-		1A03F82023BB24E40072C843 /* AtomicIntRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A03F81E23BB24E40072C843 /* AtomicIntRepresentable.swift */; };
 		1A109B67241D5E400024C32C /* URLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A109B66241D5E400024C32C /* URLSession.swift */; };
 		1A109B68241D5E400024C32C /* URLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A109B66241D5E400024C32C /* URLSession.swift */; };
 		1A2D8D7C241EBD1A00ECC849 /* CoFuture+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2D8D7B241EBD1A00ECC849 /* CoFuture+Combine.swift */; };
@@ -29,8 +27,6 @@
 		1A363CC32413D077000CF996 /* ThreadCoroutineWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A363CC12413D077000CF996 /* ThreadCoroutineWrapper.swift */; };
 		1A43084523C094EC001A89EA /* DispatchSourceTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A43084423C094EC001A89EA /* DispatchSourceTimer.swift */; };
 		1A43084623C094EC001A89EA /* DispatchSourceTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A43084423C094EC001A89EA /* DispatchSourceTimer.swift */; };
-		1A43084823C0955A001A89EA /* Coroutine+Delay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A43084723C0955A001A89EA /* Coroutine+Delay.swift */; };
-		1A43084923C0955A001A89EA /* Coroutine+Delay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A43084723C0955A001A89EA /* Coroutine+Delay.swift */; };
 		1A47C25023D73D3F004CC7B1 /* CoroutineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A47C24F23D73D3F004CC7B1 /* CoroutineTests.swift */; };
 		1A47C25123D73D3F004CC7B1 /* CoroutineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A47C24F23D73D3F004CC7B1 /* CoroutineTests.swift */; };
 		1A47C25323D7491C004CC7B1 /* CoroutinePlusThreadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A47C25223D7491C004CC7B1 /* CoroutinePlusThreadTests.swift */; };
@@ -61,8 +57,6 @@
 		1A65BAC2239CEFED004C1716 /* CoroutineContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A65BABA239CE05C004C1716 /* CoroutineContext.swift */; };
 		1A6910C32421612400C546ED /* CoFutureCombineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6910C22421612400C546ED /* CoFutureCombineTests.swift */; };
 		1A6910C42421612400C546ED /* CoFutureCombineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6910C22421612400C546ED /* CoFutureCombineTests.swift */; };
-		1A70823423DB7D7E00E656E0 /* AtomicInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A70823323DB7D7E00E656E0 /* AtomicInt.swift */; };
-		1A70823523DB7D7E00E656E0 /* AtomicInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A70823323DB7D7E00E656E0 /* AtomicInt.swift */; };
 		1A71364D24215BBB00DC78FD /* CoFutureAwaitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A71364C24215BBB00DC78FD /* CoFutureAwaitTests.swift */; };
 		1A71364E24215BBB00DC78FD /* CoFutureAwaitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A71364C24215BBB00DC78FD /* CoFutureAwaitTests.swift */; };
 		1A739A7623ACE66B00165280 /* CoFutureTests2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A739A7323ACE63E00165280 /* CoFutureTests2.swift */; };
@@ -81,6 +75,18 @@
 		1A8129A92417D56700AE061C /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8129A72417D56700AE061C /* Constants.swift */; };
 		1A8129AB2419822300AE061C /* CoroutineError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8129AA2419822300AE061C /* CoroutineError.swift */; };
 		1A8129AC2419822300AE061C /* CoroutineError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8129AA2419822300AE061C /* CoroutineError.swift */; };
+		1A91D5C42426345F00AC4E1C /* NIOAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A91D5C32426345F00AC4E1C /* NIOAsync.swift */; };
+		1A91D5C52426345F00AC4E1C /* NIOAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A91D5C32426345F00AC4E1C /* NIOAsync.swift */; };
+		1A91D5C72426347100AC4E1C /* NIOAsyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A91D5C62426347100AC4E1C /* NIOAsyncTests.swift */; };
+		1A91D5C82426347100AC4E1C /* NIOAsyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A91D5C62426347100AC4E1C /* NIOAsyncTests.swift */; };
+		1A91D5DD2426352E00AC4E1C /* _NIO1APIShims in Frameworks */ = {isa = PBXBuildFile; productRef = 1A91D5DC2426352E00AC4E1C /* _NIO1APIShims */; };
+		1A91D5DF2426352E00AC4E1C /* NIO in Frameworks */ = {isa = PBXBuildFile; productRef = 1A91D5DE2426352E00AC4E1C /* NIO */; };
+		1A91D5E12426352E00AC4E1C /* NIOConcurrencyHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 1A91D5E02426352E00AC4E1C /* NIOConcurrencyHelpers */; };
+		1A91D5E32426352E00AC4E1C /* NIOFoundationCompat in Frameworks */ = {isa = PBXBuildFile; productRef = 1A91D5E22426352E00AC4E1C /* NIOFoundationCompat */; };
+		1A91D5E52426352E00AC4E1C /* NIOHTTP1 in Frameworks */ = {isa = PBXBuildFile; productRef = 1A91D5E42426352E00AC4E1C /* NIOHTTP1 */; };
+		1A91D5E72426352E00AC4E1C /* NIOTestUtils in Frameworks */ = {isa = PBXBuildFile; productRef = 1A91D5E62426352E00AC4E1C /* NIOTestUtils */; };
+		1A91D5E92426352E00AC4E1C /* NIOTLS in Frameworks */ = {isa = PBXBuildFile; productRef = 1A91D5E82426352E00AC4E1C /* NIOTLS */; };
+		1A91D5EB2426352E00AC4E1C /* NIOWebSocket in Frameworks */ = {isa = PBXBuildFile; productRef = 1A91D5EA2426352E00AC4E1C /* NIOWebSocket */; };
 		1A934FB4239028E900155B71 /* CombineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A934FB1239028CA00155B71 /* CombineTests.swift */; };
 		1A934FBB23902A5300155B71 /* URL+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A934FBA23902A5300155B71 /* URL+Extensions.swift */; };
 		1A934FBC23902A5300155B71 /* URL+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A934FBA23902A5300155B71 /* URL+Extensions.swift */; };
@@ -94,10 +100,10 @@
 		1A9C14DF23BB824400E13203 /* CoFuture4+await.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A9C14DD23BB824400E13203 /* CoFuture4+await.swift */; };
 		1AAECA5623DD703400DED77D /* CoFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAECA5523DD703400DED77D /* CoFuture.swift */; };
 		1AAECA5723DD703400DED77D /* CoFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAECA5523DD703400DED77D /* CoFuture.swift */; };
-		1AB1F6D223B65FDE00C2715D /* Coroutine+Current.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB1F6D123B65FDE00C2715D /* Coroutine+Current.swift */; };
-		1AB1F6D323B65FDE00C2715D /* Coroutine+Current.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB1F6D123B65FDE00C2715D /* Coroutine+Current.swift */; };
 		1ABBDF8523E321B2007ADBA3 /* CoroutineDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ABBDF8423E321B2007ADBA3 /* CoroutineDispatcher.swift */; };
 		1ABBDF8623E321B2007ADBA3 /* CoroutineDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ABBDF8423E321B2007ADBA3 /* CoroutineDispatcher.swift */; };
+		1ABD0673242A368F00A22764 /* AtomicEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ABD0672242A368F00A22764 /* AtomicEnum.swift */; };
+		1ABD0674242A368F00A22764 /* AtomicEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ABD0672242A368F00A22764 /* AtomicEnum.swift */; };
 		1AC3578823E85A0100EC2A50 /* CoFutureCancelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC3578723E85A0100EC2A50 /* CoFutureCancelTests.swift */; };
 		1AC3578923E85A0100EC2A50 /* CoFutureCancelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC3578723E85A0100EC2A50 /* CoFutureCancelTests.swift */; };
 		1AC3578B23E85BEA00EC2A50 /* CoFutureMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC3578A23E85BEA00EC2A50 /* CoFutureMapTests.swift */; };
@@ -161,7 +167,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1A03F81E23BB24E40072C843 /* AtomicIntRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicIntRepresentable.swift; sourceTree = "<group>"; };
 		1A109B66241D5E400024C32C /* URLSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSession.swift; sourceTree = "<group>"; };
 		1A2D8D7B241EBD1A00ECC849 /* CoFuture+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoFuture+Combine.swift"; sourceTree = "<group>"; };
 		1A2D8D7E241EBD3A00ECC849 /* CoSubscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoSubscription.swift; sourceTree = "<group>"; };
@@ -172,7 +177,6 @@
 		1A363CBE2413D03B000CF996 /* CoroutineProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoroutineProtocol.swift; sourceTree = "<group>"; };
 		1A363CC12413D077000CF996 /* ThreadCoroutineWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadCoroutineWrapper.swift; sourceTree = "<group>"; };
 		1A43084423C094EC001A89EA /* DispatchSourceTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchSourceTimer.swift; sourceTree = "<group>"; };
-		1A43084723C0955A001A89EA /* Coroutine+Delay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coroutine+Delay.swift"; sourceTree = "<group>"; };
 		1A47C24F23D73D3F004CC7B1 /* CoroutineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoroutineTests.swift; sourceTree = "<group>"; };
 		1A47C25223D7491C004CC7B1 /* CoroutinePlusThreadTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoroutinePlusThreadTests.swift; sourceTree = "<group>"; };
 		1A47C25523D74C15004CC7B1 /* CorotuneDelayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CorotuneDelayTests.swift; sourceTree = "<group>"; };
@@ -188,7 +192,6 @@
 		1A595BF823E8A2C7009B62E7 /* CoPromise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoPromise.swift; sourceTree = "<group>"; };
 		1A65BABA239CE05C004C1716 /* CoroutineContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoroutineContext.swift; sourceTree = "<group>"; };
 		1A6910C22421612400C546ED /* CoFutureCombineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoFutureCombineTests.swift; sourceTree = "<group>"; };
-		1A70823323DB7D7E00E656E0 /* AtomicInt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicInt.swift; sourceTree = "<group>"; };
 		1A71364C24215BBB00DC78FD /* CoFutureAwaitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoFutureAwaitTests.swift; sourceTree = "<group>"; };
 		1A739A7323ACE63E00165280 /* CoFutureTests2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoFutureTests2.swift; sourceTree = "<group>"; };
 		1A739ACF23B1555A00165280 /* Coroutine+StackSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coroutine+StackSize.swift"; sourceTree = "<group>"; };
@@ -198,14 +201,16 @@
 		1A8129A42417D49900AE061C /* CoroutineTaskExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoroutineTaskExecutor.swift; sourceTree = "<group>"; };
 		1A8129A72417D56700AE061C /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		1A8129AA2419822300AE061C /* CoroutineError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoroutineError.swift; sourceTree = "<group>"; };
+		1A91D5C32426345F00AC4E1C /* NIOAsync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NIOAsync.swift; sourceTree = "<group>"; };
+		1A91D5C62426347100AC4E1C /* NIOAsyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NIOAsyncTests.swift; sourceTree = "<group>"; };
 		1A934FB1239028CA00155B71 /* CombineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombineTests.swift; sourceTree = "<group>"; };
 		1A934FBA23902A5300155B71 /* URL+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+Extensions.swift"; sourceTree = "<group>"; };
 		1A934FC3239031C000155B71 /* XCTAssertContains.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCTAssertContains.swift; sourceTree = "<group>"; };
 		1A993207242022D100B3BF32 /* CoFuture6+hashable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoFuture6+hashable.swift"; sourceTree = "<group>"; };
 		1A9C14DD23BB824400E13203 /* CoFuture4+await.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoFuture4+await.swift"; sourceTree = "<group>"; };
 		1AAECA5523DD703400DED77D /* CoFuture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoFuture.swift; sourceTree = "<group>"; };
-		1AB1F6D123B65FDE00C2715D /* Coroutine+Current.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coroutine+Current.swift"; sourceTree = "<group>"; };
 		1ABBDF8423E321B2007ADBA3 /* CoroutineDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoroutineDispatcher.swift; sourceTree = "<group>"; };
+		1ABD0672242A368F00A22764 /* AtomicEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicEnum.swift; sourceTree = "<group>"; };
 		1AC3578723E85A0100EC2A50 /* CoFutureCancelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoFutureCancelTests.swift; sourceTree = "<group>"; };
 		1AC3578A23E85BEA00EC2A50 /* CoFutureMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoFutureMapTests.swift; sourceTree = "<group>"; };
 		1AC3578D23E85E7600EC2A50 /* CoPromiseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoPromiseTests.swift; sourceTree = "<group>"; };
@@ -267,7 +272,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A91D5DF2426352E00AC4E1C /* NIO in Frameworks */,
+				1A91D5E32426352E00AC4E1C /* NIOFoundationCompat in Frameworks */,
+				1A91D5EB2426352E00AC4E1C /* NIOWebSocket in Frameworks */,
+				1A91D5E12426352E00AC4E1C /* NIOConcurrencyHelpers in Frameworks */,
+				1A91D5E52426352E00AC4E1C /* NIOHTTP1 in Frameworks */,
 				F8CD25AB20199D1000952299 /* SwiftCoroutine.framework in Frameworks */,
+				1A91D5E72426352E00AC4E1C /* NIOTestUtils in Frameworks */,
+				1A91D5DD2426352E00AC4E1C /* _NIO1APIShims in Frameworks */,
+				1A91D5E92426352E00AC4E1C /* NIOTLS in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -277,11 +290,11 @@
 		1A03F81D23BB24C90072C843 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				1A70823223DB7D7100E656E0 /* Atomic */,
 				1A43084423C094EC001A89EA /* DispatchSourceTimer.swift */,
 				1A790E8723E6D167007056EC /* PsxLock.swift */,
 				1A4C6DAC2416AB2C00EF2974 /* FifoQueue.swift */,
 				1A8129A72417D56700AE061C /* Constants.swift */,
+				1ABD0672242A368F00A22764 /* AtomicEnum.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -318,8 +331,6 @@
 			children = (
 				1A790E8323E5D7A9007056EC /* Coroutine.swift */,
 				1A739ACF23B1555A00165280 /* Coroutine+StackSize.swift */,
-				1AB1F6D123B65FDE00C2715D /* Coroutine+Current.swift */,
-				1A43084723C0955A001A89EA /* Coroutine+Delay.swift */,
 				1A8129AA2419822300AE061C /* CoroutineError.swift */,
 			);
 			path = Coroutine;
@@ -356,15 +367,6 @@
 			path = CoroutineProtocol;
 			sourceTree = "<group>";
 		};
-		1A70823223DB7D7100E656E0 /* Atomic */ = {
-			isa = PBXGroup;
-			children = (
-				1A70823323DB7D7E00E656E0 /* AtomicInt.swift */,
-				1A03F81E23BB24E40072C843 /* AtomicIntRepresentable.swift */,
-			);
-			path = Atomic;
-			sourceTree = "<group>";
-		};
 		1A79BA8923E4219800406AE7 /* CoFutureTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -379,6 +381,22 @@
 				1A6910C22421612400C546ED /* CoFutureCombineTests.swift */,
 			);
 			path = CoFutureTests;
+			sourceTree = "<group>";
+		};
+		1A91D5C22426344600AC4E1C /* NIO */ = {
+			isa = PBXGroup;
+			children = (
+				1A91D5C32426345F00AC4E1C /* NIOAsync.swift */,
+				1A91D5C62426347100AC4E1C /* NIOAsyncTests.swift */,
+			);
+			path = NIO;
+			sourceTree = "<group>";
+		};
+		1A91D5DB2426352E00AC4E1C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		1A934FB6239029A300155B71 /* Extensions */ = {
@@ -492,6 +510,7 @@
 		F810EF0B1F8F302700025AD1 /* SwiftCoroutineTests */ = {
 			isa = PBXGroup;
 			children = (
+				1A91D5C22426344600AC4E1C /* NIO */,
 				1ACB4492241A7B34002DB73B /* Helpers */,
 				1A79BA8923E4219800406AE7 /* CoFutureTests */,
 				1A57BE6323CC865800639FDD /* Coroutine */,
@@ -514,6 +533,7 @@
 				F8CCE8751F8E82E3007F191B /* Products */,
 				F810EEFB1F8F2B4D00025AD1 /* README.md */,
 				F810EEFA1F8F2B3E00025AD1 /* LICENCE */,
+				1A91D5DB2426352E00AC4E1C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -646,9 +666,27 @@
 			buildRules = (
 			);
 			dependencies = (
+				1A91D5CC2426350500AC4E1C /* PBXTargetDependency */,
+				1A91D5CE2426350500AC4E1C /* PBXTargetDependency */,
+				1A91D5D02426350500AC4E1C /* PBXTargetDependency */,
+				1A91D5D22426350500AC4E1C /* PBXTargetDependency */,
+				1A91D5D42426350500AC4E1C /* PBXTargetDependency */,
+				1A91D5D62426350500AC4E1C /* PBXTargetDependency */,
+				1A91D5D82426350500AC4E1C /* PBXTargetDependency */,
+				1A91D5DA2426350500AC4E1C /* PBXTargetDependency */,
 				F8CD25AD20199D1000952299 /* PBXTargetDependency */,
 			);
 			name = "SwiftCoroutine macOSTests";
+			packageProductDependencies = (
+				1A91D5DC2426352E00AC4E1C /* _NIO1APIShims */,
+				1A91D5DE2426352E00AC4E1C /* NIO */,
+				1A91D5E02426352E00AC4E1C /* NIOConcurrencyHelpers */,
+				1A91D5E22426352E00AC4E1C /* NIOFoundationCompat */,
+				1A91D5E42426352E00AC4E1C /* NIOHTTP1 */,
+				1A91D5E62426352E00AC4E1C /* NIOTestUtils */,
+				1A91D5E82426352E00AC4E1C /* NIOTLS */,
+				1A91D5EA2426352E00AC4E1C /* NIOWebSocket */,
+			);
 			productName = "Once macOSTests";
 			productReference = F8CD25AA20199D1000952299 /* SwiftCoroutine macOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -692,6 +730,9 @@
 				Base,
 			);
 			mainGroup = F8CCE86A1F8E82E3007F191B;
+			packageReferences = (
+				1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */,
+			);
 			productRefGroup = F8CCE8751F8E82E3007F191B /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -750,8 +791,6 @@
 				1A2D8D7C241EBD1A00ECC849 /* CoFuture+Combine.swift in Sources */,
 				1A2D8D82241EBD5700ECC849 /* CoFuturePublisher.swift in Sources */,
 				1AECF5A923BA0E1D002A0493 /* CoFuture5+wait.swift in Sources */,
-				1A43084823C0955A001A89EA /* Coroutine+Delay.swift in Sources */,
-				1AB1F6D223B65FDE00C2715D /* Coroutine+Current.swift in Sources */,
 				1A3583FF23DD796A0086A6E6 /* CoFuture3+whenComplete.swift in Sources */,
 				1A4C6DAD2416AB2C00EF2974 /* FifoQueue.swift in Sources */,
 				1AAECA5623DD703400DED77D /* CoFuture.swift in Sources */,
@@ -760,7 +799,6 @@
 				1A8129A52417D49900AE061C /* CoroutineTaskExecutor.swift in Sources */,
 				F8CD25E92019A01600952299 /* CCoroutine.c in Sources */,
 				1A4C6DAA2416AB0E00EF2974 /* SharedCoroutineDispatcher.swift in Sources */,
-				1A70823423DB7D7E00E656E0 /* AtomicInt.swift in Sources */,
 				1A35840523DD91890086A6E6 /* CoFuture2+map.swift in Sources */,
 				1A363CC22413D077000CF996 /* ThreadCoroutineWrapper.swift in Sources */,
 				1ABBDF8523E321B2007ADBA3 /* CoroutineDispatcher.swift in Sources */,
@@ -768,9 +806,9 @@
 				1A790E8423E5D7A9007056EC /* Coroutine.swift in Sources */,
 				1A65BABB239CE05D004C1716 /* CoroutineContext.swift in Sources */,
 				1A4C6DB32416AB6700EF2974 /* SharedCoroutine.swift in Sources */,
-				1A03F81F23BB24E40072C843 /* AtomicIntRepresentable.swift in Sources */,
 				1A9C14DE23BB824400E13203 /* CoFuture4+await.swift in Sources */,
 				1A4C6DB02416AB5100EF2974 /* SharedCoroutineQueue.swift in Sources */,
+				1ABD0673242A368F00A22764 /* AtomicEnum.swift in Sources */,
 				1A363CBF2413D03B000CF996 /* CoroutineProtocol.swift in Sources */,
 				1A790E8823E6D167007056EC /* PsxLock.swift in Sources */,
 				1A363CBC2413D004000CF996 /* StackfullCoroutine.swift in Sources */,
@@ -805,6 +843,8 @@
 				F8CD25F92019A19A00952299 /* SwiftCoroutineTests.swift in Sources */,
 				1AC3578B23E85BEA00EC2A50 /* CoFutureMapTests.swift in Sources */,
 				1A934FBB23902A5300155B71 /* URL+Extensions.swift in Sources */,
+				1A91D5C72426347100AC4E1C /* NIOAsyncTests.swift in Sources */,
+				1A91D5C42426345F00AC4E1C /* NIOAsync.swift in Sources */,
 				1A57BE5A23CC7B1100639FDD /* CoFutureAwaitTests2.swift in Sources */,
 				1A595BF123E86CFC009B62E7 /* CoFutureWaitTests.swift in Sources */,
 				1A79BA8D23E421C700406AE7 /* CoFutureTests.swift in Sources */,
@@ -828,8 +868,6 @@
 				1A2D8D7D241EBD1A00ECC849 /* CoFuture+Combine.swift in Sources */,
 				1A2D8D83241EBD5700ECC849 /* CoFuturePublisher.swift in Sources */,
 				1AECF5AA23BA0E1D002A0493 /* CoFuture5+wait.swift in Sources */,
-				1A43084923C0955A001A89EA /* Coroutine+Delay.swift in Sources */,
-				1AB1F6D323B65FDE00C2715D /* Coroutine+Current.swift in Sources */,
 				1A35840023DD796A0086A6E6 /* CoFuture3+whenComplete.swift in Sources */,
 				1A4C6DAE2416AB2C00EF2974 /* FifoQueue.swift in Sources */,
 				1AAECA5723DD703400DED77D /* CoFuture.swift in Sources */,
@@ -839,16 +877,15 @@
 				1A8129A62417D49900AE061C /* CoroutineTaskExecutor.swift in Sources */,
 				1A4C6DAB2416AB0E00EF2974 /* SharedCoroutineDispatcher.swift in Sources */,
 				F8CD25ED2019A0F800952299 /* CCoroutine.c in Sources */,
-				1A70823523DB7D7E00E656E0 /* AtomicInt.swift in Sources */,
 				1A363CC32413D077000CF996 /* ThreadCoroutineWrapper.swift in Sources */,
 				1A35840623DD91890086A6E6 /* CoFuture2+map.swift in Sources */,
 				1ABBDF8623E321B2007ADBA3 /* CoroutineDispatcher.swift in Sources */,
 				1A790E8523E5D7A9007056EC /* Coroutine.swift in Sources */,
 				1A43084623C094EC001A89EA /* DispatchSourceTimer.swift in Sources */,
 				1A4C6DB42416AB6700EF2974 /* SharedCoroutine.swift in Sources */,
-				1A03F82023BB24E40072C843 /* AtomicIntRepresentable.swift in Sources */,
 				1A9C14DF23BB824400E13203 /* CoFuture4+await.swift in Sources */,
 				1A4C6DB12416AB5100EF2974 /* SharedCoroutineQueue.swift in Sources */,
+				1ABD0674242A368F00A22764 /* AtomicEnum.swift in Sources */,
 				1A363CC02413D03B000CF996 /* CoroutineProtocol.swift in Sources */,
 				1A790E8923E6D167007056EC /* PsxLock.swift in Sources */,
 				1A363CBD2413D004000CF996 /* StackfullCoroutine.swift in Sources */,
@@ -883,6 +920,8 @@
 				1A934FBC23902A5300155B71 /* URL+Extensions.swift in Sources */,
 				1AC3578C23E85BEA00EC2A50 /* CoFutureMapTests.swift in Sources */,
 				1A94E5C223A3E6A300812AFD /* SwiftCoroutineTests.swift in Sources */,
+				1A91D5C82426347100AC4E1C /* NIOAsyncTests.swift in Sources */,
+				1A91D5C52426345F00AC4E1C /* NIOAsync.swift in Sources */,
 				1A57BE5B23CC7B1100639FDD /* CoFutureAwaitTests2.swift in Sources */,
 				1A595BF223E86CFC009B62E7 /* CoFutureWaitTests.swift in Sources */,
 				1A79BA8E23E421C800406AE7 /* CoFutureTests.swift in Sources */,
@@ -895,6 +934,38 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		1A91D5CC2426350500AC4E1C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 1A91D5CB2426350500AC4E1C /* NIO */;
+		};
+		1A91D5CE2426350500AC4E1C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 1A91D5CD2426350500AC4E1C /* NIOConcurrencyHelpers */;
+		};
+		1A91D5D02426350500AC4E1C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 1A91D5CF2426350500AC4E1C /* NIOFoundationCompat */;
+		};
+		1A91D5D22426350500AC4E1C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 1A91D5D12426350500AC4E1C /* NIOHTTP1 */;
+		};
+		1A91D5D42426350500AC4E1C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 1A91D5D32426350500AC4E1C /* NIOTLS */;
+		};
+		1A91D5D62426350500AC4E1C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 1A91D5D52426350500AC4E1C /* NIOTestUtils */;
+		};
+		1A91D5D82426350500AC4E1C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 1A91D5D72426350500AC4E1C /* NIOWebSocket */;
+		};
+		1A91D5DA2426350500AC4E1C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 1A91D5D92426350500AC4E1C /* _NIO1APIShims */;
+		};
 		F8CD259120199CF700952299 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = F8CD258520199CF700952299 /* SwiftCoroutine iOS */;
@@ -1020,7 +1091,8 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -1040,7 +1112,11 @@
 				INFOPLIST_FILE = Sources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MARKETING_VERSION = 1.0.1;
 				MODULEMAP_FILE = "${PROJECT_DIR}/Sources/module.modulemap";
@@ -1067,7 +1143,11 @@
 				INFOPLIST_FILE = Sources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MARKETING_VERSION = 1.0.1;
 				MODULEMAP_FILE = "${PROJECT_DIR}/Sources/module.modulemap";
@@ -1090,7 +1170,11 @@
 				DEVELOPMENT_TEAM = 2ZAT64L5ST;
 				INFOPLIST_FILE = Tests/SwiftCoroutineTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = "Belozierov.SwiftCoroutine-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1108,7 +1192,11 @@
 				DEVELOPMENT_TEAM = 2ZAT64L5ST;
 				INFOPLIST_FILE = Tests/SwiftCoroutineTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = "Belozierov.SwiftCoroutine-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1133,7 +1221,11 @@
 				INFOPLIST_FILE = Sources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MARKETING_VERSION = 1.0.5;
 				MODULEMAP_FILE = "${PROJECT_DIR}/Sources/module.modulemap";
@@ -1164,7 +1256,11 @@
 				INFOPLIST_FILE = Sources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MARKETING_VERSION = 1.0.5;
 				MODULEMAP_FILE = "${PROJECT_DIR}/Sources/module.modulemap";
@@ -1189,7 +1285,11 @@
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Tests/SwiftCoroutineTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = "BBelozierov.SwiftCoroutine-macOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1209,7 +1309,11 @@
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Tests/SwiftCoroutineTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = "BBelozierov.SwiftCoroutine-macOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1268,6 +1372,100 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-nio.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.15.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1A91D5CB2426350500AC4E1C /* NIO */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIO;
+		};
+		1A91D5CD2426350500AC4E1C /* NIOConcurrencyHelpers */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOConcurrencyHelpers;
+		};
+		1A91D5CF2426350500AC4E1C /* NIOFoundationCompat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOFoundationCompat;
+		};
+		1A91D5D12426350500AC4E1C /* NIOHTTP1 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOHTTP1;
+		};
+		1A91D5D32426350500AC4E1C /* NIOTLS */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOTLS;
+		};
+		1A91D5D52426350500AC4E1C /* NIOTestUtils */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOTestUtils;
+		};
+		1A91D5D72426350500AC4E1C /* NIOWebSocket */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOWebSocket;
+		};
+		1A91D5D92426350500AC4E1C /* _NIO1APIShims */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = _NIO1APIShims;
+		};
+		1A91D5DC2426352E00AC4E1C /* _NIO1APIShims */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = _NIO1APIShims;
+		};
+		1A91D5DE2426352E00AC4E1C /* NIO */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIO;
+		};
+		1A91D5E02426352E00AC4E1C /* NIOConcurrencyHelpers */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOConcurrencyHelpers;
+		};
+		1A91D5E22426352E00AC4E1C /* NIOFoundationCompat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOFoundationCompat;
+		};
+		1A91D5E42426352E00AC4E1C /* NIOHTTP1 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOHTTP1;
+		};
+		1A91D5E62426352E00AC4E1C /* NIOTestUtils */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOTestUtils;
+		};
+		1A91D5E82426352E00AC4E1C /* NIOTLS */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOTLS;
+		};
+		1A91D5EA2426352E00AC4E1C /* NIOWebSocket */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOWebSocket;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F8CCE86B1F8E82E3007F191B /* Project object */;
 }

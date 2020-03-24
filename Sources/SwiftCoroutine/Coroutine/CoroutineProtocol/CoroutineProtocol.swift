@@ -8,25 +8,15 @@
 
 @usableFromInline protocol CoroutineProtocol: class {
     
-    typealias State = Coroutine.State
     typealias StackSize = Coroutine.StackSize
     
-    var state: State { get }
-    
-    func resume() throws
-    func suspend() throws
-    
-    func await<T>(_ callback: (@escaping (T) -> Void) -> Void) throws -> T
+    func await<T>(_ callback: (@escaping (T) -> Void) -> Void) -> T
     
 }
 
 extension CoroutineProtocol {
     
-    func await<T>(_ callback: (@escaping (T) -> Void) -> Void) throws -> T {
-        fatalError()
-    }
-    
-    func performAsCurrent<T>(_ block: () -> T) -> T {
+    @inlinable func performAsCurrent<T>(_ block: () -> T) -> T {
         let wrapper = ThreadCoroutineWrapper.current
         let caller = wrapper.coroutine
         wrapper.coroutine = self

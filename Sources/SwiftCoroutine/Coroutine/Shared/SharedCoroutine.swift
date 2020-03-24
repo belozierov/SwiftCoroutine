@@ -12,6 +12,10 @@ import CCoroutine
 
 final class SharedCoroutine: CoroutineProtocol {
     
+    private enum State: Int {
+        case running, suspending, suspended
+    }
+    
     private struct StackBuffer {
         let stack: UnsafeMutableRawPointer, size: Int
     }
@@ -19,10 +23,9 @@ final class SharedCoroutine: CoroutineProtocol {
     private let dispatcher: SharedCoroutineDispatcher
     let queue: SharedCoroutineQueue
     let scheduler: TaskScheduler
-    
-    @AtomicIntRepresentable private(set) var state: State = .prepared
     private(set) var environment: UnsafeMutablePointer<CoroutineContext.SuspendData>!
     private var stackBuffer: StackBuffer!
+    private var state = AtomicEnum(wrappedValue: State.running)
     
     init(dispatcher: SharedCoroutineDispatcher, queue: SharedCoroutineQueue, scheduler: TaskScheduler) {
         self.dispatcher = dispatcher
@@ -30,54 +33,17 @@ final class SharedCoroutine: CoroutineProtocol {
         self.scheduler = scheduler
     }
     
-//    private func perform(_ block: () -> Bool) {
-//        performAsCurrent { _perform(block) }
-//    }
+    // MARK: - actions
     
-    private func perform(_ block: () -> Bool) {
-        let isFinished = block()
-        if $state.update({
-            if $0 == .restarting { return .suspended }
-            return isFinished ? .finished : .suspended
-        }).old == .restarting {
-            perform { queue.resume(self) }
-        }
-    }
-    
-    // MARK: - start
-    
-    func _start(_ task: @escaping () -> Void) {
-        state = .running
+    func start(_ task: @escaping () -> Void) {
         performAsCurrent { perform { queue.start(task) } }
     }
     
-    // MARK: - resume
-    
-    func resume() throws {
-        if $state.update({
-            switch $0 {
-            case .suspended: return .running
-            case .suspending: return .restarting
-            default: return $0
-            }
-        }).old == .suspended {
-            dispatcher.resume(self)
-        }
-    }
-    
-    func _resume() {
+    func resume() {
         performAsCurrent { perform { queue.resume(self) } }
     }
     
-    // MARK: - suspend
-    
-    func suspend() throws {
-        guard $state.update(from: .running, to: .suspending)
-            else { throw CoroutineError.wrongState }
-        _suspend()
-    }
-    
-    private func _suspend() {
+    private func suspend() {
         if environment == nil {
             environment = .allocate(capacity: 1)
             environment.initialize(to: .init())
@@ -85,21 +51,27 @@ final class SharedCoroutine: CoroutineProtocol {
         queue.suspend(self)
     }
     
+    private func perform(_ block: () -> Bool) {
+        if block() { return }
+        if state.update(.suspended) == .running {
+            state.value = .running
+            perform { queue.resume(self) }
+        }
+    }
+    
     // MARK: - await
     
-    func await<T>(_ callback: (@escaping (T) -> Void) -> Void) throws -> T {
-        var result: T?
+    func await<T>(_ callback: (@escaping (T) -> Void) -> Void) -> T {
+        state.value = .suspending
+        var result: T!
         callback {
             result = $0
-            if self.$state.update({ $0 == .suspended ? .running : .restarting }).old == .suspended {
+            if self.state.update(.running) == .suspended {
                 self.dispatcher.resume(self)
             }
         }
-        if $state.update({ $0 == .running ? .suspending : .running }).new == .suspending {
-            _suspend()
-        }
-        if let result = result { return result }
-        throw CoroutineError.wrongState
+        if state.value == .suspending { suspend() }
+        return result
     }
     
     deinit {
@@ -119,9 +91,6 @@ extension SharedCoroutine {
     }
     
     func restoreStack() {
-        if stackBuffer == nil {
-            print("test error")
-            return }
         environment.pointee.sp.copyMemory(from: stackBuffer.stack, byteCount: stackBuffer.size)
         stackBuffer.stack.deallocate()
         stackBuffer = nil

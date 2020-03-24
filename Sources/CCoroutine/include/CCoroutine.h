@@ -14,6 +14,8 @@ int __start(jmp_buf ret, const void* stack, const void* param, const void (*bloc
 void __suspend(jmp_buf env, void** sp, jmp_buf ret, int retVal);
 int __save(jmp_buf env, jmp_buf ret, int retVal);
 
-int __compare(_Atomic long* value, long* expected, long desired);
+int __atomicCompareExchange(_Atomic long* value, long* expected, long desired);
+long __atomicExchange(_Atomic long* value, long desired);
+void __atomicStore(_Atomic long* value, long desired);
 
 #endif

@@ -8,5 +8,4 @@
 
 public enum CoroutineError: Error {
     case mustBeCalledInsideCoroutine
-    case wrongState
 }

@@ -11,22 +11,22 @@ import XCTest
 
 class CoroutineTests: XCTestCase {
 
-    func testSyncContext() {
-        let exp = XCTOrderedExpectation(count: 5)
-        let coroutine1 = Coroutine {
-            exp.fulfill(0)
-            try? Coroutine.suspend()
-            exp.fulfill(3)
-        }
-        try? coroutine1.resume()
-        exp.fulfill(1)
-        try? Coroutine {
-            exp.fulfill(2)
-            try? coroutine1.resume()
-            exp.fulfill(4)
-        }.resume()
-        wait(for: exp, timeout: 1)
-    }
+//    func testSyncContext() {
+//        let exp = XCTOrderedExpectation(count: 5)
+//        let coroutine1 = Coroutine {
+//            exp.fulfill(0)
+//            try? Coroutine.suspend()
+//            exp.fulfill(3)
+//        }
+//        try? coroutine1.resume()
+//        exp.fulfill(1)
+//        try? Coroutine {
+//            exp.fulfill(2)
+//            try? coroutine1.resume()
+//            exp.fulfill(4)
+//        }.resume()
+//        wait(for: exp, timeout: 1)
+//    }
     
 //    func testRestartWithDispatcher() {
 //        let exp = expectation(description: "testRestartWithDispatcher")
@@ -41,15 +41,15 @@ class CoroutineTests: XCTestCase {
 //    }
 //
     
-    func testCurrent() {
-        XCTAssertNil(try? Coroutine.current())
-        XCTAssertFalse(Coroutine.isInsideCoroutine)
-        try? Coroutine {
-            XCTAssertNotNil(try? Coroutine.current())
-            XCTAssertTrue(Coroutine.isInsideCoroutine)
-            XCTAssertTrue(try? Coroutine.current().isCurrent)
-        }.resume()
-    }
+//    func testCurrent() {
+//        XCTAssertNil(try? Coroutine.current())
+//        XCTAssertFalse(Coroutine.isInsideCoroutine)
+//        try? Coroutine {
+//            XCTAssertNotNil(try? Coroutine.current())
+//            XCTAssertTrue(Coroutine.isInsideCoroutine)
+//            XCTAssertTrue(try? Coroutine.current().isCurrent)
+//        }.resume()
+//    }
     
 //    func testStates() {
 //        let exp = expectation(description: "testStates")
@@ -69,15 +69,6 @@ class CoroutineTests: XCTestCase {
 //        XCTAssertEqual(coroutine.state, .finished)
 //        wait(for: [exp], timeout: 1)
 //    }
-    
-    func testHashable() {
-        let coroutine1 = Coroutine {}
-        let coroutine2 = Coroutine {}
-        XCTAssertNotEqual(coroutine1, coroutine2)
-        XCTAssertNotEqual(coroutine1.hashValue, coroutine2.hashValue)
-        XCTAssertEqual(coroutine1, coroutine1)
-        XCTAssertEqual(coroutine1.hashValue, coroutine1.hashValue)
-    }
     
     func testStackSize() {
         XCTAssertEqual(Coroutine.StackSize(size: 234).size, 234)

@@ -16,7 +16,7 @@ extension CoFuture {
             unlock()
             return try result.get()
         }
-        return try Coroutine.current().coroutine
+        return try Coroutine.current()
             .await { (callback: @escaping (Result<Value, Error>) -> Void) in
                 self.append(callback: callback)
                 self.unlock()

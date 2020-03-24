@@ -72,7 +72,7 @@ final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
         } else {
             mutex.unlock()
             func perform() {
-                coroutine._resume()
+                coroutine.resume()
                 performNext(for: coroutine.queue)
             }
             coroutine.scheduler.isCurrent() ? perform() : coroutine.scheduler.execute(perform)
@@ -85,10 +85,10 @@ final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
             if let coroutine = queue.pop() {
                 mutex.unlock()
                 if coroutine.scheduler.isCurrent() {
-                    coroutine._resume()
+                    coroutine.resume()
                 } else {
                     return coroutine.scheduler.execute {
-                        coroutine._resume()
+                        coroutine.resume()
                         self.performNext(for: queue)
                     }
                 }
@@ -113,7 +113,7 @@ final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
     }
     
     private func start(task: Task, on queue: SharedCoroutineQueue) {
-        SharedCoroutine(dispatcher: self, queue: queue, scheduler: task.scheduler)._start(task.task)
+        SharedCoroutine(dispatcher: self, queue: queue, scheduler: task.scheduler).start(task.task)
     }
     
     // MARK: - DispatchSourceMemoryPressure
