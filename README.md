@@ -95,6 +95,8 @@ Futures and promises are represented by the corresponding `CoFuture` class and i
 - **Awaitable**. You can await the result inside the coroutine.
 - **Combine-ready**. You can create `Publisher` from `CoFuture`, and vice versa make `CoFuture` a subscriber.
 
+Unlike `Coroutine.await()`, with `CoFuture.await()`, you can start multiple tasks in parallel and synchronise them later.
+
 ```swift
 let future1: CoFuture<Int> = async {
     sleep(2) //some work
