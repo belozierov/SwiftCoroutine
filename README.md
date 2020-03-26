@@ -15,7 +15,7 @@ This is the first implementation of [coroutines](https://en.wikipedia.org/wiki/C
 ### Usage
 
 ```swift
-//perform coroutine on the main thread
+//execute coroutine on the main thread
 //submit() returns CoFuture<Void>, thanks to which we can handle errors
 CoroutineDispatcher.main.submit {
 
@@ -73,17 +73,28 @@ You can execute tasks inside coroutines on `CoroutineDispatcher` just like you w
 - **Create your own API**. Gives you a very flexible tool to create your own add-ons or integrate with existing solutions.
 
 ```swift
-func makeSomeFuture() -> CoFuture<Int> {
-    let promise = CoPromise<Int>()
-    someAsyncFuncWithCompletion { int in
-        promise.send(int)
+func awaitThumbnail(url: URL) throws -> UIImage {
+    //await URLSessionDataTask response without blocking the thread
+    let (data, _, error) = try Coroutine.await {
+        URLSession.shared.dataTask(with: url, completionHandler: $0).resume()
     }
-    return promise
+    
+    //parse UIImage or throw the error
+    guard let image = data.flatMap(UIImage.init)
+        else { throw error ?? URLError(.cannotParseResponse) }
+    
+    //perform task on global queue and await it result
+    return try TaskScheduler.global.await { image.makeThumbnail() }
 }
 
-let future = makeSomeFuture().transformOutput { $0.description } 
-future.onResult(on: .global) { result in
-    //do some work with result of type Result<String, Error>
+func setThumbnail(url: URL) {
+    //execute coroutine on the main thread
+    CoroutineDispatcher.main.execute {
+        //await image without blocking the thread
+        let thumbnail = try? self.awaitThumbnail(url: url)
+        //set image on the main thread
+        self.imageView.image = thumbnail ?? self.placeholder
+    }
 }
 ```
 
