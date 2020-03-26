@@ -115,7 +115,7 @@ Futures and promises are represented by the corresponding `CoFuture` class and i
 - **Awaitable**. You can await the result inside the coroutine.
 - **Combine-ready**. You can create `Publisher` from `CoFuture`, and vice versa make `CoFuture` a subscriber.
 
-Here is an example of URLSession extension to creating CoFuture for URLSessionDataTask.
+Here is an example of `URLSession` extension to creating `CoFuture` for `URLSessionDataTask`.
 
 ```swift
 extension URLSession {
