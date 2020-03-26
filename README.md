@@ -15,23 +15,24 @@ This is the first implementation of [coroutines](https://en.wikipedia.org/wiki/C
 ### Usage
 
 ```swift
-
-//Main thread
-
-//If coroutine is started with default parameters on the main thread,
-//it will also run on the main DispatchQueue
-coroutine {
-    //extension that returns CoFuture<(Data, URLResponse)>
-    let future = URLSession.shared.dataTaskFuture(for: imageURL)
-    
+//perform coroutine on main thread
+//submit() returns CoFuture<Void>, thanks to which we can handle errors
+CoroutineDispatcher.main.submit {
+    extension that returns CoFuture<(data: Data, response: URLResponse)>
+    let dataFuture = URLSession.shared.dataTaskFuture(for: imageURL)
     //await result that suspends coroutine and doesn't block the thread
-    let data = try future.await().data
-    
+    let data = try dataFuture.await().data
+
+    //create UIImage from data or throw the error
+    guard let image = UIImage(data: data) else { throw URLError(.cannotParseResponse) }
+    //perform task on global queue and await the result without blocking the thread
+    let thumbnail = try TaskScheduler.global.await { image.makeThumbnail() }
+
     //coroutine is performed on the main thread, that's why we can set the image in UIImageView
-    self.imageView.image = UIImage(data: data)
-    
-}.onError { error in
-    //error handling if needed
+    self.imageView.image = thumbnail
+}.whenFailure { error in
+    here we can handle errors
+    self.imageView.image = UIImage(name: "thumbnail_placeholder")
 }
 ```
 
