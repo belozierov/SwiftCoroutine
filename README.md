@@ -14,6 +14,8 @@ This is the first implementation of [coroutines](https://en.wikipedia.org/wiki/C
 
 ### Usage
 
+This is an example of a combined usage of coroutines with futures and promises.
+
 ```swift
 //execute coroutine on the main thread
 //submit() returns CoFuture<Void>, thanks to which we can handle errors
@@ -112,6 +114,38 @@ Futures and promises are represented by the corresponding `CoFuture` class and i
 - **Cancellable**. You can cancel the whole chain as well as handle it and complete the related actions.
 - **Awaitable**. You can await the result inside the coroutine.
 - **Combine-ready**. You can create `Publisher` from `CoFuture`, and vice versa make `CoFuture` a subscriber.
+
+Here is an example of URLSession extension to creating CoFuture for URLSessionDataTask.
+
+```swift
+extension URLSession {
+
+    typealias DataResponse = (data: Data, response: URLResponse)
+
+    func dataTaskFuture(for urlRequest: URLRequest) -> CoFuture<DataResponse> {
+        //create CoPromise that is a subclass of CoFuture for delivering the result
+        let promise = CoPromise<DataResponse>()
+    
+        //create URLSessionDataTask
+        let task = dataTask(with: urlRequest) {
+            if let error = $2 {
+                promise.fail(error)
+            } else if let data = $0, let response = $1 {
+                promise.success((data, response))
+            } else {
+                promise.fail(URLError(.badServerResponse))
+            }
+        }
+        task.resume()
+    
+        //handle CoFuture canceling to cancel URLSessionDataTask
+        promise.whenCanceled(task.cancel)
+        
+        return promise
+    }
+    
+}
+```
 
 Unlike `Coroutine.await()`, with `CoFuture.await()`, you can start multiple tasks in parallel and synchronise them later.
 
