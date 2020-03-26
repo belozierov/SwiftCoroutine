@@ -22,15 +22,21 @@ public struct TaskScheduler {
     
     public static let immediate = TaskScheduler(scheduler: { $0() }, isCurrent: { true })
     
-    @usableFromInline typealias Scheduler = (@escaping () -> Void) -> Void
-    
-    @usableFromInline let execute: Scheduler
-    @usableFromInline let isCurrent: () -> Bool
+    @usableFromInline internal let scheduler: (@escaping () -> Void) -> Void
+    @usableFromInline internal let isCurrent: () -> Bool
     
     @inlinable public init(scheduler: @escaping (@escaping () -> Void) -> Void,
                            isCurrent: @escaping () -> Bool = { false }) {
-        self.execute = scheduler
+        self.scheduler = scheduler
         self.isCurrent = isCurrent
+    }
+    
+    @inlinable public func execute(_ block: @escaping () -> Void) {
+        scheduler(block)
+    }
+    
+    @inlinable internal func executeWithCheckIfCurrent(_ block: @escaping () -> Void) {
+        isCurrent() ? block() : scheduler(block)
     }
     
     // MARK: - RunLoop

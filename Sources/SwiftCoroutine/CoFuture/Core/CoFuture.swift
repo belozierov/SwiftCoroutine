@@ -140,7 +140,7 @@ public class CoFuture<Value> {
     private var callbacks: ContiguousArray<Child>?
     final private(set) var _result: Optional<Result<Value, Error>>
     
-    @usableFromInline init(mutex: PsxLock?, result: Result<Value, Error>?) {
+    @usableFromInline internal init(mutex: PsxLock?, result: Result<Value, Error>?) {
         self.mutex = mutex
         _result = result
     }
@@ -155,15 +155,9 @@ public class CoFuture<Value> {
 extension CoFuture {
     
     @inlinable public convenience
-    init(on scheduler: TaskScheduler = .immediate, completion: @escaping (CoPromise<Value>) -> Void) {
+    init(promise: @escaping (CoPromise<Value>) -> Void) {
         self.init(mutex: .init(), result: nil)
-        scheduler.execute { completion(unsafeDowncast(self, to: CoPromise<Value>.self)) }
-    }
-    
-    @inlinable public convenience
-    init(on scheduler: TaskScheduler, completion: @escaping () throws -> Value) {
-        self.init(mutex: .init(), result: nil)
-        scheduler.execute { self.setResult(Result { try completion() }) }
+        promise(unsafeDowncast(self, to: CoPromise<Value>.self))
     }
     
     /// Initializes a future with result.
@@ -186,11 +180,11 @@ extension CoFuture {
     
     // MARK: - Mutex
     
-    func lock() {
+    internal func lock() {
         mutex?.lock()
     }
     
-    func unlock() {
+    internal func unlock() {
         mutex?.unlock()
     }
     
@@ -203,7 +197,7 @@ extension CoFuture {
         return _result
     }
     
-    @usableFromInline func setResult(_ result: Result<Value, Error>) {
+    @usableFromInline internal func setResult(_ result: Result<Value, Error>) {
         lock()
         if _result != nil { return unlock() }
         lockedComplete(with: result)
@@ -219,14 +213,14 @@ extension CoFuture {
     
     // MARK: - Callback
     
-    typealias Callback = (Result<Value, Error>) -> Void
+    internal typealias Callback = (Result<Value, Error>) -> Void
     private struct Child { let callback: Callback }
     
-    func append(callback: @escaping Callback) {
+    internal func append(callback: @escaping Callback) {
         callbacks.append(.init(callback: callback))
     }
     
-    func addChild<T>(future: CoFuture<T>, callback: @escaping Callback) {
+    internal func addChild<T>(future: CoFuture<T>, callback: @escaping Callback) {
         future.parent = .init(cancellable: self)
         append(callback: callback)
     }

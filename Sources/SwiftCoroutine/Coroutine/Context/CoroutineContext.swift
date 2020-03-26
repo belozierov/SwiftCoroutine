@@ -11,15 +11,15 @@ import CCoroutine
 #endif
 import Darwin
 
-final class CoroutineContext {
+internal final class CoroutineContext {
     
-    let haveGuardPage: Bool
-    let stackSize: Int
+    internal let haveGuardPage: Bool
+    internal let stackSize: Int
     private let stack: UnsafeMutableRawPointer
     private let returnEnv: UnsafeMutablePointer<Int32>
-    var block: (() -> Void)?
+    internal var block: (() -> Void)?
     
-    init(stackSize: Int, guardPage: Bool = true) {
+    internal init(stackSize: Int, guardPage: Bool = true) {
         haveGuardPage = guardPage
         self.stackSize = stackSize
         if guardPage {
@@ -31,13 +31,13 @@ final class CoroutineContext {
         returnEnv = .allocate(capacity: .environmentSize)
     }
     
-    @inlinable var stackTop: UnsafeMutableRawPointer {
+    @inlinable internal var stackTop: UnsafeMutableRawPointer {
         .init(stack + stackSize)
     }
     
     // MARK: - Start
     
-    @inlinable func start() -> Bool {
+    @inlinable internal func start() -> Bool {
        __start(returnEnv, stackTop, Unmanaged.passUnretained(self).toOpaque()) {
            _longjmp(Unmanaged<CoroutineContext>
                .fromOpaque($0!)
@@ -54,20 +54,20 @@ final class CoroutineContext {
     
     // MARK: - Operations
     
-    struct SuspendData {
+    internal struct SuspendData {
         let env: UnsafeMutablePointer<Int32>
         var sp: UnsafeMutableRawPointer!
     }
     
-    @inlinable func resume(from env: UnsafeMutablePointer<Int32>) -> Bool {
+    @inlinable internal func resume(from env: UnsafeMutablePointer<Int32>) -> Bool {
         __save(env, returnEnv, .suspended) == .finished
     }
     
-    @inlinable func suspend(to data: UnsafeMutablePointer<SuspendData>) {
+    @inlinable internal func suspend(to data: UnsafeMutablePointer<SuspendData>) {
         __suspend(data.pointee.env, &data.pointee.sp, returnEnv, .suspended)
     }
     
-    @inlinable func suspend(to env: UnsafeMutablePointer<Int32>) {
+    @inlinable internal func suspend(to env: UnsafeMutablePointer<Int32>) {
         __save(returnEnv, env, .suspended)
     }
     
@@ -87,7 +87,7 @@ extension Int32 {
 
 extension CoroutineContext.SuspendData {
     
-    init() {
+    internal init() {
         self = .init(env: .allocate(capacity: .environmentSize), sp: nil)
     }
     

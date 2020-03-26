@@ -23,12 +23,20 @@ public struct Coroutine {
     
     // MARK: - await
     
+    @inlinable public static func await(_ callback: (@escaping () -> Void) -> Void) throws {
+        try await { callback($0) }
+    }
+    
     @inlinable public static func await<T>(_ callback: (@escaping (T) -> Void) -> Void) throws -> T {
         try current().await(callback)
     }
     
-    @inlinable public static func await(_ callback: (@escaping () -> Void) -> Void) throws {
-        try await { callback($0) }
+    @inlinable public static func await<T, N>(_ callback: (@escaping (T, N) -> Void) -> Void) throws -> (T, N) {
+        try current().await { completion in callback { a, b in completion((a, b)) } }
+    }
+    
+    @inlinable public static func await<T, N, M>(_ callback: (@escaping (T, N, M) -> Void) -> Void) throws -> (T, N, M) {
+        try current().await { completion in callback { a, b, c in completion((a, b, c)) } }
     }
     
     // MARK: - delay

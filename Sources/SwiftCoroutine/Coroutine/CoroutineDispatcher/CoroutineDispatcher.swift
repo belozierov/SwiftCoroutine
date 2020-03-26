@@ -24,16 +24,6 @@ public struct CoroutineDispatcher {
         executor.execute(on: scheduler, task: task)
     }
     
-    @inlinable public func execute(_ task: @escaping () throws -> Void) {
-        execute { do { try task() } catch { print(error) } }
-    }
-    
-    @inlinable public func submit<T>(_ task: @escaping () throws -> T) -> CoFuture<T> {
-        let promise = CoPromise<T>()
-        execute { promise.complete(with: Result { try task() }) }
-        return promise
-    }
-    
 }
 
 

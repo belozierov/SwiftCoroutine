@@ -10,8 +10,8 @@ import Darwin
 
 extension Int {
     
-    static let pageSize = sysconf(_SC_PAGESIZE)
-    static let processorsNumber = sysconf(_SC_NPROCESSORS_ONLN)
-    static let environmentSize = MemoryLayout<jmp_buf>.size
+    internal static let pageSize = sysconf(_SC_PAGESIZE)
+    internal static let processorsNumber = sysconf(_SC_NPROCESSORS_ONLN)
+    internal static let environmentSize = MemoryLayout<jmp_buf>.size
     
 }

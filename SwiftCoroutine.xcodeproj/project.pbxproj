@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 48;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -75,18 +75,6 @@
 		1A8129A92417D56700AE061C /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8129A72417D56700AE061C /* Constants.swift */; };
 		1A8129AB2419822300AE061C /* CoroutineError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8129AA2419822300AE061C /* CoroutineError.swift */; };
 		1A8129AC2419822300AE061C /* CoroutineError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8129AA2419822300AE061C /* CoroutineError.swift */; };
-		1A91D5C42426345F00AC4E1C /* NIOAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A91D5C32426345F00AC4E1C /* NIOAsync.swift */; };
-		1A91D5C52426345F00AC4E1C /* NIOAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A91D5C32426345F00AC4E1C /* NIOAsync.swift */; };
-		1A91D5C72426347100AC4E1C /* NIOAsyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A91D5C62426347100AC4E1C /* NIOAsyncTests.swift */; };
-		1A91D5C82426347100AC4E1C /* NIOAsyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A91D5C62426347100AC4E1C /* NIOAsyncTests.swift */; };
-		1A91D5DD2426352E00AC4E1C /* _NIO1APIShims in Frameworks */ = {isa = PBXBuildFile; productRef = 1A91D5DC2426352E00AC4E1C /* _NIO1APIShims */; };
-		1A91D5DF2426352E00AC4E1C /* NIO in Frameworks */ = {isa = PBXBuildFile; productRef = 1A91D5DE2426352E00AC4E1C /* NIO */; };
-		1A91D5E12426352E00AC4E1C /* NIOConcurrencyHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 1A91D5E02426352E00AC4E1C /* NIOConcurrencyHelpers */; };
-		1A91D5E32426352E00AC4E1C /* NIOFoundationCompat in Frameworks */ = {isa = PBXBuildFile; productRef = 1A91D5E22426352E00AC4E1C /* NIOFoundationCompat */; };
-		1A91D5E52426352E00AC4E1C /* NIOHTTP1 in Frameworks */ = {isa = PBXBuildFile; productRef = 1A91D5E42426352E00AC4E1C /* NIOHTTP1 */; };
-		1A91D5E72426352E00AC4E1C /* NIOTestUtils in Frameworks */ = {isa = PBXBuildFile; productRef = 1A91D5E62426352E00AC4E1C /* NIOTestUtils */; };
-		1A91D5E92426352E00AC4E1C /* NIOTLS in Frameworks */ = {isa = PBXBuildFile; productRef = 1A91D5E82426352E00AC4E1C /* NIOTLS */; };
-		1A91D5EB2426352E00AC4E1C /* NIOWebSocket in Frameworks */ = {isa = PBXBuildFile; productRef = 1A91D5EA2426352E00AC4E1C /* NIOWebSocket */; };
 		1A934FB4239028E900155B71 /* CombineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A934FB1239028CA00155B71 /* CombineTests.swift */; };
 		1A934FBB23902A5300155B71 /* URL+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A934FBA23902A5300155B71 /* URL+Extensions.swift */; };
 		1A934FBC23902A5300155B71 /* URL+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A934FBA23902A5300155B71 /* URL+Extensions.swift */; };
@@ -98,6 +86,8 @@
 		1A993209242022D100B3BF32 /* CoFuture6+hashable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A993207242022D100B3BF32 /* CoFuture6+hashable.swift */; };
 		1A9C14DE23BB824400E13203 /* CoFuture4+await.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A9C14DD23BB824400E13203 /* CoFuture4+await.swift */; };
 		1A9C14DF23BB824400E13203 /* CoFuture4+await.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A9C14DD23BB824400E13203 /* CoFuture4+await.swift */; };
+		1AAC4881242C98E200AE9AA9 /* TaskExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAC4880242C98E200AE9AA9 /* TaskExecutor.swift */; };
+		1AAC4882242C98E200AE9AA9 /* TaskExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAC4880242C98E200AE9AA9 /* TaskExecutor.swift */; };
 		1AAECA5623DD703400DED77D /* CoFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAECA5523DD703400DED77D /* CoFuture.swift */; };
 		1AAECA5723DD703400DED77D /* CoFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAECA5523DD703400DED77D /* CoFuture.swift */; };
 		1ABBDF8523E321B2007ADBA3 /* CoroutineDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ABBDF8423E321B2007ADBA3 /* CoroutineDispatcher.swift */; };
@@ -201,13 +191,12 @@
 		1A8129A42417D49900AE061C /* CoroutineTaskExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoroutineTaskExecutor.swift; sourceTree = "<group>"; };
 		1A8129A72417D56700AE061C /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		1A8129AA2419822300AE061C /* CoroutineError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoroutineError.swift; sourceTree = "<group>"; };
-		1A91D5C32426345F00AC4E1C /* NIOAsync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NIOAsync.swift; sourceTree = "<group>"; };
-		1A91D5C62426347100AC4E1C /* NIOAsyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NIOAsyncTests.swift; sourceTree = "<group>"; };
 		1A934FB1239028CA00155B71 /* CombineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombineTests.swift; sourceTree = "<group>"; };
 		1A934FBA23902A5300155B71 /* URL+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+Extensions.swift"; sourceTree = "<group>"; };
 		1A934FC3239031C000155B71 /* XCTAssertContains.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCTAssertContains.swift; sourceTree = "<group>"; };
 		1A993207242022D100B3BF32 /* CoFuture6+hashable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoFuture6+hashable.swift"; sourceTree = "<group>"; };
 		1A9C14DD23BB824400E13203 /* CoFuture4+await.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoFuture4+await.swift"; sourceTree = "<group>"; };
+		1AAC4880242C98E200AE9AA9 /* TaskExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskExecutor.swift; sourceTree = "<group>"; };
 		1AAECA5523DD703400DED77D /* CoFuture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoFuture.swift; sourceTree = "<group>"; };
 		1ABBDF8423E321B2007ADBA3 /* CoroutineDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoroutineDispatcher.swift; sourceTree = "<group>"; };
 		1ABD0672242A368F00A22764 /* AtomicEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicEnum.swift; sourceTree = "<group>"; };
@@ -272,15 +261,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1A91D5DF2426352E00AC4E1C /* NIO in Frameworks */,
-				1A91D5E32426352E00AC4E1C /* NIOFoundationCompat in Frameworks */,
-				1A91D5EB2426352E00AC4E1C /* NIOWebSocket in Frameworks */,
-				1A91D5E12426352E00AC4E1C /* NIOConcurrencyHelpers in Frameworks */,
-				1A91D5E52426352E00AC4E1C /* NIOHTTP1 in Frameworks */,
 				F8CD25AB20199D1000952299 /* SwiftCoroutine.framework in Frameworks */,
-				1A91D5E72426352E00AC4E1C /* NIOTestUtils in Frameworks */,
-				1A91D5DD2426352E00AC4E1C /* _NIO1APIShims in Frameworks */,
-				1A91D5E92426352E00AC4E1C /* NIOTLS in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -383,15 +364,6 @@
 			path = CoFutureTests;
 			sourceTree = "<group>";
 		};
-		1A91D5C22426344600AC4E1C /* NIO */ = {
-			isa = PBXGroup;
-			children = (
-				1A91D5C32426345F00AC4E1C /* NIOAsync.swift */,
-				1A91D5C62426347100AC4E1C /* NIOAsyncTests.swift */,
-			);
-			path = NIO;
-			sourceTree = "<group>";
-		};
 		1A91D5DB2426352E00AC4E1C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -417,6 +389,15 @@
 				1AFFF6EC23C8BDEA0079FF73 /* CoFutureError.swift */,
 			);
 			path = CoFuture;
+			sourceTree = "<group>";
+		};
+		1AAC4883242CD2C100AE9AA9 /* TaskScheduler */ = {
+			isa = PBXGroup;
+			children = (
+				1ADBC5CF23E4A612007BCA7C /* TaskScheduler.swift */,
+				1AAC4880242C98E200AE9AA9 /* TaskExecutor.swift */,
+			);
+			path = TaskScheduler;
 			sourceTree = "<group>";
 		};
 		1ABBDF8323E3219C007ADBA3 /* CoroutineDispatcher */ = {
@@ -465,13 +446,13 @@
 		1AFF9F352387D835002DD893 /* Coroutine */ = {
 			isa = PBXGroup;
 			children = (
+				1AAC4883242CD2C100AE9AA9 /* TaskScheduler */,
 				1A599E51241ACD7B007E744F /* CoroutineProtocol */,
 				1ABBDF8323E3219C007ADBA3 /* CoroutineDispatcher */,
 				1A363CCA2413F2FC000CF996 /* Shared */,
 				1A363CC62413D10B000CF996 /* Coroutine */,
 				1A363CC42413D0BB000CF996 /* Context */,
 				1A363CBA2413CFD6000CF996 /* Stackfull */,
-				1ADBC5CF23E4A612007BCA7C /* TaskScheduler.swift */,
 			);
 			path = Coroutine;
 			sourceTree = "<group>";
@@ -510,7 +491,6 @@
 		F810EF0B1F8F302700025AD1 /* SwiftCoroutineTests */ = {
 			isa = PBXGroup;
 			children = (
-				1A91D5C22426344600AC4E1C /* NIO */,
 				1ACB4492241A7B34002DB73B /* Helpers */,
 				1A79BA8923E4219800406AE7 /* CoFutureTests */,
 				1A57BE6323CC865800639FDD /* Coroutine */,
@@ -666,26 +646,10 @@
 			buildRules = (
 			);
 			dependencies = (
-				1A91D5CC2426350500AC4E1C /* PBXTargetDependency */,
-				1A91D5CE2426350500AC4E1C /* PBXTargetDependency */,
-				1A91D5D02426350500AC4E1C /* PBXTargetDependency */,
-				1A91D5D22426350500AC4E1C /* PBXTargetDependency */,
-				1A91D5D42426350500AC4E1C /* PBXTargetDependency */,
-				1A91D5D62426350500AC4E1C /* PBXTargetDependency */,
-				1A91D5D82426350500AC4E1C /* PBXTargetDependency */,
-				1A91D5DA2426350500AC4E1C /* PBXTargetDependency */,
 				F8CD25AD20199D1000952299 /* PBXTargetDependency */,
 			);
 			name = "SwiftCoroutine macOSTests";
 			packageProductDependencies = (
-				1A91D5DC2426352E00AC4E1C /* _NIO1APIShims */,
-				1A91D5DE2426352E00AC4E1C /* NIO */,
-				1A91D5E02426352E00AC4E1C /* NIOConcurrencyHelpers */,
-				1A91D5E22426352E00AC4E1C /* NIOFoundationCompat */,
-				1A91D5E42426352E00AC4E1C /* NIOHTTP1 */,
-				1A91D5E62426352E00AC4E1C /* NIOTestUtils */,
-				1A91D5E82426352E00AC4E1C /* NIOTLS */,
-				1A91D5EA2426352E00AC4E1C /* NIOWebSocket */,
 			);
 			productName = "Once macOSTests";
 			productReference = F8CD25AA20199D1000952299 /* SwiftCoroutine macOSTests.xctest */;
@@ -731,7 +695,6 @@
 			);
 			mainGroup = F8CCE86A1F8E82E3007F191B;
 			packageReferences = (
-				1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */,
 			);
 			productRefGroup = F8CCE8751F8E82E3007F191B /* Products */;
 			projectDirPath = "";
@@ -783,6 +746,7 @@
 			files = (
 				1A595BF623E872D5009B62E7 /* CoroutineContextPool.swift in Sources */,
 				1A8129AB2419822300AE061C /* CoroutineError.swift in Sources */,
+				1AAC4881242C98E200AE9AA9 /* TaskExecutor.swift in Sources */,
 				1ADBC5D023E4A612007BCA7C /* TaskScheduler.swift in Sources */,
 				1A739AD023B1555A00165280 /* Coroutine+StackSize.swift in Sources */,
 				1A595BFB23E8A31F009B62E7 /* CoPromise.swift in Sources */,
@@ -843,8 +807,6 @@
 				F8CD25F92019A19A00952299 /* SwiftCoroutineTests.swift in Sources */,
 				1AC3578B23E85BEA00EC2A50 /* CoFutureMapTests.swift in Sources */,
 				1A934FBB23902A5300155B71 /* URL+Extensions.swift in Sources */,
-				1A91D5C72426347100AC4E1C /* NIOAsyncTests.swift in Sources */,
-				1A91D5C42426345F00AC4E1C /* NIOAsync.swift in Sources */,
 				1A57BE5A23CC7B1100639FDD /* CoFutureAwaitTests2.swift in Sources */,
 				1A595BF123E86CFC009B62E7 /* CoFutureWaitTests.swift in Sources */,
 				1A79BA8D23E421C700406AE7 /* CoFutureTests.swift in Sources */,
@@ -860,6 +822,7 @@
 			files = (
 				1A595BF723E872D5009B62E7 /* CoroutineContextPool.swift in Sources */,
 				1A8129AC2419822300AE061C /* CoroutineError.swift in Sources */,
+				1AAC4882242C98E200AE9AA9 /* TaskExecutor.swift in Sources */,
 				1ADBC5D123E4A612007BCA7C /* TaskScheduler.swift in Sources */,
 				1A739AD123B1555A00165280 /* Coroutine+StackSize.swift in Sources */,
 				1A595BFC23E8A320009B62E7 /* CoPromise.swift in Sources */,
@@ -920,8 +883,6 @@
 				1A934FBC23902A5300155B71 /* URL+Extensions.swift in Sources */,
 				1AC3578C23E85BEA00EC2A50 /* CoFutureMapTests.swift in Sources */,
 				1A94E5C223A3E6A300812AFD /* SwiftCoroutineTests.swift in Sources */,
-				1A91D5C82426347100AC4E1C /* NIOAsyncTests.swift in Sources */,
-				1A91D5C52426345F00AC4E1C /* NIOAsync.swift in Sources */,
 				1A57BE5B23CC7B1100639FDD /* CoFutureAwaitTests2.swift in Sources */,
 				1A595BF223E86CFC009B62E7 /* CoFutureWaitTests.swift in Sources */,
 				1A79BA8E23E421C800406AE7 /* CoFutureTests.swift in Sources */,
@@ -934,38 +895,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		1A91D5CC2426350500AC4E1C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 1A91D5CB2426350500AC4E1C /* NIO */;
-		};
-		1A91D5CE2426350500AC4E1C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 1A91D5CD2426350500AC4E1C /* NIOConcurrencyHelpers */;
-		};
-		1A91D5D02426350500AC4E1C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 1A91D5CF2426350500AC4E1C /* NIOFoundationCompat */;
-		};
-		1A91D5D22426350500AC4E1C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 1A91D5D12426350500AC4E1C /* NIOHTTP1 */;
-		};
-		1A91D5D42426350500AC4E1C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 1A91D5D32426350500AC4E1C /* NIOTLS */;
-		};
-		1A91D5D62426350500AC4E1C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 1A91D5D52426350500AC4E1C /* NIOTestUtils */;
-		};
-		1A91D5D82426350500AC4E1C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 1A91D5D72426350500AC4E1C /* NIOWebSocket */;
-		};
-		1A91D5DA2426350500AC4E1C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 1A91D5D92426350500AC4E1C /* _NIO1APIShims */;
-		};
 		F8CD259120199CF700952299 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = F8CD258520199CF700952299 /* SwiftCoroutine iOS */;
@@ -1091,8 +1020,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -1112,11 +1040,7 @@
 				INFOPLIST_FILE = Sources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MARKETING_VERSION = 1.0.1;
 				MODULEMAP_FILE = "${PROJECT_DIR}/Sources/module.modulemap";
@@ -1143,11 +1067,7 @@
 				INFOPLIST_FILE = Sources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MARKETING_VERSION = 1.0.1;
 				MODULEMAP_FILE = "${PROJECT_DIR}/Sources/module.modulemap";
@@ -1170,11 +1090,7 @@
 				DEVELOPMENT_TEAM = 2ZAT64L5ST;
 				INFOPLIST_FILE = Tests/SwiftCoroutineTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = "Belozierov.SwiftCoroutine-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1192,11 +1108,7 @@
 				DEVELOPMENT_TEAM = 2ZAT64L5ST;
 				INFOPLIST_FILE = Tests/SwiftCoroutineTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = "Belozierov.SwiftCoroutine-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1221,11 +1133,7 @@
 				INFOPLIST_FILE = Sources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MARKETING_VERSION = 1.0.5;
 				MODULEMAP_FILE = "${PROJECT_DIR}/Sources/module.modulemap";
@@ -1256,11 +1164,7 @@
 				INFOPLIST_FILE = Sources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MARKETING_VERSION = 1.0.5;
 				MODULEMAP_FILE = "${PROJECT_DIR}/Sources/module.modulemap";
@@ -1285,11 +1189,7 @@
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Tests/SwiftCoroutineTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = "BBelozierov.SwiftCoroutine-macOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1309,11 +1209,7 @@
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Tests/SwiftCoroutineTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = "BBelozierov.SwiftCoroutine-macOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1372,100 +1268,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/apple/swift-nio.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.15.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		1A91D5CB2426350500AC4E1C /* NIO */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
-			productName = NIO;
-		};
-		1A91D5CD2426350500AC4E1C /* NIOConcurrencyHelpers */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
-			productName = NIOConcurrencyHelpers;
-		};
-		1A91D5CF2426350500AC4E1C /* NIOFoundationCompat */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
-			productName = NIOFoundationCompat;
-		};
-		1A91D5D12426350500AC4E1C /* NIOHTTP1 */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
-			productName = NIOHTTP1;
-		};
-		1A91D5D32426350500AC4E1C /* NIOTLS */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
-			productName = NIOTLS;
-		};
-		1A91D5D52426350500AC4E1C /* NIOTestUtils */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
-			productName = NIOTestUtils;
-		};
-		1A91D5D72426350500AC4E1C /* NIOWebSocket */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
-			productName = NIOWebSocket;
-		};
-		1A91D5D92426350500AC4E1C /* _NIO1APIShims */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
-			productName = _NIO1APIShims;
-		};
-		1A91D5DC2426352E00AC4E1C /* _NIO1APIShims */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
-			productName = _NIO1APIShims;
-		};
-		1A91D5DE2426352E00AC4E1C /* NIO */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
-			productName = NIO;
-		};
-		1A91D5E02426352E00AC4E1C /* NIOConcurrencyHelpers */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
-			productName = NIOConcurrencyHelpers;
-		};
-		1A91D5E22426352E00AC4E1C /* NIOFoundationCompat */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
-			productName = NIOFoundationCompat;
-		};
-		1A91D5E42426352E00AC4E1C /* NIOHTTP1 */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
-			productName = NIOHTTP1;
-		};
-		1A91D5E62426352E00AC4E1C /* NIOTestUtils */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
-			productName = NIOTestUtils;
-		};
-		1A91D5E82426352E00AC4E1C /* NIOTLS */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
-			productName = NIOTLS;
-		};
-		1A91D5EA2426352E00AC4E1C /* NIOWebSocket */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1A91D5C12426343D00AC4E1C /* XCRemoteSwiftPackageReference "swift-nio" */;
-			productName = NIOWebSocket;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F8CCE86B1F8E82E3007F191B /* Project object */;
 }

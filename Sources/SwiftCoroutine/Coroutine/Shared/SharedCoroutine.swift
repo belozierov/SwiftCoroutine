@@ -10,7 +10,7 @@
 import CCoroutine
 #endif
 
-final class SharedCoroutine: CoroutineProtocol {
+internal final class SharedCoroutine: CoroutineProtocol {
     
     private enum State: Int {
         case running, suspending, suspended
@@ -21,13 +21,13 @@ final class SharedCoroutine: CoroutineProtocol {
     }
     
     private let dispatcher: SharedCoroutineDispatcher
-    let queue: SharedCoroutineQueue
-    let scheduler: TaskScheduler
+    internal let queue: SharedCoroutineQueue
+    internal let scheduler: TaskScheduler
     private(set) var environment: UnsafeMutablePointer<CoroutineContext.SuspendData>!
     private var stackBuffer: StackBuffer!
     private var state = AtomicEnum(wrappedValue: State.running)
     
-    init(dispatcher: SharedCoroutineDispatcher, queue: SharedCoroutineQueue, scheduler: TaskScheduler) {
+    internal init(dispatcher: SharedCoroutineDispatcher, queue: SharedCoroutineQueue, scheduler: TaskScheduler) {
         self.dispatcher = dispatcher
         self.queue = queue
         self.scheduler = scheduler
@@ -35,11 +35,11 @@ final class SharedCoroutine: CoroutineProtocol {
     
     // MARK: - actions
     
-    func start(_ task: @escaping () -> Void) {
+    internal func start(_ task: @escaping () -> Void) {
         performAsCurrent { perform { queue.start(task) } }
     }
     
-    func resume() {
+    internal func resume() {
         performAsCurrent { perform { queue.resume(self) } }
     }
     
@@ -61,10 +61,11 @@ final class SharedCoroutine: CoroutineProtocol {
     
     // MARK: - await
     
-    func await<T>(_ callback: (@escaping (T) -> Void) -> Void) -> T {
+    internal func await<T>(_ callback: (@escaping (T) -> Void) -> Void) -> T {
         state.value = .suspending
         var result: T!
         callback {
+            if result != nil { return }
             result = $0
             if self.state.update(.running) == .suspended {
                 self.dispatcher.resume(self)
@@ -83,14 +84,14 @@ final class SharedCoroutine: CoroutineProtocol {
 
 extension SharedCoroutine {
     
-    func saveStack() {
+    internal func saveStack() {
         let size = environment.pointee.sp.distance(to: queue.context.stackTop)
         let stack = UnsafeMutableRawPointer.allocate(byteCount: size, alignment: 16)
         stack.copyMemory(from: environment.pointee.sp, byteCount: size)
         stackBuffer = .init(stack: stack, size: size)
     }
     
-    func restoreStack() {
+    internal func restoreStack() {
         environment.pointee.sp.copyMemory(from: stackBuffer.stack, byteCount: stackBuffer.size)
         stackBuffer.stack.deallocate()
         stackBuffer = nil

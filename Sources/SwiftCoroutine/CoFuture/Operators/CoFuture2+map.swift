@@ -47,4 +47,13 @@ extension CoFuture {
         return promise
     }
     
+    // MARK: - optionals
+    
+    @inlinable public func unwrap<NewValue>(_ transform: @escaping () throws -> NewValue) -> CoFuture<NewValue> where Value == Optional<NewValue> {
+        map {
+            if let value = $0 { return value }
+            return try transform()
+        }
+    }
+    
 }

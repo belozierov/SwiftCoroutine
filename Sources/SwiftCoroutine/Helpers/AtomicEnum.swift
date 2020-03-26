@@ -6,7 +6,11 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
-struct AtomicEnum<T: RawRepresentable> where T.RawValue == Int {
+#if SWIFT_PACKAGE
+import CCoroutine
+#endif
+
+internal struct AtomicEnum<T: RawRepresentable> where T.RawValue == Int {
     
     private var _value: Int
     
@@ -16,15 +20,17 @@ struct AtomicEnum<T: RawRepresentable> where T.RawValue == Int {
     
     var value: T {
         get { T(rawValue: _value)! }
-        set { __atomicStore(pointer(), newValue.rawValue) }
+        set {
+            withUnsafeMutablePointer(to: &_value) {
+                __atomicStore(OpaquePointer($0), newValue.rawValue)
+            }
+        }
     }
     
     mutating func update(_ newValue: T) -> T {
-        T(rawValue: __atomicExchange(pointer(), newValue.rawValue))!
-    }
-    
-    private mutating func pointer() -> OpaquePointer {
-        OpaquePointer(UnsafeMutablePointer(&_value))
+        withUnsafeMutablePointer(to: &_value) {
+            T(rawValue: __atomicExchange(OpaquePointer($0), newValue.rawValue))!
+        }
     }
     
 }

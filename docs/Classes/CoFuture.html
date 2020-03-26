@@ -14,7 +14,7 @@
     <a title="CoFuture Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">SwiftCoroutine Docs</a> (43% documented)</p>
+        <p><a href="../index.html">SwiftCoroutine Docs</a> (39% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -54,6 +54,14 @@
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="../Extensions/Publisher.html">Publisher</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols/TaskExecutor.html">TaskExecutor</a>
               </li>
             </ul>
           </li>
@@ -209,9 +217,9 @@ more asynchronous processing. Або ви можете використати <c
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine8CoFutureC2on10completionACyxGAA13TaskSchedulerV_yAA0C7PromiseCyxGctcfc"></a>
-                    <a name="//apple_ref/swift/Method/init(on:completion:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine8CoFutureC2on10completionACyxGAA13TaskSchedulerV_yAA0C7PromiseCyxGctcfc">init(on:completion:)</a>
+                    <a name="/s:14SwiftCoroutine8CoFutureC7promiseACyxGyAA0C7PromiseCyxGc_tcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(promise:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14SwiftCoroutine8CoFutureC7promiseACyxGyAA0C7PromiseCyxGc_tcfc">init(promise:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -227,35 +235,7 @@ more asynchronous processing. Або ви можете використати <c
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@inlinable</span>
-<span class="kd">public</span> <span class="kd">convenience</span> <span class="nf">init</span><span class="p">(</span><span class="n">on</span> <span class="nv">scheduler</span><span class="p">:</span> <span class="kt"><a href="../Structs/TaskScheduler.html">TaskScheduler</a></span> <span class="o">=</span> <span class="o">.</span><span class="n">immediate</span><span class="p">,</span> <span class="nv">completion</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt"><a href="../Classes/CoPromise.html">CoPromise</a></span><span class="o">&lt;</span><span class="kt">Value</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:14SwiftCoroutine8CoFutureC2on10completionACyxGAA13TaskSchedulerV_xyKctcfc"></a>
-                    <a name="//apple_ref/swift/Method/init(on:completion:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine8CoFutureC2on10completionACyxGAA13TaskSchedulerV_xyKctcfc">init(on:completion:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">@inlinable</span>
-<span class="kd">public</span> <span class="kd">convenience</span> <span class="nf">init</span><span class="p">(</span><span class="n">on</span> <span class="nv">scheduler</span><span class="p">:</span> <span class="kt"><a href="../Structs/TaskScheduler.html">TaskScheduler</a></span><span class="p">,</span> <span class="nv">completion</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Value</span><span class="p">)</span></code></pre>
+<span class="kd">public</span> <span class="kd">convenience</span> <span class="nf">init</span><span class="p">(</span><span class="nv">promise</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt"><a href="../Classes/CoPromise.html">CoPromise</a></span><span class="o">&lt;</span><span class="kt">Value</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -850,6 +830,47 @@ may recover from the error by returning a <code>CoFuture</code>.</p>
             </div>
             <div class="task-group">
               <div class="task-name-container">
+                <a name="/optionals"></a>
+                <a name="//apple_ref/swift/Section/optionals" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/optionals"></a>
+                  <h3 class="section-name"><p>optionals</p>
+</h3>
+                </div>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14SwiftCoroutine8CoFutureC6unwrapyACyqd__Gqd__yKcqd__SgRszlF"></a>
+                    <a name="//apple_ref/swift/Method/unwrap(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14SwiftCoroutine8CoFutureC6unwrapyACyqd__Gqd__yKcqd__SgRszlF">unwrap(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@inlinable</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="n">unwrap</span><span class="o">&lt;</span><span class="kt">NewValue</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">transform</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">NewValue</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">CoFuture</span><span class="o">&lt;</span><span class="kt">NewValue</span><span class="o">&gt;</span> <span class="k">where</span> <span class="kt">Value</span> <span class="o">==</span> <span class="kt">Optional</span><span class="o">&lt;</span><span class="kt">NewValue</span><span class="o">&gt;</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
                 <a name="/always"></a>
                 <a name="//apple_ref/swift/Section/always" class="dashAnchor"></a>
                 <div class="section-name-container">
@@ -1330,7 +1351,7 @@ may recover from the error by returning a <code>CoFuture</code>.</p>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-03-24)</p>
+          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-03-26)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.1</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

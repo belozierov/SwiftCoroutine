@@ -10,7 +10,7 @@ import Dispatch
 
 extension DispatchSource {
     
-    @inlinable
+    @inlinable internal
     static func createTimer(timeout: DispatchTime,
                             handler: @escaping () -> Void) -> DispatchSourceTimer {
         let timer = DispatchSource.makeTimerSource()

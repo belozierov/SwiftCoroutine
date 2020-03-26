@@ -6,26 +6,26 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
-final class SharedCoroutineQueue {
+internal final class SharedCoroutineQueue {
     
-    let context: CoroutineContext
+    internal let context: CoroutineContext
     private var prepared = FifoQueue<SharedCoroutine>()
     private var suspendedCoroutine: SharedCoroutine?
     private(set) var started = 0
     
-    init(context: CoroutineContext) {
+    internal init(context: CoroutineContext) {
         self.context = context
     }
     
-    func push(_ coroutine: SharedCoroutine) {
+    internal func push(_ coroutine: SharedCoroutine) {
         prepared.push(coroutine)
     }
     
-    func pop() -> SharedCoroutine? {
+    internal func pop() -> SharedCoroutine? {
         prepared.pop()
     }
     
-    func start(_ task: @escaping () -> Void) -> Bool {
+    internal func start(_ task: @escaping () -> Void) -> Bool {
         started += 1
         suspendedCoroutine?.saveStack()
         suspendedCoroutine = nil
@@ -35,12 +35,12 @@ final class SharedCoroutineQueue {
         return isFinished
     }
     
-    @inlinable func suspend(_ coroutine: SharedCoroutine) {
+    @inlinable internal func suspend(_ coroutine: SharedCoroutine) {
         suspendedCoroutine = coroutine
         context.suspend(to: coroutine.environment)
     }
     
-    func resume(_ coroutine: SharedCoroutine) -> Bool {
+    internal func resume(_ coroutine: SharedCoroutine) -> Bool {
         if suspendedCoroutine !== coroutine {
             suspendedCoroutine?.saveStack()
             coroutine.restoreStack()
@@ -55,11 +55,11 @@ final class SharedCoroutineQueue {
 
 extension SharedCoroutineQueue: Hashable {
     
-    static func == (lhs: SharedCoroutineQueue, rhs: SharedCoroutineQueue) -> Bool {
+    @inlinable internal static func == (lhs: SharedCoroutineQueue, rhs: SharedCoroutineQueue) -> Bool {
         lhs === rhs
     }
     
-    func hash(into hasher: inout Hasher) {
+    @inlinable internal func hash(into hasher: inout Hasher) {
         ObjectIdentifier(self).hash(into: &hasher)
     }
     

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>CoroutineTaskExecutor Structure Reference</title>
+    <title>Int Extension Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,18 +10,18 @@
     
   </head>
   <body>
-    <a name="//apple_ref/swift/Struct/CoroutineTaskExecutor" class="dashAnchor"></a>
-    <a title="CoroutineTaskExecutor Structure Reference"></a>
+    <a name="//apple_ref/swift/Extension/Int" class="dashAnchor"></a>
+    <a title="Int Extension Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">SwiftCoroutine Docs</a> (39% documented)</p>
+        <p><a href="../index.html">SwiftCoroutine Docs</a> (36% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
       <p id="breadcrumbs">
         <a href="../index.html">SwiftCoroutine Reference</a>
         <img id="carat" src="../img/carat.png" />
-        CoroutineTaskExecutor Structure Reference
+        Int Extension Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -52,6 +52,12 @@
           <li class="nav-group-name">
             <a href="../Extensions.html">Extensions</a>
             <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Extensions.html#/CoroutineContext">CoroutineContext</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/Int.html">Int</a>
+              </li>
               <li class="nav-group-task">
                 <a href="../Extensions/Publisher.html">Publisher</a>
               </li>
@@ -90,15 +96,14 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>CoroutineTaskExecutor</h1>
+            <h1>Int</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">CoroutineTaskExecutor</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Int</span></code></pre>
 
                 </div>
               </div>
-            <p>Undocumented</p>
-
+            
           </section>
           <section class="section task-group-section">
             <div class="task-group">
@@ -106,9 +111,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine0B12TaskExecutorV13defaultSharedACvpZ"></a>
-                    <a name="//apple_ref/swift/Variable/defaultShared" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine0B12TaskExecutorV13defaultSharedACvpZ">defaultShared</a>
+                    <a name="/s:Si14SwiftCoroutineE8pageSizeSivpZ"></a>
+                    <a name="//apple_ref/swift/Variable/pageSize" class="dashAnchor"></a>
+                    <a class="token" href="#/s:Si14SwiftCoroutineE8pageSizeSivpZ">pageSize</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -123,7 +128,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">defaultShared</span><span class="p">:</span> <span class="kt">CoroutineTaskExecutor</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">static</span> <span class="k">let</span> <span class="nv">pageSize</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
 
                         </div>
                       </div>
@@ -133,9 +138,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine0B12TaskExecutorV9newShared17coroutinePoolSize05stackI0ACSi_AA0B0V05StackI0VtFZ"></a>
-                    <a name="//apple_ref/swift/Method/newShared(coroutinePoolSize:stackSize:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine0B12TaskExecutorV9newShared17coroutinePoolSize05stackI0ACSi_AA0B0V05StackI0VtFZ">newShared(coroutinePoolSize:stackSize:)</a>
+                    <a name="/s:Si14SwiftCoroutineE16processorsNumberSivpZ"></a>
+                    <a name="//apple_ref/swift/Variable/processorsNumber" class="dashAnchor"></a>
+                    <a class="token" href="#/s:Si14SwiftCoroutineE16processorsNumberSivpZ">processorsNumber</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -150,7 +155,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">newShared</span><span class="p">(</span><span class="n">coroutinePoolSize</span> <span class="nv">poolSize</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">stackSize</span><span class="p">:</span> <span class="kt"><a href="../Structs/Coroutine.html">Coroutine</a></span><span class="o">.</span><span class="kt">StackSize</span> <span class="o">=</span> <span class="o">.</span><span class="n">recommended</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">CoroutineTaskExecutor</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">static</span> <span class="k">let</span> <span class="nv">processorsNumber</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
 
                         </div>
                       </div>
@@ -160,9 +165,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine0B12TaskExecutorV7execute2on4taskyAA0C9SchedulerV_yyctF"></a>
-                    <a name="//apple_ref/swift/Method/execute(on:task:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine0B12TaskExecutorV7execute2on4taskyAA0C9SchedulerV_yyctF">execute(on:task:)</a>
+                    <a name="/s:Si14SwiftCoroutineE15environmentSizeSivpZ"></a>
+                    <a name="//apple_ref/swift/Variable/environmentSize" class="dashAnchor"></a>
+                    <a class="token" href="#/s:Si14SwiftCoroutineE15environmentSizeSivpZ">environmentSize</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -177,8 +182,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">@inlinable</span>
-<span class="kd">public</span> <span class="kd">func</span> <span class="nf">execute</span><span class="p">(</span><span class="n">on</span> <span class="nv">scheduler</span><span class="p">:</span> <span class="kt"><a href="../Structs/TaskScheduler.html">TaskScheduler</a></span><span class="p">,</span> <span class="nv">task</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">static</span> <span class="k">let</span> <span class="nv">environmentSize</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
 
                         </div>
                       </div>

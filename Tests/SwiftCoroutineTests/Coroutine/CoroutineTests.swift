@@ -10,6 +10,28 @@ import XCTest
 @testable import SwiftCoroutine
 
 class CoroutineTests: XCTestCase {
+    
+    func testAwait() {
+        let exp = expectation(description: "testAwait")
+        exp.expectedFulfillmentCount = 1000
+        let dispatcher = CoroutineDispatcher(scheduler: .immediate)
+        for i in 0..<1000 {
+            dispatcher.execute {
+                var a = Int.random(in: 0..<1000)
+                let b: Int = try! TaskScheduler.global.await { completion in
+                    if i == 0 { sleep(1) }
+                    a += Int.random(in: 0..<1000)
+                    DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
+                        a += Int.random(in: 0..<1000)
+                        completion(Int.random(in: 0..<1000))
+                    }
+                } + a
+                print(b)
+                exp.fulfill()
+            }
+        }
+        wait(for: [exp], timeout: 10)
+    }
 
 //    func testSyncContext() {
 //        let exp = XCTOrderedExpectation(count: 5)

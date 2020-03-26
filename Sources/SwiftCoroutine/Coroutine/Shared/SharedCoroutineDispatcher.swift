@@ -8,7 +8,7 @@
 
 import Dispatch
 
-final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
+internal final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
     
     private struct Task {
         let scheduler: TaskScheduler, task: () -> Void
@@ -21,7 +21,7 @@ final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
     private var suspendedQueues = Set<SharedCoroutineQueue>()
     private var tasks = FifoQueue<Task>()
     
-    init(contextsCount: Int, stackSize: Int) {
+    internal init(contextsCount: Int, stackSize: Int) {
         self.stackSize = stackSize
         self.contextsCount = contextsCount
         freeQueues.reserveCapacity(contextsCount)
@@ -29,15 +29,14 @@ final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
         startDispatchSource()
     }
     
-    func execute(on scheduler: TaskScheduler, task: @escaping () -> Void) {
+    internal func execute(on scheduler: TaskScheduler, task: @escaping () -> Void) {
         mutex.lock()
         if let queue = freeQueue {
             mutex.unlock()
-            func perform() {
-                start(task: .init(scheduler: scheduler, task: task), on: queue)
-                performNext(for: queue)
+            scheduler.executeWithCheckIfCurrent {
+                self.start(task: .init(scheduler: scheduler, task: task), on: queue)
+                self.performNext(for: queue)
             }
-            scheduler.isCurrent() ? perform() : scheduler.execute(perform)
         } else {
             tasks.push(.init(scheduler: scheduler, task: task))
             mutex.unlock()
@@ -64,18 +63,17 @@ final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
         return suspendedQueues.remove(min)
     }
     
-    func resume(_ coroutine: SharedCoroutine) {
+    internal func resume(_ coroutine: SharedCoroutine) {
         mutex.lock()
         if suspendedQueues.remove(coroutine.queue) == nil {
             coroutine.queue.push(coroutine)
             mutex.unlock()
         } else {
             mutex.unlock()
-            func perform() {
+            coroutine.scheduler.executeWithCheckIfCurrent {
                 coroutine.resume()
-                performNext(for: coroutine.queue)
+                self.performNext(for: coroutine.queue)
             }
-            coroutine.scheduler.isCurrent() ? perform() : coroutine.scheduler.execute(perform)
         }
     }
     
@@ -87,7 +85,7 @@ final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
                 if coroutine.scheduler.isCurrent() {
                     coroutine.resume()
                 } else {
-                    return coroutine.scheduler.execute {
+                    return coroutine.scheduler.scheduler {
                         coroutine.resume()
                         self.performNext(for: queue)
                     }
@@ -97,7 +95,7 @@ final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
                 if task.scheduler.isCurrent() {
                     start(task: task, on: queue)
                 } else {
-                    return task.scheduler.execute {
+                    return task.scheduler.scheduler {
                         self.start(task: task, on: queue)
                         self.performNext(for: queue)
                     }
@@ -132,7 +130,7 @@ final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
         }
     }
     
-    func reset() {
+    internal func reset() {
         mutex.lock()
         contextsCount += freeQueues.count
         freeQueues.removeAll(keepingCapacity: true)
