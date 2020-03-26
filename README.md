@@ -147,6 +147,28 @@ extension URLSession {
 }
 ```
 
+And this is how we can use the URLSession extension with chain of futures.
+
+```swift
+//create CoFuture with URLSessionDataTask response
+URLSession.shared.dataTaskFuture(for: url)
+    
+    //parse data to Optional<UIImage>
+    .map { UIImage(data: $0.data) }
+    
+    //unwrap Optional<UIImage> by throwing error if nil
+    .unwrap { throw URLError(.cannotParseResponse) }
+    
+    //execute heavy task on global queue inside the chain
+    .flatMap { TaskScheduler.global.submit($0.makeThubnail) }
+    
+    //get Result<UIImage, Error> and set image on the main thread
+    .whenComplete { result in
+        let image = try? result.get() ?? self.placeholder
+        DispatchQueue.main.execute { self.imageView.image = image }
+}
+```
+
 Unlike `Coroutine.await()`, with `CoFuture.await()`, you can start multiple tasks in parallel and synchronise them later.
 
 ```swift
