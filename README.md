@@ -94,8 +94,10 @@ func awaitThumbnail(url: URL) throws -> UIImage {
 func setThumbnail(url: URL) {
     //execute coroutine on the main thread
     CoroutineDispatcher.main.execute {
+    
         //await image without blocking the thread
         let thumbnail = try? self.awaitThumbnail(url: url)
+        
         //set image on the main thread
         self.imageView.image = thumbnail ?? self.placeholder
     }
