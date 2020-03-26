@@ -8,13 +8,9 @@
 ![Swift Coroutine](../master/Sources/logo.png)
 
 ##
-Many languages such as Kotlin, JavaScript, Go, Rust, C++, and others already have [coroutines](https://en.wikipedia.org/wiki/Coroutine) support, which makes the use of asynchronous code easier. Unfortunately, Apple is still behind on this feature. But this can be improved by a framework without the need to change the language.
+Many languages, such as Kotlin, JavaScript, Go, Rust, C++, and others, already have [coroutines](https://en.wikipedia.org/wiki/Coroutine) support that makes the use of asynchronous code easier. Unfortunately, Apple is still behind on this feature. But this can be improved by a framework without the need to change the language.
 
-This is the first implementation of [coroutines](https://en.wikipedia.org/wiki/Coroutine) for Swift with macOS and iOS support of 64-bit systems (since support for 32-bit systems is no longer really relevant). The stackful coroutine approach is used because it has a minimal context switching overhead, high performance, and is best suited for implementation as a third-party framework.
-
-The framework is fully integrated with [Dispatch](https://developer.apple.com/documentation/DISPATCH) making it intuitive to use. It is built on the [Futures and Promises](https://ru.wikipedia.org/wiki/Futures_and_promises) concept that facilitate the creation of extra extensions you might need. In addition, the framework can be easily used with the new [Combine](https://developer.apple.com/documentation/combine) framework and its army of various [Publishers](https://developer.apple.com/documentation/combine/publisher) and additional operators.
-
-You can find some API similarity to the Kotlin coroutines, thanks to my friends Android developers who have constantly advised me on how it works.
+This is the first implementation of [coroutines](https://en.wikipedia.org/wiki/Coroutine) for Swift with macOS and iOS support. They make the [async/await](https://en.wikipedia.org/wiki/Async/await) pattern implementation possible. In addition, the framework includes [futures and promises](https://en.wikipedia.org/wiki/Futures_and_promises) for more flexibility and ease of use.
 
 ### Usage
 
@@ -49,11 +45,27 @@ coroutine {
 
 `SwiftCoroutine` is available through the [Swift Package Manager](https://swift.org/package-manager) for macOS and iOS.
 
-## Working with Swift Coroutine
+## Working with SwiftCoroutine
 
-### Futures and promises
+### Async/await
 
-Futures and promises are represented by the respective `CoFuture` class and its `CoPromise` subclass, which are generics to the type they return. They are thread-safe and have the support of the basic required functionality, including `await` mechanism, `onResult` on completion, and using the `transform` function you can build chains.
+Asynchronous programming is usually associated with callbacks. It is quite convenient until there are too many of them and they start nesting. Then it's called **callback hell**.
+
+The **async/await** pattern is an alternative. It is already well-established in other programming languages and is an evolution in asynchronous programming. The implementation of this pattern is possible thanks to coroutines. 
+
+#### Key benefits
+- **Suspend instead of block**. The main advantage of coroutines is the ability to suspend their execution at some point without blocking a thread and resuming later on.
+- **Fast context switching**. Switching between coroutines is much faster than switching between threads as it does not require the involvement of operating system.
+- **Asynchronous code in synchronous manner**. The use of coroutines allows an asynchronous, non-blocking function to be structured in a manner similar to an ordinary synchronous function. And even though coroutines can run in multiple threads, your code will still look consistent and therefore easy to understand.
+
+You can execute tasks inside coroutines on `CoroutineDispatcher` just like you would do it on `DispatchQueue`. While `Coroutine.await()` allows you to wrap asynchronous functions to deal with them as synchronous. 
+
+#### Main features
+- **Any scheduler**. You can use any scheduler to execute coroutines wrapping it in TashScheduler, including standard `DispatchQueue` or even `NSManagedObjectContext` and `MultiThreadedEventLoopGroup`.
+- **Memory efficiency**. Contains a mechanism that allows to reuse stacks and, if necessary, effectively store their contents.
+- **Await instead of resume/suspend**. For convenience and safety, coroutines' resume/suspend has been replaced by await, which suspends it and resumes on callback.
+- **Lock-free await**. Await is implemented using atomic variables. This makes it especially fast in cases where the result is already available.
+- **Create your own API**. Gives you a very flexible tool to create your own add-ons or integrate with existing solutions.
 
 ```swift
 func makeSomeFuture() -> CoFuture<Int> {
@@ -70,9 +82,18 @@ future.onResult(on: .global) { result in
 }
 ```
 
-### Async/await
+### Futures and Promises
 
-The framework includes extensions to DispatchQueue and global functions that allow you to execute code on a specific queue that returns `CoFuture`. You can wait for the result with the `await` function inside coroutine, which suspends it and does not block the thread, so you can do it, for example, on the main thread.
+The futures and promises approach takes the usage of asynchronous code to the next level. It is a convenient mechanism to synchronise asynchronous code and has become a part of the async/await pattern. If coroutines are a skeleton, then futures and promises are its muscles.
+
+Futures and promises are represented by the corresponding `CoFuture` class and its `CoPromise` subclass. `CoFuture` is a holder for a result that will be provided later.
+
+#### Main features
+- **Best performance**. It is much faster than most of other futures and promises implementations.
+- **Build chains**. With flatMap and map, you can create data dependencies via `CoFuture` chains.
+- **Cancellable**. You can cancel the whole chain as well as handle it and complete the related actions.
+- **Awaitable**. You can await the result inside the coroutine.
+- **Combine-ready**. You can create `Publisher` from `CoFuture`, and vice versa make `CoFuture` a subscriber.
 
 ```swift
 let future1: CoFuture<Int> = async {
@@ -88,78 +109,5 @@ let future2: CoFuture<Int> = async {
 coroutine(on: .main) {
     let sum = try future1.await() + future2.await() //will await for 3 sec., doesn't block the thread
     self.label.text = "Sum is \(sum)"
-}
-```
-
-### Coroutines
-
-You can create coroutines with the DispatchQueue extension and the corresponding global functions. API is identical to `async` function, except that you can call await inside and suspend coroutines execution by resuming it when a `CoFuture` result is available. This makes it possible to write within the coroutines asynchronous code as synchronous. If global `coroutine` function is started with default parameters on the main thread, coroutine will run on the main DispatchQueue else on global.
-
-This is a stackful coroutines, so each coroutine has its own stack, and after its completion, gets into the pool for reuse. If the system needs more RAM, the pool deinitializes all free coroutines and deallocates extra memory.
-
-The framework also gives you access to the `Coroutine` class if you need more control or to write your own additional API.
-
-```swift
-coroutine {
-     let coroutine = try Coroutine.current() //get current coroutine if needed
-     someAsyncFuncWithCompletion {
-         coroutine.resume() //manual resume outside coroutine
-     }
-     coroutine.suspend() //manual suspend inside coroutine
-}
-```
-
-Also you can change Dispatcher inside coroutine with the `setDispatcher` function.
-
-```swift
-coroutine(on: .global) {
-    //thread from global queue
-    try Coroutine.setDispatcher(.main)
-    //main thread
-}
-```
-
-Or you can create coroutines without dispatcher.
-
-```swift
-let cor1 = Coroutine()
-let cor2 = Coroutine()
-
-cor1.start {
-    //call 1
-    cor1.suspend()
-    //call 4
-}
-//call 2
-cor2.start {
-    //call 3
-    cor1.resume()
-    //call 5
-}
-//call 6
-```
-
-### Generators (alpha version)
-
-The framework also includes the `Generator` class that allows yield values after each iteration similar to C#, Python, etc. [generators](https://en.wikipedia.org/wiki/Generator_(computer_programming)).
-
-```swift
-let generator = Generator<Int> { yield in
-    for i in 0..<100 { yield(i) }
-}
-generator.next() //return 0
-generator.next() //return 1
-generator.next() //return 2
-```
-
-### Combine
-
-Apple has recently introduced a new reactive programming framework that makes writing asynchronous code easier and includes a lot of convenient and common functionality. This framework includes the `await` extension for all publishers that allows combining reactive programming and coroutines for higher productivity.
-
-```swift
-let publisher = URLSession.shared.dataTaskPublisher(for: url).map(\.data)
-coroutine {
-    let data = try publisher.await()
-    //do some work with data
 }
 ```
