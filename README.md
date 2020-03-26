@@ -31,7 +31,9 @@ CoroutineDispatcher.main.submit {
     guard let image = UIImage(data: data) else { throw URLError(.cannotParseResponse) }
     
     //execute heavy task on global queue and await the result without blocking the thread
-    let thumbnail = try TaskScheduler.global.await { image.makeThumbnail() }
+    let thumbnail = try TaskScheduler.global.await { 
+        image.makeThumbnail() //some method that returns UIImage
+    }
 
     //coroutine is performed on the main thread, that's why we can set the image in UIImageView
     self.imageView.image = thumbnail
