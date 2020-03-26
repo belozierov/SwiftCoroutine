@@ -85,7 +85,7 @@ func awaitThumbnail(url: URL) throws -> UIImage {
     guard let image = data.flatMap(UIImage.init)
         else { throw error ?? URLError(.cannotParseResponse) }
     
-    //execute heavy task on global queue and await it result
+    //execute heavy task on global queue and await its result
     return try TaskScheduler.global.await { image.makeThumbnail() }
 }
 
