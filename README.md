@@ -72,6 +72,8 @@ You can execute tasks inside coroutines on `CoroutineDispatcher` just like you w
 - **Lock-free await**. Await is implemented using atomic variables. This makes it especially fast in cases where the result is already available.
 - **Create your own API**. Gives you a very flexible tool to create your own add-ons or integrate with existing solutions.
 
+The following example shows the usage of `await()` inside a coroutine to manage asynchronous calls.
+
 ```swift
 func awaitThumbnail(url: URL) throws -> UIImage {
     //await URLSessionDataTask response without blocking the thread
