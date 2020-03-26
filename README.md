@@ -18,7 +18,7 @@ This is the first implementation of [coroutines](https://en.wikipedia.org/wiki/C
 //perform coroutine on main thread
 //submit() returns CoFuture<Void>, thanks to which we can handle errors
 CoroutineDispatcher.main.submit {
-    extension that returns CoFuture<(data: Data, response: URLResponse)>
+    //extension that returns CoFuture<(data: Data, response: URLResponse)>
     let dataFuture = URLSession.shared.dataTaskFuture(for: imageURL)
     //await result that suspends coroutine and doesn't block the thread
     let data = try dataFuture.await().data
@@ -31,7 +31,7 @@ CoroutineDispatcher.main.submit {
     //coroutine is performed on the main thread, that's why we can set the image in UIImageView
     self.imageView.image = thumbnail
 }.whenFailure { error in
-    here we can handle errors
+    //here we can handle errors
     self.imageView.image = UIImage(name: "thumbnail_placeholder")
 }
 ```
