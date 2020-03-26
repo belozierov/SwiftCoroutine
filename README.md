@@ -169,7 +169,7 @@ URLSession.shared.dataTaskFuture(for: url)
 }
 ```
 
-Unlike `Coroutine.await()`, with `CoFuture.await()`, you can start multiple tasks in parallel and synchronise them later.
+Unlike `Coroutine.await()`, with `CoFuture.await()` you can start multiple tasks in parallel and synchronise them later.
 
 ```swift
 let future1 = TaskScheduler.global.submit {
