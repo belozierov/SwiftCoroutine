@@ -66,7 +66,7 @@ The **async/await** pattern is an alternative. It is already well-established in
 You can execute tasks inside coroutines on `CoroutineDispatcher` just like you would do it on `DispatchQueue`. While `Coroutine.await()` allows you to wrap asynchronous functions to deal with them as synchronous. 
 
 #### Main features
-- **Any scheduler**. You can use any scheduler to execute coroutines wrapping it in TashScheduler, including standard `DispatchQueue` or even `NSManagedObjectContext` and `MultiThreadedEventLoopGroup`.
+- **Any scheduler**. You can use any scheduler to execute coroutines wrapping it in `TashScheduler`, including standard `DispatchQueue` or even `NSManagedObjectContext` and `MultiThreadedEventLoopGroup`.
 - **Memory efficiency**. Contains a mechanism that allows to reuse stacks and, if necessary, effectively store their contents.
 - **Await instead of resume/suspend**. For convenience and safety, coroutines' resume/suspend has been replaced by await, which suspends it and resumes on callback.
 - **Lock-free await**. Await is implemented using atomic variables. This makes it especially fast in cases where the result is already available.
@@ -103,17 +103,17 @@ Futures and promises are represented by the corresponding `CoFuture` class and i
 Unlike `Coroutine.await()`, with `CoFuture.await()`, you can start multiple tasks in parallel and synchronise them later.
 
 ```swift
-let future1: CoFuture<Int> = async {
+let future1 = TaskScheduler.global.submit {
     sleep(2) //some work
     return 5
 }
 
-let future2: CoFuture<Int> = async {
+let future2 = TaskScheduler.global.submit {
     sleep(3) //some work
     return 6
 }
 
-coroutine(on: .main) {
+CoroutineDispatcher.main.execute {
     let sum = try future1.await() + future2.await() //will await for 3 sec., doesn't block the thread
     self.label.text = "Sum is \(sum)"
 }
