@@ -147,7 +147,7 @@ extension URLSession {
 }
 ```
 
-And this is how we can use the URLSession extension with chain of futures.
+And this is how we can use the `URLSession` extension with chain of futures.
 
 ```swift
 //create CoFuture with URLSessionDataTask response
