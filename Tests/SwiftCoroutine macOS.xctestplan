@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "E32FF911-EEE5-40D6-9A8D-93E19E3C0EDD",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:SwiftCoroutine.xcodeproj",
+        "identifier" : "F8CD25A920199D1000952299",
+        "name" : "SwiftCoroutine macOSTests"
+      }
+    }
+  ],
+  "version" : 1
+}

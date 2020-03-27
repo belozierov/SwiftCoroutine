@@ -110,7 +110,7 @@ You can also wrap your scheduler in `TaskScheduler` or conform to `TaskExecutor`
 
 ```swift
 extension NSManagedObjectContext: TaskExecutor {
-    public func execute(_ task: @escaping () -> Void) { perform(task) }
+    func execute(_ task: @escaping () -> Void) { perform(task) }
 }
 
 CoroutineDispatcher.main.execute {

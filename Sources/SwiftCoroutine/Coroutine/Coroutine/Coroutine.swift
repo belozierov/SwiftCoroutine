@@ -42,7 +42,11 @@ public struct Coroutine {
     // MARK: - delay
     
     @inlinable public static func delay(_ time: DispatchTime) throws {
-        try await { DispatchSource.createTimer(timeout: time, handler: $0).activate() }
+        var timer: DispatchSourceTimer!
+        try await {
+            timer = DispatchSource.createTimer(timeout: time, handler: $0)
+            timer.activate()
+        }
     }
     
 }

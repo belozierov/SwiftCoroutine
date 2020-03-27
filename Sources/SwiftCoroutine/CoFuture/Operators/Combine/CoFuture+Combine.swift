@@ -27,7 +27,7 @@ extension Publisher {
     /// Attaches `CoFuture` as a subscriber and returns it. `CoFuture` will receive result only once.
     public func subscribeCoFuture() -> CoFuture<Output> {
         let promise = CoPromise<Output>()
-        let cancellable = mapError { $0 }.sink(receiveCompletion: { result in
+        let cancellable = sink(receiveCompletion: { result in
             switch result {
             case .finished: promise.cancel()
             case .failure(let error): promise.fail(error)

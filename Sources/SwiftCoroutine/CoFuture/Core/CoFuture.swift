@@ -54,9 +54,9 @@ protocol _CoFutureCancellable: class {
 ///Було витрачено багато часу і перебрано багато варіантів для цього(для того щоб знайти найкращий).
 ///Як результат `CoFuture` є швидшим ніж аналогічні рішення:
 ///
-///- CoFuture - 0.089  c.
-///- Combine Future - 0.234 c. **(2.6x slower)**
-///- Найпопулярніша Swift Future/Promise library on GitHub - 0.521 c. **(5.9x slower)**
+///- CoFuture - 0.083  c.
+///- Combine Future - 0.234 c. **(2.8x slower)**
+///- Найпопулярніша Swift Future/Promise library on GitHub - 0.521 c. **(6.3x slower)**
 ///
 ///Тести для `CoFuture` та Combine `Future` ви можете знайти в файлі `CoFuturePerformanceTests`.
 ///Тест проводився на MacBook Pro (13-inch, 2017, Two Thunderbolt 3 ports) у release mode.
