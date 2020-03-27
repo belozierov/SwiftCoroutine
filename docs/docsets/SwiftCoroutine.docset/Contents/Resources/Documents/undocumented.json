@@ -78,13 +78,6 @@
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/Context/CoroutineContext.swift",
-      "line": 90,
-      "symbol": "CoroutineContext.SuspendData.init()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
       "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/Coroutine/Coroutine+StackSize.swift",
       "line": 13,
       "symbol": "Coroutine.StackSize",
