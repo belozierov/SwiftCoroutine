@@ -107,7 +107,7 @@ func setThumbnail(url: URL) {
 
 ### Futures and Promises
 
-The futures and promises approach takes the usage of asynchronous code to the next level. It is a convenient mechanism to synchronise asynchronous code and has become a part of the async/await pattern. If coroutines are a skeleton, then futures and promises are its muscles.
+The futures and promises approach takes the usage of asynchronous code to the next level. It is a convenient mechanism to synchronize asynchronous code and has become a part of the async/await pattern. If coroutines are a skeleton, then futures and promises are its muscles.
 
 Futures and promises are represented by the corresponding `CoFuture` class and its `CoPromise` subclass. `CoFuture` is a holder for a result that will be provided later.
 
@@ -168,7 +168,7 @@ URLSession.shared.dataTaskFuture(for: url)
 }
 ```
 
-Unlike `Coroutine.await()`, with `CoFuture.await()` you can start multiple tasks in parallel and synchronise them later.
+Unlike `Coroutine.await()`, with `CoFuture.await()` you can start multiple tasks in parallel and synchronize them later.
 
 ```swift
 let future1 = TaskScheduler.global.submit { () -> Int in
