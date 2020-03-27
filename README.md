@@ -106,7 +106,7 @@ func setThumbnail(url: URL) {
 }
 ```
 
-You can also wrap your scheduler in `TashScheduler` or conform to `TaskExecutor` protocol to await the result inside the coroutine, or create `CoFuture` with a deferred result. Here's how it might look for `CoreData`.
+You can also wrap your scheduler in `TaskScheduler` or conform to `TaskExecutor` protocol to await the result inside the coroutine, or create `CoFuture` with a deferred result. Here's how it might look for `CoreData`.
 
 ```swift
 extension NSManagedObjectContext: TaskExecutor {
