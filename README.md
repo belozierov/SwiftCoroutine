@@ -163,7 +163,7 @@ URLSession.shared.dataTaskFuture(for: url)
     //unwrap Optional<UIImage> by throwing error if nil
     .unwrap { throw URLError(.cannotParseResponse) }
     
-    //execute heavy task on global queue inside the chain
+    //return new CoFuture with heavy task that will execute it on global queue
     .flatMap { TaskScheduler.global.submit($0.makeThubnail) }
     
     //get Result<UIImage, Error> and set image on the main thread
