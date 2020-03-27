@@ -164,7 +164,7 @@ URLSession.shared.dataTaskFuture(for: url)
     
     //get Result<UIImage, Error> and set image on the main thread
     .whenComplete { result in
-        DispatchQueue.main.execute { self.imageView.image = try? result.get() }
+        DispatchQueue.main.execute { imageView.image = try? result.get() }
     }
 ```
 
