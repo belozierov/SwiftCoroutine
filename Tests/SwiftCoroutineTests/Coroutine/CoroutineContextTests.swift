@@ -25,21 +25,48 @@ class CoroutineContextTests: XCTestCase {
         XCTAssertFalse(context.haveGuardPage)
     }
     
-    func testContext() {
+    func testContextSuspendToPoint() {
         let exp = XCTOrderedExpectation(count: 5)
         let context1 = CoroutineContext(stackSize: 8 * .pageSize)
         let context2 = CoroutineContext(stackSize: 8 * .pageSize)
-        XCTAssertFalse(context1.start {
+        let savePoint = UnsafeMutablePointer<Int32>.allocate(capacity: .environmentSize)
+        context1.block = {
             exp.fulfill(0)
-            context1.suspend()
+            context1.suspend(to: savePoint)
             exp.fulfill(3)
-        })
-        exp.fulfill(1)
-        XCTAssertTrue(context2.start {
+        }
+        context2.block = {
             exp.fulfill(2)
-            XCTAssertTrue(context1.resume())
+            XCTAssertTrue(context1.resume(from: savePoint))
             exp.fulfill(4)
-        })
+        }
+        XCTAssertFalse(context1.start())
+        exp.fulfill(1)
+        XCTAssertTrue(context2.start())
+        wait(for: exp, timeout: 1)
+    }
+    
+    func testContextSuspendToEnv() {
+        let exp = XCTOrderedExpectation(count: 5)
+        let context1 = CoroutineContext(stackSize: 8 * .pageSize)
+        let context2 = CoroutineContext(stackSize: 8 * .pageSize)
+        let env = UnsafeMutablePointer<CoroutineContext.SuspendData>.allocate(capacity: 1)
+        env.initialize(to: .init())
+        context1.block = {
+            exp.fulfill(0)
+            context1.suspend(to: env)
+            exp.fulfill(3)
+        }
+        context2.block = {
+            exp.fulfill(2)
+            XCTAssertTrue(context1.resume(from: env.pointee.env))
+            exp.fulfill(4)
+        }
+        XCTAssertFalse(context1.start())
+        exp.fulfill(1)
+        XCTAssertTrue(context2.start())
+        XCTAssertTrue(env.pointee.sp < context1.stackTop)
+        XCTAssertTrue(env.pointee.sp > context1.stackTop - context1.stackSize)
         wait(for: exp, timeout: 1)
     }
     

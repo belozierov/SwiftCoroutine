@@ -10,7 +10,7 @@
 #import <stdatomic.h>
 
 int __start(jmp_buf ret, const void* stack, const void* param, const void (*block)(const void*)) {
-    int n = setjmp(ret);
+    int n = _setjmp(ret);
     if (n) return n;
     #if defined(__x86_64__)
     __asm__ ("movq %0, %%rsp" :: "g"(stack));
@@ -24,16 +24,26 @@ int __start(jmp_buf ret, const void* stack, const void* param, const void (*bloc
     return 0;
 }
 
+void __suspend(jmp_buf env, void** sp, jmp_buf ret, int retVal) {
+    if (_setjmp(env)) return;
+    char x; *sp = (void*)&x;
+    _longjmp(ret, retVal);
+}
+
 int __save(jmp_buf env, jmp_buf ret, int retVal) {
-    int n = setjmp(env);
+    int n = _setjmp(ret);
     if (n) return n;
-    longjmp(ret, retVal);
+    _longjmp(env, retVal);
 }
 
-const void* __frameAddress(void) {
-    return __builtin_frame_address(1);
-}
-
-int __compare(_Atomic long* value, long* expected, long desired) {
+int __atomicCompareExchange(_Atomic long* value, long* expected, long desired) {
     return atomic_compare_exchange_weak(value, expected, desired);
+}
+
+long __atomicExchange(_Atomic long* value, long desired) {
+    return atomic_exchange(value, desired);
+}
+
+void __atomicStore(_Atomic long* value, long desired) {
+    atomic_store(value, desired);
 }
