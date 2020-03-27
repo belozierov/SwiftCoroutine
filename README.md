@@ -207,7 +207,7 @@ CoroutineDispatcher.main.execute {
 }
 ```
 
-Apple has introduced a new reactive programming framework `Combine` that makes writing asynchronous code easier and includes a lot of convenient and common functionality. We can use it with coroutines by making `CoFuture` a subscriber and `await()` its result.
+Apple has introduced a new reactive programming framework `Combine` that makes writing asynchronous code easier and includes a lot of convenient and common functionality. We can use it with coroutines by making `CoFuture` a subscriber and await its result.
 
 ```swift
 let publisher = URLSession.shared.dataTaskPublisher(for: url).map(\.data)
