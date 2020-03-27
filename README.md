@@ -70,7 +70,7 @@ The **async/await** pattern is an alternative. It is already well-established in
 You can execute tasks inside coroutines on `CoroutineDispatcher` just like you would do it on `DispatchQueue`. While `Coroutine.await()` allows you to wrap asynchronous functions to deal with them as synchronous. 
 
 #### Main features
-- **Any scheduler**. You can use any scheduler to execute coroutines wrapping it in `TashScheduler`, including standard `DispatchQueue` or even `NSManagedObjectContext` and `MultiThreadedEventLoopGroup`.
+- **Any scheduler**. You can use any scheduler to execute coroutines, including standard `DispatchQueue` or even `NSManagedObjectContext` and `MultiThreadedEventLoopGroup`.
 - **Memory efficiency**. Contains a mechanism that allows to reuse stacks and, if necessary, effectively store their contents.
 - **Await instead of resume/suspend**. For convenience and safety, coroutines' resume/suspend has been replaced by await, which suspends it and resumes on callback.
 - **Lock-free await**. Await is implemented using atomic variables. This makes it especially fast in cases where the result is already available.
