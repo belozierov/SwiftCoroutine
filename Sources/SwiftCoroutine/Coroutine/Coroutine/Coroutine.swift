@@ -24,7 +24,7 @@ public struct Coroutine {
     // MARK: - await
     
     @inlinable public static func await(_ callback: (@escaping () -> Void) -> Void) throws {
-        try await { callback($0) }
+        try current().await { completion in callback { completion(()) } }
     }
     
     @inlinable public static func await<T>(_ callback: (@escaping (T) -> Void) -> Void) throws -> T {

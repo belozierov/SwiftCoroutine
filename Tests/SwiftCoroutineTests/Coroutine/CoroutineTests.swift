@@ -26,7 +26,6 @@ class CoroutineTests: XCTestCase {
                         completion(Int.random(in: 0..<1000))
                     }
                 } + a
-                print(b)
                 exp.fulfill()
             }
         }

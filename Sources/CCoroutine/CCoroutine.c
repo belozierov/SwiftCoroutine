@@ -36,10 +36,6 @@ int __save(jmp_buf env, jmp_buf ret, int retVal) {
     _longjmp(env, retVal);
 }
 
-int __atomicCompareExchange(_Atomic long* value, long* expected, long desired) {
-    return atomic_compare_exchange_weak(value, expected, desired);
-}
-
 long __atomicExchange(_Atomic long* value, long desired) {
     return atomic_exchange(value, desired);
 }
