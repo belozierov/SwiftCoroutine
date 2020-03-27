@@ -165,7 +165,7 @@ URLSession.shared.dataTaskFuture(for: url)
     //get Result<UIImage, Error> and set image on the main thread
     .whenComplete { result in
         DispatchQueue.main.execute { imageView.image = try? result.get() }
-    }
+}
 ```
 
 Unlike `Coroutine.await()`, with `CoFuture.await()` you can start multiple tasks in parallel and synchronise them later.
