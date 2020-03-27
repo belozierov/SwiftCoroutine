@@ -169,7 +169,7 @@ extension URLSession {
 }
 ```
 
-And this is how we can use the `URLSession` extension with chain of `CoFuture`s. The example of using it with coroutines and `await()` is provided [here](###Usage).
+And this is how we can use the `URLSession` extension with chain of `CoFuture`s. The example of using it with coroutines and `await()` is provided [here](### Usage).
 
 ```swift
 //create CoFuture with URLSessionDataTask response
