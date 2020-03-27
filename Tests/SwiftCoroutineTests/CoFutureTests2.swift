@@ -1,16 +1,16 @@
-////
-////  CoFutureTests.swift
-////  SwiftCoroutine
-////
-////  Created by Alex Belozierov on 20.12.2019.
-////  Copyright © 2019 Alex Belozierov. All rights reserved.
-////
 //
-//import XCTest
-//import SwiftCoroutine
+//  CoFutureTests.swift
+//  SwiftCoroutine
 //
-//class CoFutureTests2: XCTestCase {
-//    
+//  Created by Alex Belozierov on 20.12.2019.
+//  Copyright © 2019 Alex Belozierov. All rights reserved.
+//
+
+import XCTest
+import SwiftCoroutine
+
+class CoFutureTests2: XCTestCase {
+    
 //    func testTransform() {
 //        let expectation = XCTestExpectation(description: "Test Transform")
 //        expectation.expectedFulfillmentCount = 3
@@ -32,5 +32,5 @@
 //        }
 //        wait(for: [expectation], timeout: 5)
 //    }
-//    
-//}
+    
+}

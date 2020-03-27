@@ -48,6 +48,10 @@ extension TaskExecutor {
         return promise
     }
     
+    @inlinable public func submit<T>(_ task: @escaping () -> T) -> CoFuture<T> {
+        CoFuture { $0.success(task()) }
+    }
+    
 }
 
 extension TaskScheduler: TaskExecutor {}

@@ -25,7 +25,7 @@ internal final class SharedCoroutine: CoroutineProtocol {
     internal let scheduler: TaskScheduler
     private(set) var environment: UnsafeMutablePointer<CoroutineContext.SuspendData>!
     private var stackBuffer: StackBuffer!
-    private var state = AtomicEnum(wrappedValue: State.running)
+    private var state = AtomicEnum(value: State.running)
     
     internal init(dispatcher: SharedCoroutineDispatcher, queue: SharedCoroutineQueue, scheduler: TaskScheduler) {
         self.dispatcher = dispatcher

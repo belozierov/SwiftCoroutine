@@ -14,7 +14,7 @@ internal struct AtomicEnum<T: RawRepresentable> where T.RawValue == Int {
     
     private var _value: Int
     
-    init(wrappedValue value: T) {
+    init(value: T) {
         _value = value.rawValue
     }
     
