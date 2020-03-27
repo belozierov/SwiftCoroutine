@@ -7,6 +7,7 @@
   
 ![Swift Coroutine](../master/Sources/logo.png)
 
+**Beta testing. Unit tests and documentation in progress. Possible minor changes in API.**
 ##
 Many languages, such as Kotlin, JavaScript, Go, Rust, C++, and others, already have [coroutines](https://en.wikipedia.org/wiki/Coroutine) support that makes the use of asynchronous code easier. Unfortunately, Apple is still behind on this feature. But this can be improved by a framework without the need to change the language.
 
@@ -105,6 +106,24 @@ func setThumbnail(url: URL) {
 }
 ```
 
+You can also wrap your scheduler in `TashScheduler` or conform to `TaskExecutor` protocol to await the result inside the coroutine, or create `CoFuture` with a deferred result. Here's how it might look for `CoreData`.
+
+```swift
+extension NSManagedObjectContext: TaskExecutor {
+    public func execute(_ task: @escaping () -> Void) { perform(task) }
+}
+
+CoroutineDispatcher.main.execute {
+    //some context with privateQueueConcurrencyType
+    let context: NSManagedObjectContext
+    //some complex request
+    let request: NSFetchRequest<Entity>
+
+    //execute fetch request without blocking the main thread
+    let result = try context.await { try context.fetch(request) }
+}
+```
+
 ### Futures and Promises
 
 The futures and promises approach takes the usage of asynchronous code to the next level. It is a convenient mechanism to synchronize asynchronous code and has become a part of the async/await pattern. If coroutines are a skeleton, then futures and promises are its muscles.
@@ -150,7 +169,7 @@ extension URLSession {
 }
 ```
 
-And this is how we can use the `URLSession` extension with chain of `CoFuture`s.
+And this is how we can use the `URLSession` extension with chain of `CoFuture`s. The example of using it with coroutines and `await()` is provided [here](###Usage).
 
 ```swift
 //create CoFuture with URLSessionDataTask response
@@ -168,9 +187,10 @@ URLSession.shared.dataTaskFuture(for: url)
 }
 ```
 
-Unlike `Coroutine.await()`, with `CoFuture.await()` you can start multiple tasks in parallel and synchronize them later.
+Also `CoFuture` allows to start multiple tasks in parallel and synchronize them later with `await()`.
 
 ```swift
+//submits a given task to be executed on the global queue and returns CoFuture<Int> with deferred result
 let future1 = TaskScheduler.global.submit { () -> Int in
     sleep(2) //some work
     return 5
@@ -184,5 +204,20 @@ let future2 = TaskScheduler.global.submit { () -> Int in
 CoroutineDispatcher.main.execute {
     let sum = try future1.await() + future2.await() //will await for 3 sec.
     self.label.text = "Sum is \(sum)"
+}
+```
+
+Apple has introduced a new reactive programming framework `Combine` that makes writing asynchronous code easier and includes a lot of convenient and common functionality. We can use it with coroutines by making `CoFuture` a subscriber and `await()` its result.
+
+```swift
+let publisher = URLSession.shared.dataTaskPublisher(for: url).map(\.data)
+
+CoroutineDispatcher.main.execute {
+    //subscribe CoFuture
+    let future = publisher.subscribeCoFuture()
+    
+    //await data
+    let data = try future.await()
+    //do some work with data
 }
 ```
