@@ -40,7 +40,6 @@ CoroutineDispatcher.main.submit {
     
 }.whenFailure { error in
     //here we can handle errors
-    self.imageView.image = UIImage(name: "thumbnail_placeholder")
 }
 ```
 
@@ -101,7 +100,7 @@ func setThumbnail(url: URL) {
         let thumbnail = try? self.awaitThumbnail(url: url)
         
         //set image on the main thread
-        self.imageView.image = thumbnail ?? self.placeholder
+        self.imageView.image = thumbnail
     }
 }
 ```
@@ -160,17 +159,13 @@ URLSession.shared.dataTaskFuture(for: url)
     //parse data to Optional<UIImage>
     .map { UIImage(data: $0.data) }
     
-    //unwrap Optional<UIImage> by throwing error if nil
-    .unwrap { throw URLError(.cannotParseResponse) }
-    
-    //return new CoFuture with heavy task that will execute it on global queue
+    //if not nil return new CoFuture with heavy task that will execute it on global queue
     .flatMap { TaskScheduler.global.submit($0.makeThubnail) }
     
     //get Result<UIImage, Error> and set image on the main thread
     .whenComplete { result in
-        let image = try? result.get() ?? self.placeholder
-        DispatchQueue.main.execute { self.imageView.image = image }
-}
+        DispatchQueue.main.execute { self.imageView.image = try? result.get() }
+    }
 ```
 
 Unlike `Coroutine.await()`, with `CoFuture.await()` you can start multiple tasks in parallel and synchronise them later.
@@ -187,7 +182,7 @@ let future2 = TaskScheduler.global.submit { () -> Int in
 }
 
 CoroutineDispatcher.main.execute {
-    let sum = try future1.await() + future2.await() //will await for 3 sec., doesn't block the thread
+    let sum = try future1.await() + future2.await() //will await for 3 sec.
     self.label.text = "Sum is \(sum)"
 }
 ```
