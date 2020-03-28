@@ -31,3 +31,11 @@ extension CoPromise {
     }
     
 }
+
+extension CoPromise where Value == Void {
+    
+    @inlinable public func success() {
+        setResult(.success(()))
+    }
+    
+}

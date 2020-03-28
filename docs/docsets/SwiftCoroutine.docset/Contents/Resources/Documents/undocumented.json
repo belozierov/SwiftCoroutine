@@ -24,13 +24,20 @@
     {
       "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Core/CoFuture.swift",
       "line": 158,
+      "symbol": "CoFuture.init(on:task:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Core/CoFuture.swift",
+      "line": 165,
       "symbol": "CoFuture.init(promise:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Core/CoFuture.swift",
-      "line": 262,
+      "line": 269,
       "symbol": "CoPromise.init()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
@@ -64,9 +71,9 @@
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Operators/CoFuture2+map.swift",
-      "line": 52,
-      "symbol": "CoFuture.unwrap(_:)",
+      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Core/CoPromise.swift",
+      "line": 37,
+      "symbol": "CoPromise.success()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
@@ -75,55 +82,6 @@
       "line": 13,
       "symbol": "CoFuture.await()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/Coroutine/Coroutine+StackSize.swift",
-      "line": 13,
-      "symbol": "Coroutine.StackSize",
-      "symbol_kind": "source.lang.swift.decl.struct",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/Coroutine/Coroutine+StackSize.swift",
-      "line": 14,
-      "symbol": "Coroutine.StackSize.size",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/Coroutine/Coroutine+StackSize.swift",
-      "line": 19,
-      "symbol": "Coroutine.StackSize",
-      "symbol_kind": "source.lang.swift.decl.extension",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/Coroutine/Coroutine+StackSize.swift",
-      "line": 21,
-      "symbol": "Coroutine.StackSize.recommended",
-      "symbol_kind": "source.lang.swift.decl.var.static",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/Coroutine/Coroutine+StackSize.swift",
-      "line": 22,
-      "symbol": "Coroutine.StackSize.minimal",
-      "symbol_kind": "source.lang.swift.decl.var.static",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/Coroutine/Coroutine+StackSize.swift",
-      "line": 24,
-      "symbol": "Coroutine.StackSize.pages(_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.static",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/Coroutine/Coroutine.swift",
-      "line": 11,
-      "symbol": "Coroutine",
-      "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
     {
@@ -190,76 +148,6 @@
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/CoroutineDispatcher/CoroutineDispatcher.swift",
-      "line": 9,
-      "symbol": "CoroutineDispatcher",
-      "symbol_kind": "source.lang.swift.decl.struct",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/CoroutineDispatcher/CoroutineDispatcher.swift",
-      "line": 11,
-      "symbol": "CoroutineDispatcher.main",
-      "symbol_kind": "source.lang.swift.decl.var.static",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/CoroutineDispatcher/CoroutineDispatcher.swift",
-      "line": 12,
-      "symbol": "CoroutineDispatcher.global",
-      "symbol_kind": "source.lang.swift.decl.var.static",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/CoroutineDispatcher/CoroutineDispatcher.swift",
-      "line": 17,
-      "symbol": "CoroutineDispatcher.init(scheduler:executor:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/CoroutineDispatcher/CoroutineDispatcher.swift",
-      "line": 23,
-      "symbol": "CoroutineDispatcher.execute(_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/CoroutineDispatcher/CoroutineDispatcher.swift",
-      "line": 54,
-      "symbol": "CoroutineDispatcher",
-      "symbol_kind": "source.lang.swift.decl.extension",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/CoroutineDispatcher/CoroutineTaskExecutor.swift",
-      "line": 15,
-      "symbol": "CoroutineTaskExecutor",
-      "symbol_kind": "source.lang.swift.decl.struct",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/CoroutineDispatcher/CoroutineTaskExecutor.swift",
-      "line": 17,
-      "symbol": "CoroutineTaskExecutor.defaultShared",
-      "symbol_kind": "source.lang.swift.decl.var.static",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/CoroutineDispatcher/CoroutineTaskExecutor.swift",
-      "line": 19,
-      "symbol": "CoroutineTaskExecutor.newShared(coroutinePoolSize:stackSize:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.static",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/CoroutineDispatcher/CoroutineTaskExecutor.swift",
-      "line": 26,
-      "symbol": "CoroutineTaskExecutor.execute(on:task:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
       "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/CoroutineProtocol/CoroutineProtocol.swift",
       "line": 19,
       "symbol": "CoroutineProtocol.performAsCurrent(_:)",
@@ -267,157 +155,80 @@
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/Shared/SharedCoroutine.swift",
-      "line": 86,
-      "symbol": "SharedCoroutine.saveStack()",
+      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskScheduler+DispatchQueue.swift",
+      "line": 17,
+      "symbol": "DispatchQueue.executeTask(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/Shared/SharedCoroutine.swift",
-      "line": 93,
-      "symbol": "SharedCoroutine.restoreStack()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskExecutor.swift",
+      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskScheduler.swift",
       "line": 9,
-      "symbol": "TaskExecutor",
+      "symbol": "TaskScheduler",
       "symbol_kind": "source.lang.swift.decl.protocol",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskExecutor.swift",
+      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskScheduler.swift",
       "line": 11,
-      "symbol": "TaskExecutor.execute(_:)",
+      "symbol": "TaskScheduler.executeTask(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskExecutor.swift",
+      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskScheduler.swift",
       "line": 15,
-      "symbol": "TaskExecutor",
+      "symbol": "TaskScheduler",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskExecutor.swift",
-      "line": 17,
-      "symbol": "TaskExecutor.execute(_:)",
+      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskScheduler.swift",
+      "line": 19,
+      "symbol": "TaskScheduler.coroutine(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskExecutor.swift",
+      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskScheduler.swift",
       "line": 23,
-      "symbol": "TaskExecutor.await(_:)",
+      "symbol": "TaskScheduler.coroutine(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskExecutor.swift",
-      "line": 27,
-      "symbol": "TaskExecutor.await(_:)",
+      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskScheduler.swift",
+      "line": 29,
+      "symbol": "TaskScheduler.await(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskExecutor.swift",
-      "line": 31,
-      "symbol": "TaskExecutor.await(_:)",
+      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskScheduler.swift",
+      "line": 33,
+      "symbol": "TaskScheduler.await(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskExecutor.swift",
-      "line": 35,
-      "symbol": "TaskExecutor.await(_:)",
+      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskScheduler.swift",
+      "line": 37,
+      "symbol": "TaskScheduler.await(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskExecutor.swift",
-      "line": 39,
-      "symbol": "TaskExecutor.await(_:)",
+      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskScheduler.swift",
+      "line": 41,
+      "symbol": "TaskScheduler.await(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskExecutor.swift",
+      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskScheduler.swift",
       "line": 45,
-      "symbol": "TaskExecutor.submit(_:)",
+      "symbol": "TaskScheduler.await(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskScheduler.swift",
-      "line": 11,
-      "symbol": "TaskScheduler",
-      "symbol_kind": "source.lang.swift.decl.struct",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskScheduler.swift",
-      "line": 13,
-      "symbol": "TaskScheduler.main",
-      "symbol_kind": "source.lang.swift.decl.var.static",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskScheduler.swift",
-      "line": 16,
-      "symbol": "TaskScheduler.global",
-      "symbol_kind": "source.lang.swift.decl.var.static",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskScheduler.swift",
-      "line": 23,
-      "symbol": "TaskScheduler.immediate",
-      "symbol_kind": "source.lang.swift.decl.var.static",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskScheduler.swift",
-      "line": 28,
-      "symbol": "TaskScheduler.init(scheduler:isCurrent:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskScheduler.swift",
-      "line": 34,
-      "symbol": "TaskScheduler.execute(_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskScheduler.swift",
-      "line": 44,
-      "symbol": "TaskScheduler.runLoop(_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.static",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskScheduler.swift",
-      "line": 50,
-      "symbol": "TaskScheduler.dispatchQueue(_:qos:flags:group:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.static",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskScheduler.swift",
-      "line": 53,
-      "symbol": "TaskScheduler",
-      "symbol_kind": "source.lang.swift.decl.extension",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskScheduler.swift",
-      "line": 58,
-      "symbol": "TaskScheduler.operationQueue(_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.static",
       "warning": "undocumented"
     }
   ],

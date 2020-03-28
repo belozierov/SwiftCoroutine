@@ -10,18 +10,18 @@ import Darwin
 
 extension Coroutine {
     
-    public struct StackSize {
-        public let size: Int
+    @usableFromInline internal struct StackSize {
+        internal let size: Int
     }
     
 }
 
 extension Coroutine.StackSize {
     
-    public static let recommended = Coroutine.StackSize(size: Int(SIGSTKSZ))
-    public static let minimal = Coroutine.StackSize(size: Int(MINSIGSTKSZ))
+    internal static let recommended = Coroutine.StackSize(size: Int(SIGSTKSZ))
+    internal static let minimal = Coroutine.StackSize(size: Int(MINSIGSTKSZ))
     
-    public static func pages(_ number: Int) -> Coroutine.StackSize {
+    internal static func pages(_ number: Int) -> Coroutine.StackSize {
         .init(size: number * .pageSize)
     }
     

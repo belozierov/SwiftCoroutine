@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>CoroutineError Enumeration Reference</title>
+    <title>DispatchQueue Extension Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,8 +10,8 @@
     
   </head>
   <body>
-    <a name="//apple_ref/swift/Enum/CoroutineError" class="dashAnchor"></a>
-    <a title="CoroutineError Enumeration Reference"></a>
+    <a name="//apple_ref/swift/Extension/DispatchQueue" class="dashAnchor"></a>
+    <a title="DispatchQueue Extension Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../index.html">SwiftCoroutine Docs</a> (53% documented)</p>
@@ -21,7 +21,7 @@
       <p id="breadcrumbs">
         <a href="../index.html">SwiftCoroutine Reference</a>
         <img id="carat" src="../img/carat.png" />
-        CoroutineError Enumeration Reference
+        DispatchQueue Extension Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -81,15 +81,14 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>CoroutineError</h1>
+            <h1>DispatchQueue</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">CoroutineError</span> <span class="p">:</span> <span class="kt">Error</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">DispatchQueue</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TaskScheduler.html">TaskScheduler</a></span></code></pre>
 
                 </div>
               </div>
-            <p>Undocumented</p>
-
+            
           </section>
           <section class="section task-group-section">
             <div class="task-group">
@@ -97,9 +96,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine0B5ErrorO018mustBeCalledInsideB0yA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/mustBeCalledInsideCoroutine" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine0B5ErrorO018mustBeCalledInsideB0yA2CmF">mustBeCalledInsideCoroutine</a>
+                    <a name="/s:So17OS_dispatch_queueC14SwiftCoroutineE11executeTaskyyyycF"></a>
+                    <a name="//apple_ref/swift/Method/executeTask(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:So17OS_dispatch_queueC14SwiftCoroutineE11executeTaskyyyycF">executeTask(_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -114,7 +113,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">mustBeCalledInsideCoroutine</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">executeTask</span><span class="p">(</span><span class="n">_</span> <span class="nv">task</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>

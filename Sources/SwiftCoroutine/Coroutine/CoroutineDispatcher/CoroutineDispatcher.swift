@@ -2,28 +2,30 @@
 //  CoroutineDispatcher.swift
 //  SwiftCoroutine
 //
-//  Created by Alex Belozierov on 30.01.2020.
+//  Created by Alex Belozierov on 10.03.2020.
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
-public struct CoroutineDispatcher {
+@usableFromInline protocol _CoroutineTaskExecutor: class {
     
-    public static let main = CoroutineDispatcher(scheduler: .main)
-    public static let global = CoroutineDispatcher(scheduler: .global)
+    func execute(on scheduler: TaskScheduler, task: @escaping () -> Void)
     
-    @usableFromInline let scheduler: TaskScheduler
-    @usableFromInline let executor: _CoroutineTaskExecutor
+}
+
+@usableFromInline internal struct CoroutineDispatcher {
     
-    @inlinable public init(scheduler: TaskScheduler,
-                           executor: CoroutineTaskExecutor = .defaultShared) {
-        self.scheduler = scheduler
-        self.executor = executor.executor
+    @usableFromInline
+    internal static let `default` = newShared(coroutinePoolSize: .processorsNumber)
+    
+    internal static func newShared(coroutinePoolSize poolSize: Int, stackSize: Coroutine.StackSize = .recommended) -> CoroutineDispatcher {
+        let executor = SharedCoroutineDispatcher(contextsCount: poolSize, stackSize: stackSize.size)
+        return CoroutineDispatcher(executor: executor)
     }
     
-    @inlinable public func execute(_ task: @escaping () -> Void) {
+    @usableFromInline let executor: _CoroutineTaskExecutor
+    
+    @inlinable internal func execute(on scheduler: TaskScheduler, task: @escaping () -> Void) {
         executor.execute(on: scheduler, task: task)
     }
     
 }
-
-

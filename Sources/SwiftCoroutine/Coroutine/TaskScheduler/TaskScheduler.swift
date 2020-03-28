@@ -2,63 +2,56 @@
 //  TaskScheduler.swift
 //  SwiftCoroutine
 //
-//  Created by Alex Belozierov on 31.01.2020.
+//  Created by Alex Belozierov on 26.03.2020.
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
-import Foundation
+public protocol TaskScheduler {
+    
+    func executeTask(_ task: @escaping () -> Void)
+    
+}
 
-public struct TaskScheduler {
+extension TaskScheduler {
     
-    public static let main = TaskScheduler(scheduler: RunLoop.main.perform,
-                                           isCurrent: { pthread_main_np() != 0 })
+    // MARK: - coroutine
     
-    public static let global: TaskScheduler = {
-        let queue = OperationQueue()
-        queue.underlyingQueue = .global()
-        queue.maxConcurrentOperationCount = .processorsNumber
-        return .operationQueue(queue)
-    }()
-    
-    public static let immediate = TaskScheduler(scheduler: { $0() }, isCurrent: { true })
-    
-    @usableFromInline internal let scheduler: (@escaping () -> Void) -> Void
-    @usableFromInline internal let isCurrent: () -> Bool
-    
-    @inlinable public init(scheduler: @escaping (@escaping () -> Void) -> Void,
-                           isCurrent: @escaping () -> Bool = { false }) {
-        self.scheduler = scheduler
-        self.isCurrent = isCurrent
+    @inlinable public func coroutine(_ task: @escaping () -> Void) {
+        CoroutineDispatcher.default.execute(on: self, task: task)
     }
     
-    @inlinable public func execute(_ block: @escaping () -> Void) {
-        scheduler(block)
+    @inlinable public func coroutine(_ task: @escaping () throws -> Void) {
+        coroutine { do { try task() } catch { print(error) } }
     }
     
-    @inlinable internal func executeWithCheckIfCurrent(_ block: @escaping () -> Void) {
-        isCurrent() ? block() : scheduler(block)
+    // MARK: - await
+    
+    @inlinable public func await(_ callback: @escaping (@escaping () -> Void) -> Void) throws {
+        try Coroutine.await { completion in executeTask { callback(completion) } }
     }
     
-    // MARK: - RunLoop
-    
-    @inlinable public static func runLoop(_ runLoop: RunLoop) -> TaskScheduler {
-        TaskScheduler(scheduler: runLoop.perform) { RunLoop.current == runLoop }
+    @inlinable public func await<T>(_ callback: @escaping (@escaping (T) -> Void) -> Void) throws -> T {
+        try Coroutine.await { completion in executeTask { callback(completion) } }
     }
     
-    // MARK: - DispatchQueue
-    
-    @inlinable public static func dispatchQueue(_ queue: DispatchQueue, qos: DispatchQoS = .unspecified, flags: DispatchWorkItemFlags = [], group: DispatchGroup? = nil) -> TaskScheduler {
-        TaskScheduler(scheduler: {
-            queue.async(group: group, qos: qos, flags: flags, execute: $0)
-        })
+    @inlinable public func await<T, N>(_ callback: @escaping (@escaping (T, N) -> Void) -> Void) throws -> (T, N) {
+        try Coroutine.await { completion in executeTask { callback(completion) } }
+    }
+
+    @inlinable public func await<T, N, M>(_ callback: @escaping (@escaping (T, N, M) -> Void) -> Void) throws -> (T, N, M) {
+        try Coroutine.await { completion in executeTask { callback(completion) } }
     }
     
-    // MARK: - OperationQueue
+    @inlinable public func await<T>(_ callback: @escaping () throws -> T) throws -> T {
+        try await { $0(Result(catching: callback)) }.get()
+    }
     
-    @inlinable public static func operationQueue(_ queue: OperationQueue) -> TaskScheduler {
-        TaskScheduler(scheduler: { task in
-            autoreleasepool { queue.addOperation(task) }
-        }, isCurrent: { OperationQueue.current == queue })
+    // MARK: - future
+    
+    @inlinable public func coFuture<T>(_ task: @escaping () throws -> T) -> CoFuture<T> {
+        let promise = CoPromise<T>()
+        executeTask { promise.complete(with: Result(catching: task)) }
+        return promise
     }
     
 }

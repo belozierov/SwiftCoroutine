@@ -33,7 +33,7 @@ internal final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
         mutex.lock()
         if let queue = freeQueue {
             mutex.unlock()
-            scheduler.executeWithCheckIfCurrent {
+            scheduler.executeTask {
                 self.start(task: .init(scheduler: scheduler, task: task), on: queue)
                 self.performNext(for: queue)
             }
@@ -70,35 +70,36 @@ internal final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
             mutex.unlock()
         } else {
             mutex.unlock()
-            coroutine.scheduler.executeWithCheckIfCurrent {
+            coroutine.scheduler.executeTask {
                 coroutine.resume()
                 self.performNext(for: coroutine.queue)
             }
         }
     }
     
+    private enum NextState: Int {
+        case running, none
+    }
+    
     private func performNext(for queue: SharedCoroutineQueue) {
+        var state = AtomicEnum(value: NextState.none)
         while true {
             mutex.lock()
             if let coroutine = queue.pop() {
                 mutex.unlock()
-                if coroutine.scheduler.isCurrent() {
+                state.value = .running
+                coroutine.scheduler.executeTask {
                     coroutine.resume()
-                } else {
-                    return coroutine.scheduler.scheduler {
-                        coroutine.resume()
-                        self.performNext(for: queue)
-                    }
+                    if state.update(.none) == .running { return }
+                    self.performNext(for: queue)
                 }
             } else if let task = tasks.pop() {
                 mutex.unlock()
-                if task.scheduler.isCurrent() {
-                    start(task: task, on: queue)
-                } else {
-                    return task.scheduler.scheduler {
-                        self.start(task: task, on: queue)
-                        self.performNext(for: queue)
-                    }
+                state.value = .running
+                task.scheduler.executeTask {
+                    self.start(task: task, on: queue)
+                    if state.update(.none) == .running { return }
+                    self.performNext(for: queue)
                 }
             } else if queue.started == 0 {
                 freeQueues.append(queue)
@@ -107,6 +108,7 @@ internal final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
                 suspendedQueues.insert(queue)
                 return mutex.unlock()
             }
+            if state.update(.none) == .running { return }
         }
     }
     

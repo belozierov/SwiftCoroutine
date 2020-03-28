@@ -29,7 +29,7 @@ class CoFutureAwaitTests: XCTestCase {
         DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)) {
             promise.success(1)
         }
-        CoroutineDispatcher.main.execute {
+        DispatchQueue.main.coroutine {
             XCTAssertEqual(try promise.await(), 1)
             exp.fulfill()
         }
@@ -47,7 +47,7 @@ class CoFutureAwaitTests: XCTestCase {
                 promise.success(index)
             }
             queue.asyncAfter(deadline: .now() + .microseconds(array.count - index)) {
-                CoroutineDispatcher.global.execute {
+                DispatchQueue.global().coroutine {
                     array[index] = try promise.await()
                     exp.fulfill()
                 }
@@ -57,30 +57,38 @@ class CoFutureAwaitTests: XCTestCase {
         XCTAssertTrue(array.enumerated().allSatisfy { $0.element == $0.offset })
     }
     
-    func testMultipleAwaits() throws {
-        let dispatcher = CoroutineDispatcher.global
-        for _ in 0..<1_000 {
-            let futures = (0...9).map { _ in
-                dispatcher.submit {
-                    for future in (0...9).map({ _ in CoFuture(value: ()) }) {
-                        try future.await()
+    func testMultipleAwaits() {
+        measure {
+            for _ in 0..<1_000 {
+                let futures = (0...9).map { _ in
+                    CoFuture<Void> { promise in
+                        DispatchQueue.global().coroutine {
+                            for future in (0...9).map({ _ in CoFuture(value: ()) }) {
+                                try? future.await()
+                            }
+                            promise.success()
+                        }
                     }
                 }
+                try? XCTAssertNoThrow(futures.map { try $0.wait() })
             }
-            try XCTAssertNoThrow(futures.map { try $0.wait() })
+        }
+        let future2: CoFuture<Int> = DispatchQueue.global().coFuture {
+            sleep(3) //some work
+            return 6
         }
     }
     
-    func testSuspendResume() {
-        measure {
-            for i in 0..<10_000 {
-                let promise = CoPromise<Int>()
-                CoroutineTaskExecutor.defaultShared.execute(on: .immediate) {
-                    XCTAssertEqual(try? promise.await(), i)
-                }
-                promise.success(i)
-            }
-        }
-    }
+//    func testSuspendResume() {
+//        measure {
+//            for i in 0..<10_000 {
+//                let promise = CoPromise<Int>()
+//                CoroutineDispatcher.default.execute(on: .immediate) {
+//                    XCTAssertEqual(try? promise.await(), i)
+//                }
+//                promise.success(i)
+//            }
+//        }
+//    }
 
 }

@@ -11,7 +11,9 @@
 ##
 Many languages, such as Kotlin, JavaScript, Go, Rust, C++, and others, already have [coroutines](https://en.wikipedia.org/wiki/Coroutine) support that makes the use of asynchronous code easier. Unfortunately, Apple is still behind on this feature. But this can be improved by a framework without the need to change the language.
 
-This is the first implementation of [coroutines](https://en.wikipedia.org/wiki/Coroutine) for Swift with macOS and iOS support. They make the [async/await](https://en.wikipedia.org/wiki/Async/await) pattern implementation possible. In addition, the framework includes [futures and promises](https://en.wikipedia.org/wiki/Futures_and_promises) for more flexibility and ease of use.
+This is the first implementation of [coroutines](https://en.wikipedia.org/wiki/Coroutine) for Swift with macOS and iOS support. They make the [async/await](https://en.wikipedia.org/wiki/Async/await) pattern implementation possible. In addition, the framework includes [futures and promises](https://en.wikipedia.org/wiki/Futures_and_promises) for more flexibility and ease of use. All this allows to do things that were not possible in Swift before.
+
+
 
 ### Usage
 
@@ -19,8 +21,7 @@ This is an example of a combined usage of coroutines with futures and promises.
 
 ```swift
 //execute coroutine on the main thread
-//submit() returns CoFuture<Void>, thanks to which we can handle errors
-CoroutineDispatcher.main.submit {
+DispatchQueue.main.coroutine {
 
     //extension that returns CoFuture<(data: Data, response: URLResponse)>
     let dataFuture = URLSession.shared.dataTaskFuture(for: imageURL)
@@ -32,15 +33,13 @@ CoroutineDispatcher.main.submit {
     guard let image = UIImage(data: data) else { throw URLError(.cannotParseResponse) }
     
     //execute heavy task on global queue and await the result without blocking the thread
-    let thumbnail = try TaskScheduler.global.await { 
+    let thumbnail = try DispatchQueue.global().await { 
         image.makeThumbnail() //some method that returns UIImage
     }
 
-    //coroutine is performed on the main thread, that's why we can set the image in UIImageView
+    //set image in UIImageView on the main thread
     self.imageView.image = thumbnail
     
-}.whenFailure { error in
-    //here we can handle errors
 }
 ```
 
@@ -67,16 +66,20 @@ The **async/await** pattern is an alternative. It is already well-established in
 - **Fast context switching**. Switching between coroutines is much faster than switching between threads as it does not require the involvement of operating system.
 - **Asynchronous code in synchronous manner**. The use of coroutines allows an asynchronous, non-blocking function to be structured in a manner similar to an ordinary synchronous function. And even though coroutines can run in multiple threads, your code will still look consistent and therefore easy to understand.
 
-You can execute tasks inside coroutines on `CoroutineDispatcher` just like you would do it on `DispatchQueue`. While `Coroutine.await()` allows you to wrap asynchronous functions to deal with them as synchronous. 
+The coroutines API design is as minimalistic as possible. It consists of the `TaskScheduler` protocol, which requires to implement only one method, and the `Coroutine` structure with utility methods. This API is enough to do amazing things.
+
+The `TaskScheduler` protocol describes how to schedule tasks and as an extension you get the `coroutine()` method for executing coroutines on it, as well as the `await()` method for awaiting the result of the task (that is executed on your scheduler) inside the coroutine without blocking the thread. The framework includes the implementation of this protocol for `DispatchQueue`, but you can easily add it for other schedulers.
+
+`Coroutine` has static utility methods for usage inside coroutines, including the `await()` method which suspends and resumes it on callback. It allows you to easily wrap asynchronous functions to deal with them as synchronous. 
 
 #### Main features
 - **Any scheduler**. You can use any scheduler to execute coroutines, including standard `DispatchQueue` or even `NSManagedObjectContext` and `MultiThreadedEventLoopGroup`.
-- **Memory efficiency**. Contains a mechanism that allows to reuse stacks and, if necessary, effectively store their contents.
 - **Await instead of resume/suspend**. For convenience and safety, coroutines' resume/suspend has been replaced by await, which suspends it and resumes on callback.
 - **Lock-free await**. Await is implemented using atomic variables. This makes it especially fast in cases where the result is already available.
+- **Memory efficiency**. Contains a mechanism that allows to reuse stacks and, if necessary, effectively store their contents.
 - **Create your own API**. Gives you a very flexible tool to create your own add-ons or integrate with existing solutions.
 
-The following example shows the usage of `await()` inside a coroutine to manage asynchronous calls.
+The following example shows the usage of  `await()` inside a coroutine to manage asynchronous calls.
 
 ```swift
 func awaitThumbnail(url: URL) throws -> UIImage {
@@ -90,12 +93,12 @@ func awaitThumbnail(url: URL) throws -> UIImage {
         else { throw error ?? URLError(.cannotParseResponse) }
     
     //execute heavy task on global queue and await its result
-    return try TaskScheduler.global.await { image.makeThumbnail() }
+    return try DispatchQueue.global().await { image.makeThumbnail() }
 }
 
 func setThumbnail(url: URL) {
     //execute coroutine on the main thread
-    CoroutineDispatcher.main.execute {
+    DispatchQueue.main.coroutine {
     
         //await image without blocking the thread
         let thumbnail = try? self.awaitThumbnail(url: url)
@@ -106,20 +109,22 @@ func setThumbnail(url: URL) {
 }
 ```
 
-You can also wrap your scheduler in `TaskScheduler` or conform to `TaskExecutor` protocol to await the result inside the coroutine, or create `CoFuture` with a deferred result. Here's how it might look for `CoreData`.
+Here's how we can conform `NSManagedObjectContext` to `TaskScheduler`.
 
 ```swift
-extension NSManagedObjectContext: TaskExecutor {
-    func execute(_ task: @escaping () -> Void) { perform(task) }
+extension NSManagedObjectContext: TaskScheduler {
+
+    func executeTask(_ task: @escaping () -> Void) {
+        perform(task)
+    }
+    
 }
 
-CoroutineDispatcher.main.execute {
-    //some context with privateQueueConcurrencyType
-    let context: NSManagedObjectContext
-    //some complex request
-    let request: NSFetchRequest<Entity>
+DispatchQueue.main.coroutine {
+    let context: NSManagedObjectContext //context with privateQueueConcurrencyType
+    let request: NSFetchRequest<Entity> //some complex request
 
-    //execute fetch request without blocking the main thread
+    //execute request without blocking the main thread
     let result = try context.await { try context.fetch(request) }
 }
 ```
@@ -178,30 +183,28 @@ URLSession.shared.dataTaskFuture(for: url)
     //parse data to Optional<UIImage>
     .map { UIImage(data: $0.data) }
     
-    //if not nil return new CoFuture with heavy task that will execute it on global queue
-    .flatMap { TaskScheduler.global.submit($0.makeThubnail) }
+    //returns new CoFuture with heavy task that will execute it on global queue
+    .flatMap { DispatchQueue.global().coFuture($0.makeThubnail) }
     
-    //get Result<UIImage, Error> and set image on the main thread
-    .whenComplete { result in
-        DispatchQueue.main.execute { imageView.image = try? result.get() }
-}
+    //set image in ImageView on the main thread
+    .whenSuccess { image in DispatchQueue.main.async { self.imageView.image = image } }
 ```
 
 Also `CoFuture` allows to start multiple tasks in parallel and synchronize them later with `await()`.
 
 ```swift
-//submits a given task to be executed on the global queue and returns CoFuture<Int> with deferred result
-let future1 = TaskScheduler.global.submit { () -> Int in
+//execute task on the global queue and returns CoFuture<Int> with deferred result
+let future1: CoFuture<Int> = DispatchQueue.global().coFuture {
     sleep(2) //some work
     return 5
 }
 
-let future2 = TaskScheduler.global.submit { () -> Int in
+let future2: CoFuture<Int> = DispatchQueue.global().coFuture {
     sleep(3) //some work
     return 6
 }
 
-CoroutineDispatcher.main.execute {
+DispatchQueue.main.coroutine {
     let sum = try future1.await() + future2.await() //will await for 3 sec.
     self.label.text = "Sum is \(sum)"
 }
@@ -212,7 +215,7 @@ Apple has introduced a new reactive programming framework `Combine` that makes w
 ```swift
 let publisher = URLSession.shared.dataTaskPublisher(for: url).map(\.data)
 
-CoroutineDispatcher.main.execute {
+DispatchQueue.main.coroutine {
     //subscribe CoFuture
     let future = publisher.subscribeCoFuture()
     

@@ -9,6 +9,7 @@
 import XCTest
 import Combine
 import SwiftCoroutine
+import Foundation
 
 @available(OSX 10.15, iOS 13.0, *)
 class CoFutureCombineTests: XCTestCase {
@@ -20,7 +21,7 @@ class CoFutureCombineTests: XCTestCase {
                 promise(.success(1))
             }
         }.delay(for: .seconds(1), scheduler: DispatchQueue.global()).subscribeCoFuture()
-        CoroutineDispatcher.global.execute {
+        DispatchQueue.global().coroutine {
             XCTAssertEqual(try future.await(), 1)
             exp.fulfill()
         }
