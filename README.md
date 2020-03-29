@@ -77,8 +77,8 @@ The `CoroutineScheduler` protocol describes how to schedule tasks and as an exte
 - **Any scheduler**. You can use any scheduler to execute coroutines, including standard `DispatchQueue` or even `NSManagedObjectContext` and `MultiThreadedEventLoopGroup`.
 - **Await instead of resume/suspend**. For convenience and safety, coroutines' resume/suspend has been replaced by await, which suspends it and resumes on callback.
 - **Lock-free await**. Await is implemented using atomic variables. This makes it especially fast in cases where the result is already available.
-- **Memory efficiency**. Contains a mechanism that allows to reuse stacks and, if necessary, effectively store their contents.
-- **Create your own API**. Gives you a very flexible tool to create your own add-ons or integrate with existing solutions.
+- **Memory efficiency**. Contains a mechanism that allows to reuse stacks and, if necessary, effectively store their contents with minimal memory usage.
+- **Create your own API**. Gives you a very flexible tool to create own powerful add-ons or easily integrate it with existing solutions.
 
 The following example shows the usage of  `await()` inside a coroutine to manage asynchronous calls.
 
@@ -198,14 +198,14 @@ DispatchQueue.main.startCoroutine {
 Apple has introduced a new reactive programming framework `Combine` that makes writing asynchronous code easier and includes a lot of convenient and common functionality. We can use it with coroutines by making `CoFuture` a subscriber and await its result.
 
 ```swift
+create Combine publisher
 let publisher = URLSession.shared.dataTaskPublisher(for: url).map(\.data)
 
 DispatchQueue.main.startCoroutine {
-    //subscribe CoFuture
+    //subscribe CoFuture to publisher
     let future = publisher.subscribeCoFuture()
     
-    //await data
+    //await data without blocking the thread
     let data = try future.await()
-    //do some work with data
 }
 ```

@@ -16,14 +16,17 @@ class CoFutureCombineTests: XCTestCase {
     
     func testSubscribe() {
         let exp = expectation(description: "testSubscription")
-        let future = Future<Int, Never> { promise in
-            DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)) {
-                promise(.success(1))
+        exp.expectedFulfillmentCount = 100
+        for i in 0..<100 {
+            let future = Future<Int, Never> { promise in
+                DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(100)) {
+                    promise(.success(i))
+                }
+            }.delay(for: .milliseconds(100), scheduler: DispatchQueue.global()).subscribeCoFuture()
+            DispatchQueue.global().startCoroutine {
+                XCTAssertEqual(try future.await(), i)
+                exp.fulfill()
             }
-        }.delay(for: .seconds(1), scheduler: DispatchQueue.global()).subscribeCoFuture()
-        DispatchQueue.global().startCoroutine {
-            XCTAssertEqual(try future.await(), 1)
-            exp.fulfill()
         }
         wait(for: [exp], timeout: 3)
     }
