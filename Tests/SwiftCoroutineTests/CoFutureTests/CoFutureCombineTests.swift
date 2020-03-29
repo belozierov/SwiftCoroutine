@@ -21,7 +21,7 @@ class CoFutureCombineTests: XCTestCase {
                 promise(.success(1))
             }
         }.delay(for: .seconds(1), scheduler: DispatchQueue.global()).subscribeCoFuture()
-        DispatchQueue.global().coroutine {
+        DispatchQueue.global().startCoroutine {
             XCTAssertEqual(try future.await(), 1)
             exp.fulfill()
         }

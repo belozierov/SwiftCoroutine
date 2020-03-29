@@ -76,8 +76,8 @@
 		1A993209242022D100B3BF32 /* CoFuture6+hashable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A993207242022D100B3BF32 /* CoFuture6+hashable.swift */; };
 		1A9C14DE23BB824400E13203 /* CoFuture4+await.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A9C14DD23BB824400E13203 /* CoFuture4+await.swift */; };
 		1A9C14DF23BB824400E13203 /* CoFuture4+await.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A9C14DD23BB824400E13203 /* CoFuture4+await.swift */; };
-		1AAC4881242C98E200AE9AA9 /* TaskScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAC4880242C98E200AE9AA9 /* TaskScheduler.swift */; };
-		1AAC4882242C98E200AE9AA9 /* TaskScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAC4880242C98E200AE9AA9 /* TaskScheduler.swift */; };
+		1AAC4881242C98E200AE9AA9 /* CoroutineScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAC4880242C98E200AE9AA9 /* CoroutineScheduler.swift */; };
+		1AAC4882242C98E200AE9AA9 /* CoroutineScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAC4880242C98E200AE9AA9 /* CoroutineScheduler.swift */; };
 		1AAECA5623DD703400DED77D /* CoFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAECA5523DD703400DED77D /* CoFuture.swift */; };
 		1AAECA5723DD703400DED77D /* CoFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAECA5523DD703400DED77D /* CoFuture.swift */; };
 		1ABD0673242A368F00A22764 /* AtomicEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ABD0672242A368F00A22764 /* AtomicEnum.swift */; };
@@ -173,7 +173,7 @@
 		1A934FC3239031C000155B71 /* XCTAssertContains.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCTAssertContains.swift; sourceTree = "<group>"; };
 		1A993207242022D100B3BF32 /* CoFuture6+hashable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoFuture6+hashable.swift"; sourceTree = "<group>"; };
 		1A9C14DD23BB824400E13203 /* CoFuture4+await.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoFuture4+await.swift"; sourceTree = "<group>"; };
-		1AAC4880242C98E200AE9AA9 /* TaskScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskScheduler.swift; sourceTree = "<group>"; };
+		1AAC4880242C98E200AE9AA9 /* CoroutineScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoroutineScheduler.swift; sourceTree = "<group>"; };
 		1AAECA5523DD703400DED77D /* CoFuture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoFuture.swift; sourceTree = "<group>"; };
 		1ABD0672242A368F00A22764 /* AtomicEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicEnum.swift; sourceTree = "<group>"; };
 		1AC3578723E85A0100EC2A50 /* CoFutureCancelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoFutureCancelTests.swift; sourceTree = "<group>"; };
@@ -367,7 +367,7 @@
 		1AAC4883242CD2C100AE9AA9 /* TaskScheduler */ = {
 			isa = PBXGroup;
 			children = (
-				1AAC4880242C98E200AE9AA9 /* TaskScheduler.swift */,
+				1AAC4880242C98E200AE9AA9 /* CoroutineScheduler.swift */,
 				1AEB6182242F391C00A6C2AB /* TaskScheduler+DispatchQueue.swift */,
 			);
 			path = TaskScheduler;
@@ -704,7 +704,7 @@
 			files = (
 				1A595BF623E872D5009B62E7 /* CoroutineContextPool.swift in Sources */,
 				1A8129AB2419822300AE061C /* CoroutineError.swift in Sources */,
-				1AAC4881242C98E200AE9AA9 /* TaskScheduler.swift in Sources */,
+				1AAC4881242C98E200AE9AA9 /* CoroutineScheduler.swift in Sources */,
 				1A739AD023B1555A00165280 /* Coroutine+StackSize.swift in Sources */,
 				1A595BFB23E8A31F009B62E7 /* CoPromise.swift in Sources */,
 				1A993208242022D100B3BF32 /* CoFuture6+hashable.swift in Sources */,
@@ -771,7 +771,7 @@
 			files = (
 				1A595BF723E872D5009B62E7 /* CoroutineContextPool.swift in Sources */,
 				1A8129AC2419822300AE061C /* CoroutineError.swift in Sources */,
-				1AAC4882242C98E200AE9AA9 /* TaskScheduler.swift in Sources */,
+				1AAC4882242C98E200AE9AA9 /* CoroutineScheduler.swift in Sources */,
 				1A739AD123B1555A00165280 /* Coroutine+StackSize.swift in Sources */,
 				1A595BFC23E8A320009B62E7 /* CoPromise.swift in Sources */,
 				1A993209242022D100B3BF32 /* CoFuture6+hashable.swift in Sources */,

@@ -8,7 +8,7 @@
 
 public protocol CoroutineScheduler {
     
-    func executeTask(_ task: @escaping () -> Void)
+    func scheduleTask(_ task: @escaping () -> Void)
     
 }
 
@@ -16,7 +16,11 @@ extension CoroutineScheduler {
     
     // MARK: - coroutine
     
-    @inlinable public func coroutine(_ task: @escaping () throws -> Void) {
+    @inlinable public func startCoroutine(_ task: @escaping () -> Void) {
+        CoroutineDispatcher.default.execute(on: self, task: task)
+    }
+    
+    @inlinable public func startCoroutine(_ task: @escaping () throws -> Void) {
         CoroutineDispatcher.default.execute(on: self) {
             do { try task() } catch { print(error) }
         }
@@ -26,7 +30,7 @@ extension CoroutineScheduler {
     
     @inlinable public func await<T>(_ task: @escaping () throws -> T) throws -> T {
         try Coroutine.await { callback in
-            coroutine { callback(Result(catching: task)) }
+            startCoroutine { callback(Result(catching: task)) }
         }.get()
     }
     
@@ -34,7 +38,7 @@ extension CoroutineScheduler {
     
     @inlinable public func coFuture<T>(_ task: @escaping () throws -> T) -> CoFuture<T> {
         let promise = CoPromise<T>()
-        coroutine { promise.complete(with: Result(catching: task)) }
+        startCoroutine { promise.complete(with: Result(catching: task)) }
         return promise
     }
     

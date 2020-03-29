@@ -41,10 +41,10 @@ public struct Coroutine {
     
     // MARK: - delay
     
-    @inlinable public static func delay(_ time: DispatchTime) throws {
+    @inlinable public static func delay(_ time: DispatchTimeInterval) throws {
         var timer: DispatchSourceTimer!
         try await {
-            timer = DispatchSource.createTimer(timeout: time, handler: $0)
+            timer = DispatchSource.createTimer(timeout: .now() + time, handler: $0)
             timer.activate()
         }
     }

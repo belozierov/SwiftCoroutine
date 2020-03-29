@@ -14,7 +14,7 @@ extension DispatchSource {
     static func createTimer(timeout: DispatchTime,
                             handler: @escaping () -> Void) -> DispatchSourceTimer {
         let timer = makeTimerSource()
-        timer.schedule(deadline: timeout, leeway: .milliseconds(50))
+        timer.schedule(deadline: timeout)
         timer.setEventHandler(handler: handler)
         return timer
     }

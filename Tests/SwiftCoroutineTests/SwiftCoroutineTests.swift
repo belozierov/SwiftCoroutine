@@ -15,7 +15,7 @@
 //        let expectation = XCTestExpectation(description: "Coroutine switch")
 //        let date = Date()
 //        var result = [Int]()
-//        coroutine {
+//        startCoroutine {
 //            result.append(0)
 //            try Coroutine.delay(1)
 //            XCTAssertDuration(from: date, in: 1..<2)

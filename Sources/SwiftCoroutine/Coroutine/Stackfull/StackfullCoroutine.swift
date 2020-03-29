@@ -13,7 +13,7 @@
 //    }
 //
 //    let context: CoroutineContext
-//    let scheduler: TaskScheduler
+//    let scheduler: CoroutineScheduler
 //    @AtomicIntRepresentable private(set) var state: State = .prepared
 //    private var resumeEnv: UnsafeMutablePointer<Int32>!
 //

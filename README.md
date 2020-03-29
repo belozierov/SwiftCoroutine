@@ -21,7 +21,7 @@ This is an example of a combined usage of coroutines with futures and promises.
 
 ```swift
 //execute coroutine on the main thread
-DispatchQueue.main.coroutine {
+DispatchQueue.main.startCoroutine {
 
     //extension that returns CoFuture<(data: Data, response: URLResponse)>
     let dataFuture = URLSession.shared.dataTaskFuture(for: imageURL)
@@ -66,9 +66,9 @@ The **async/await** pattern is an alternative. It is already well-established in
 - **Fast context switching**. Switching between coroutines is much faster than switching between threads as it does not require the involvement of operating system.
 - **Asynchronous code in synchronous manner**. The use of coroutines allows an asynchronous, non-blocking function to be structured in a manner similar to an ordinary synchronous function. And even though coroutines can run in multiple threads, your code will still look consistent and therefore easy to understand.
 
-The coroutines API design is as minimalistic as possible. It consists of the `TaskScheduler` protocol, which requires to implement only one method, and the `Coroutine` structure with utility methods. This API is enough to do amazing things.
+The coroutines API design is as minimalistic as possible. It consists of the `CoroutineScheduler` protocol, which requires to implement only one method, and the `Coroutine` structure with utility methods. This API is enough to do amazing things.
 
-The `TaskScheduler` protocol describes how to schedule tasks and as an extension you get the `coroutine()` method for executing coroutines on it, as well as the `await()` method for awaiting the result of the task (that is executed on your scheduler) inside the coroutine without blocking the thread. The framework includes the implementation of this protocol for `DispatchQueue`, but you can easily add it for other schedulers.
+The `CoroutineScheduler` protocol describes how to schedule tasks and as an extension you get the `startCoroutine()` method for executing coroutines on it, as well as the `await()` method for awaiting the result of the task (that is executed on your scheduler) inside the coroutine without blocking the thread. The framework includes the implementation of this protocol for `DispatchQueue`, but you can easily add it for other schedulers.
 
 `Coroutine` has static utility methods for usage inside coroutines, including the `await()` method which suspends and resumes it on callback. It allows you to easily wrap asynchronous functions to deal with them as synchronous. 
 
@@ -98,7 +98,7 @@ func awaitThumbnail(url: URL) throws -> UIImage {
 
 func setThumbnail(url: URL) {
     //execute coroutine on the main thread
-    DispatchQueue.main.coroutine {
+    DispatchQueue.main.startCoroutine {
     
         //await image without blocking the thread
         let thumbnail = try? self.awaitThumbnail(url: url)
@@ -109,18 +109,18 @@ func setThumbnail(url: URL) {
 }
 ```
 
-Here's how we can conform `NSManagedObjectContext` to `TaskScheduler`.
+Here's how we can conform `NSManagedObjectContext` to `CoroutineScheduler`.
 
 ```swift
-extension NSManagedObjectContext: TaskScheduler {
+extension NSManagedObjectContext: CoroutineScheduler {
 
-    func executeTask(_ task: @escaping () -> Void) {
+    func scheduleTask(_ task: @escaping () -> Void) {
         perform(task)
     }
     
 }
 
-DispatchQueue.main.coroutine {
+DispatchQueue.main.startCoroutine {
     let context: NSManagedObjectContext //context with privateQueueConcurrencyType
     let request: NSFetchRequest<Entity> //some complex request
 
@@ -195,16 +195,16 @@ Also `CoFuture` allows to start multiple tasks in parallel and synchronize them 
 ```swift
 //execute task on the global queue and returns CoFuture<Int> with deferred result
 let future1: CoFuture<Int> = DispatchQueue.global().coFuture {
-    sleep(2) //some work
+    try Coroutine.delay(.seconds(2)) //some work that takes 2 sec.
     return 5
 }
 
 let future2: CoFuture<Int> = DispatchQueue.global().coFuture {
-    sleep(3) //some work
+    try Coroutine.delay(.seconds(3)) //some work that takes 3 sec.
     return 6
 }
 
-DispatchQueue.main.coroutine {
+DispatchQueue.main.startCoroutine {
     let sum = try future1.await() + future2.await() //will await for 3 sec.
     self.label.text = "Sum is \(sum)"
 }
@@ -215,7 +215,7 @@ Apple has introduced a new reactive programming framework `Combine` that makes w
 ```swift
 let publisher = URLSession.shared.dataTaskPublisher(for: url).map(\.data)
 
-DispatchQueue.main.coroutine {
+DispatchQueue.main.startCoroutine {
     //subscribe CoFuture
     let future = publisher.subscribeCoFuture()
     

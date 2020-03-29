@@ -15,12 +15,14 @@ class TaskSchedulerTests: XCTestCase {
         measure {
             var counter = 0
             for _ in 0..<100_000 {
-                DispatchQueue.main.executeTask {
+                DispatchQueue.main.scheduleTask {
                     counter += 1
                 }
             }
             XCTAssertEqual(counter, 100_000)
         }
     }
+    
+    
     
 }

@@ -29,7 +29,7 @@ class CoFutureAwaitTests: XCTestCase {
         DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(1)) {
             promise.success(1)
         }
-        DispatchQueue.main.coroutine {
+        DispatchQueue.main.startCoroutine {
             XCTAssertEqual(try promise.await(), 1)
             exp.fulfill()
         }
@@ -47,7 +47,7 @@ class CoFutureAwaitTests: XCTestCase {
                 promise.success(index)
             }
             queue.asyncAfter(deadline: .now() + .microseconds(array.count - index)) {
-                DispatchQueue.global().coroutine {
+                DispatchQueue.global().startCoroutine {
                     array[index] = try promise.await()
                     exp.fulfill()
                 }
@@ -62,7 +62,7 @@ class CoFutureAwaitTests: XCTestCase {
             for _ in 0..<1_000 {
                 let futures = (0...9).map { _ in
                     CoFuture<Void> { promise in
-                        DispatchQueue.global().coroutine {
+                        DispatchQueue.global().startCoroutine {
                             for future in (0...9).map({ _ in CoFuture(value: ()) }) {
                                 try? future.await()
                             }
@@ -72,10 +72,6 @@ class CoFutureAwaitTests: XCTestCase {
                 }
                 try? XCTAssertNoThrow(futures.map { try $0.wait() })
             }
-        }
-        let future2: CoFuture<Int> = DispatchQueue.global().coFuture {
-            sleep(3) //some work
-            return 6
         }
     }
     

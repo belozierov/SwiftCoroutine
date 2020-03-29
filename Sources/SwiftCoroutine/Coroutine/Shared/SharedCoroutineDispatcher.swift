@@ -11,7 +11,7 @@ import Dispatch
 internal final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
     
     private struct Task {
-        let scheduler: TaskScheduler, task: () -> Void
+        let scheduler: CoroutineScheduler, task: () -> Void
     }
     
     private let mutex = PsxLock()
@@ -29,11 +29,11 @@ internal final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
         startDispatchSource()
     }
     
-    internal func execute(on scheduler: TaskScheduler, task: @escaping () -> Void) {
+    internal func execute(on scheduler: CoroutineScheduler, task: @escaping () -> Void) {
         mutex.lock()
         if let queue = freeQueue {
             mutex.unlock()
-            scheduler.executeTask {
+            scheduler.scheduleTask {
                 self.start(task: .init(scheduler: scheduler, task: task), on: queue)
                 self.performNext(for: queue)
             }
@@ -70,7 +70,7 @@ internal final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
             mutex.unlock()
         } else {
             mutex.unlock()
-            coroutine.scheduler.executeTask {
+            coroutine.scheduler.scheduleTask {
                 coroutine.resume()
                 self.performNext(for: coroutine.queue)
             }
@@ -88,7 +88,7 @@ internal final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
             if let coroutine = queue.pop() {
                 mutex.unlock()
                 state.value = .running
-                coroutine.scheduler.executeTask {
+                coroutine.scheduler.scheduleTask {
                     coroutine.resume()
                     if state.update(.none) == .running { return }
                     self.performNext(for: queue)
@@ -96,7 +96,7 @@ internal final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
             } else if let task = tasks.pop() {
                 mutex.unlock()
                 state.value = .running
-                task.scheduler.executeTask {
+                task.scheduler.scheduleTask {
                     self.start(task: task, on: queue)
                     if state.update(.none) == .running { return }
                     self.performNext(for: queue)

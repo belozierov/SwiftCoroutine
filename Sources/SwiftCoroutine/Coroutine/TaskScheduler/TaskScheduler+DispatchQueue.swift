@@ -1,5 +1,5 @@
 //
-//  TaskScheduler+DispatchQueue.swift
+//  CoroutineScheduler+DispatchQueue.swift
 //  SwiftCoroutine
 //
 //  Created by Alex Belozierov on 28.03.2020.
@@ -8,13 +8,13 @@
 
 import Foundation
 
-extension DispatchQueue: TaskScheduler {
+extension DispatchQueue: CoroutineScheduler {
     
     fileprivate enum Executor {
         case main((@escaping () -> Void) -> Void), notMain
     }
     
-    public func executeTask(_ task: @escaping () -> Void) {
+    public func scheduleTask(_ task: @escaping () -> Void) {
         switch getSpecific(key: .executorKey) {
         case .main(let scheduler): return scheduler(task)
         case .notMain: return async(execute: task)
