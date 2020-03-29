@@ -24,20 +24,13 @@
     {
       "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Core/CoFuture.swift",
       "line": 158,
-      "symbol": "CoFuture.init(on:task:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Core/CoFuture.swift",
-      "line": 165,
       "symbol": "CoFuture.init(promise:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Core/CoFuture.swift",
-      "line": 269,
+      "line": 262,
       "symbol": "CoPromise.init()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
@@ -228,6 +221,13 @@
       "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskScheduler.swift",
       "line": 45,
       "symbol": "TaskScheduler.await(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/TaskScheduler.swift",
+      "line": 51,
+      "symbol": "TaskScheduler.coFuture(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     }

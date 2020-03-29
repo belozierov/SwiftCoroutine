@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Coroutine Structure Reference</title>
+    <title>CoroutineScheduler Protocol Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,8 +10,8 @@
     
   </head>
   <body>
-    <a name="//apple_ref/swift/Struct/Coroutine" class="dashAnchor"></a>
-    <a title="Coroutine Structure Reference"></a>
+    <a name="//apple_ref/swift/Protocol/CoroutineScheduler" class="dashAnchor"></a>
+    <a title="CoroutineScheduler Protocol Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../index.html">SwiftCoroutine Docs</a> (56% documented)</p>
@@ -21,7 +21,7 @@
       <p id="breadcrumbs">
         <a href="../index.html">SwiftCoroutine Reference</a>
         <img id="carat" src="../img/carat.png" />
-        Coroutine Structure Reference
+        CoroutineScheduler Protocol Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -81,10 +81,10 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>Coroutine</h1>
+            <h1>CoroutineScheduler</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Coroutine</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">CoroutineScheduler</span></code></pre>
 
                 </div>
               </div>
@@ -93,22 +93,13 @@
           </section>
           <section class="section task-group-section">
             <div class="task-group">
-              <div class="task-name-container">
-                <a name="/current"></a>
-                <a name="//apple_ref/swift/Section/current" class="dashAnchor"></a>
-                <div class="section-name-container">
-                  <a class="section-name-link" href="#/current"></a>
-                  <h3 class="section-name"><p>current</p>
-</h3>
-                </div>
-              </div>
               <ul>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine0B0V08isInsideB0SbvpZ"></a>
-                    <a name="//apple_ref/swift/Variable/isInsideCoroutine" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine0B0V08isInsideB0SbvpZ">isInsideCoroutine</a>
+                    <a name="/s:14SwiftCoroutine0B9SchedulerP12scheduleTaskyyyycF"></a>
+                    <a name="//apple_ref/swift/Method/scheduleTask(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14SwiftCoroutine0B9SchedulerP12scheduleTaskyyyycF">scheduleTask(_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -123,8 +114,82 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">scheduleTask</span><span class="p">(</span><span class="n">_</span> <span class="nv">task</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/coroutine"></a>
+                <a name="//apple_ref/swift/Section/coroutine" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/coroutine"></a>
+                  <h3 class="section-name"><p>coroutine</p>
+</h3>
+                </div>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14SwiftCoroutine0B9SchedulerPAAE05startB0yyyycF"></a>
+                    <a name="//apple_ref/swift/Method/startCoroutine(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14SwiftCoroutine0B9SchedulerPAAE05startB0yyyycF">startCoroutine(_:)</a>
+                    </code>
+                      <span class="declaration-note">
+                        Extension method
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@inlinable</span>
-<span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">isInsideCoroutine</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">startCoroutine</span><span class="p">(</span><span class="n">_</span> <span class="nv">task</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14SwiftCoroutine0B9SchedulerPAAE05startB0yyyyKcF"></a>
+                    <a name="//apple_ref/swift/Method/startCoroutine(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14SwiftCoroutine0B9SchedulerPAAE05startB0yyyyKcF">startCoroutine(_:)</a>
+                    </code>
+                      <span class="declaration-note">
+                        Extension method
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@inlinable</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">startCoroutine</span><span class="p">(</span><span class="n">_</span> <span class="nv">task</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -147,10 +212,13 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine0B0V5awaityyyyycXEKFZ"></a>
+                    <a name="/s:14SwiftCoroutine0B9SchedulerPAAE5awaityqd__qd__yKcKlF"></a>
                     <a name="//apple_ref/swift/Method/await(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine0B0V5awaityyyyycXEKFZ">await(_:)</a>
+                    <a class="token" href="#/s:14SwiftCoroutine0B9SchedulerPAAE5awaityqd__qd__yKcKlF">await(_:)</a>
                     </code>
+                      <span class="declaration-note">
+                        Extension method
+                      </span>
                   </div>
                   <div class="height-container">
                     <div class="pointer-container"></div>
@@ -165,91 +233,7 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@inlinable</span>
-<span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">await</span><span class="p">(</span><span class="n">_</span> <span class="nv">callback</span><span class="p">:</span> <span class="p">(</span><span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">throws</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:14SwiftCoroutine0B0V5awaityxyyxcXEKlFZ"></a>
-                    <a name="//apple_ref/swift/Method/await(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine0B0V5awaityxyyxcXEKlFZ">await(_:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">@inlinable</span>
-<span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="n">await</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">callback</span><span class="p">:</span> <span class="p">(</span><span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">T</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:14SwiftCoroutine0B0V5awaityx_q_tyyx_q_tcXEKr0_lFZ"></a>
-                    <a name="//apple_ref/swift/Method/await(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine0B0V5awaityx_q_tyyx_q_tcXEKr0_lFZ">await(_:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">@inlinable</span>
-<span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="n">await</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">,</span> <span class="kt">N</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">callback</span><span class="p">:</span> <span class="p">(</span><span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">N</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">N</span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:14SwiftCoroutine0B0V5awaityx_q_q0_tyyx_q_q0_tcXEKr1_lFZ"></a>
-                    <a name="//apple_ref/swift/Method/await(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine0B0V5awaityx_q_q0_tyyx_q_q0_tcXEKr1_lFZ">await(_:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">@inlinable</span>
-<span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="n">await</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">,</span> <span class="kt">N</span><span class="p">,</span> <span class="kt">M</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">callback</span><span class="p">:</span> <span class="p">(</span><span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">N</span><span class="p">,</span> <span class="kt">M</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">N</span><span class="p">,</span> <span class="kt">M</span><span class="p">)</span></code></pre>
+<span class="kd">public</span> <span class="kd">func</span> <span class="n">await</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">task</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">T</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">T</span></code></pre>
 
                         </div>
                       </div>
@@ -260,11 +244,11 @@
             </div>
             <div class="task-group">
               <div class="task-name-container">
-                <a name="/delay"></a>
-                <a name="//apple_ref/swift/Section/delay" class="dashAnchor"></a>
+                <a name="/future"></a>
+                <a name="//apple_ref/swift/Section/future" class="dashAnchor"></a>
                 <div class="section-name-container">
-                  <a class="section-name-link" href="#/delay"></a>
-                  <h3 class="section-name"><p>delay</p>
+                  <a class="section-name-link" href="#/future"></a>
+                  <h3 class="section-name"><p>future</p>
 </h3>
                 </div>
               </div>
@@ -272,10 +256,13 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine0B0V5delayyy8Dispatch0D12TimeIntervalOKFZ"></a>
-                    <a name="//apple_ref/swift/Method/delay(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine0B0V5delayyy8Dispatch0D12TimeIntervalOKFZ">delay(_:)</a>
+                    <a name="/s:14SwiftCoroutine0B9SchedulerPAAE8coFutureyAA02CoE0Cyqd__Gqd__yKclF"></a>
+                    <a name="//apple_ref/swift/Method/coFuture(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14SwiftCoroutine0B9SchedulerPAAE8coFutureyAA02CoE0Cyqd__Gqd__yKclF">coFuture(_:)</a>
                     </code>
+                      <span class="declaration-note">
+                        Extension method
+                      </span>
                   </div>
                   <div class="height-container">
                     <div class="pointer-container"></div>
@@ -290,7 +277,7 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@inlinable</span>
-<span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">delay</span><span class="p">(</span><span class="n">_</span> <span class="nv">time</span><span class="p">:</span> <span class="kt">DispatchTimeInterval</span><span class="p">)</span> <span class="k">throws</span></code></pre>
+<span class="kd">public</span> <span class="kd">func</span> <span class="n">coFuture</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">task</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Classes/CoFuture.html">CoFuture</a></span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span></code></pre>
 
                         </div>
                       </div>
