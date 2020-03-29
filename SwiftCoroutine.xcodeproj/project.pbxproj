@@ -100,8 +100,8 @@
 		1ADBC5CC23E4A1A7007BCA7C /* CoFuture1+flatMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ADBC5CA23E4A1A7007BCA7C /* CoFuture1+flatMap.swift */; };
 		1AEB6180242F36CB00A6C2AB /* TaskSchedulerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEB617F242F36CB00A6C2AB /* TaskSchedulerTests.swift */; };
 		1AEB6181242F36CB00A6C2AB /* TaskSchedulerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEB617F242F36CB00A6C2AB /* TaskSchedulerTests.swift */; };
-		1AEB6183242F391C00A6C2AB /* TaskScheduler+DispatchQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEB6182242F391C00A6C2AB /* TaskScheduler+DispatchQueue.swift */; };
-		1AEB6184242F391C00A6C2AB /* TaskScheduler+DispatchQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEB6182242F391C00A6C2AB /* TaskScheduler+DispatchQueue.swift */; };
+		1AEB6183242F391C00A6C2AB /* CoroutineScheduler+DispatchQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEB6182242F391C00A6C2AB /* CoroutineScheduler+DispatchQueue.swift */; };
+		1AEB6184242F391C00A6C2AB /* CoroutineScheduler+DispatchQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEB6182242F391C00A6C2AB /* CoroutineScheduler+DispatchQueue.swift */; };
 		1AEC382323CA02C90000101A /* XCTOrderedExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEC382223CA02C90000101A /* XCTOrderedExpectation.swift */; };
 		1AEC382423CA02C90000101A /* XCTOrderedExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEC382223CA02C90000101A /* XCTOrderedExpectation.swift */; };
 		1AECF5A923BA0E1D002A0493 /* CoFuture5+wait.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AECF5A823BA0E1D002A0493 /* CoFuture5+wait.swift */; };
@@ -186,7 +186,7 @@
 		1ADBC5CA23E4A1A7007BCA7C /* CoFuture1+flatMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoFuture1+flatMap.swift"; sourceTree = "<group>"; };
 		1AEB617E242E4B3400A6C2AB /* SwiftCoroutine macOS.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = "SwiftCoroutine macOS.xctestplan"; path = "Tests/SwiftCoroutine macOS.xctestplan"; sourceTree = "<group>"; };
 		1AEB617F242F36CB00A6C2AB /* TaskSchedulerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskSchedulerTests.swift; sourceTree = "<group>"; };
-		1AEB6182242F391C00A6C2AB /* TaskScheduler+DispatchQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaskScheduler+DispatchQueue.swift"; sourceTree = "<group>"; };
+		1AEB6182242F391C00A6C2AB /* CoroutineScheduler+DispatchQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoroutineScheduler+DispatchQueue.swift"; sourceTree = "<group>"; };
 		1AEC382223CA02C90000101A /* XCTOrderedExpectation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCTOrderedExpectation.swift; sourceTree = "<group>"; };
 		1AECF5A823BA0E1D002A0493 /* CoFuture5+wait.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoFuture5+wait.swift"; sourceTree = "<group>"; };
 		1AF7237D241E76D500C6D1F7 /* CoFuturePerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoFuturePerformanceTests.swift; sourceTree = "<group>"; };
@@ -368,7 +368,7 @@
 			isa = PBXGroup;
 			children = (
 				1AAC4880242C98E200AE9AA9 /* CoroutineScheduler.swift */,
-				1AEB6182242F391C00A6C2AB /* TaskScheduler+DispatchQueue.swift */,
+				1AEB6182242F391C00A6C2AB /* CoroutineScheduler+DispatchQueue.swift */,
 			);
 			path = TaskScheduler;
 			sourceTree = "<group>";
@@ -716,7 +716,7 @@
 				1A4C6DAD2416AB2C00EF2974 /* FifoQueue.swift in Sources */,
 				1AAECA5623DD703400DED77D /* CoFuture.swift in Sources */,
 				1A2D8D7F241EBD3A00ECC849 /* CoSubscription.swift in Sources */,
-				1AEB6183242F391C00A6C2AB /* TaskScheduler+DispatchQueue.swift in Sources */,
+				1AEB6183242F391C00A6C2AB /* CoroutineScheduler+DispatchQueue.swift in Sources */,
 				1AFFF6ED23C8BDEA0079FF73 /* CoFutureError.swift in Sources */,
 				1A8129A52417D49900AE061C /* CoroutineDispatcher.swift in Sources */,
 				F8CD25E92019A01600952299 /* CCoroutine.c in Sources */,
@@ -783,7 +783,7 @@
 				1A4C6DAE2416AB2C00EF2974 /* FifoQueue.swift in Sources */,
 				1AAECA5723DD703400DED77D /* CoFuture.swift in Sources */,
 				1A2D8D80241EBD3A00ECC849 /* CoSubscription.swift in Sources */,
-				1AEB6184242F391C00A6C2AB /* TaskScheduler+DispatchQueue.swift in Sources */,
+				1AEB6184242F391C00A6C2AB /* CoroutineScheduler+DispatchQueue.swift in Sources */,
 				1AFFF6EE23C8BDEA0079FF73 /* CoFutureError.swift in Sources */,
 				1A65BAC2239CEFED004C1716 /* CoroutineContext.swift in Sources */,
 				1A8129A62417D49900AE061C /* CoroutineDispatcher.swift in Sources */,
