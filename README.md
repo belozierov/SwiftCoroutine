@@ -143,7 +143,7 @@ Futures and promises are represented by the corresponding `CoFuture` class and i
 - **Awaitable**. You can await the result inside the coroutine.
 - **Combine-ready**. You can create `Publisher` from `CoFuture`, and vice versa make `CoFuture` a subscriber.
 
-Here is an example of `URLSession` extension to creating `CoFuture` for `URLSessionDataTask`.
+Here is an example of `URLSession` extension to creating `CoFuture` for `URLSessionDataTask`. The example of using it with coroutines and `await()` is provided [here](#Usage).
 
 ```swift
 extension URLSession {
@@ -173,22 +173,6 @@ extension URLSession {
     }
     
 }
-```
-
-And this is how we can use the `URLSession` extension with chain of `CoFuture`s. The example of using it with coroutines and `await()` is provided [here](#Usage).
-
-```swift
-//create CoFuture with URLSessionDataTask response
-URLSession.shared.dataTaskFuture(for: url)
-    
-    //parse data to Optional<UIImage>
-    .map { UIImage(data: $0.data) }
-    
-    //returns new CoFuture with heavy task that will execute it on global queue
-    .flatMap { DispatchQueue.global().coFuture($0.makeThubnail) }
-    
-    //set image in ImageView on the main thread
-    .whenSuccess { image in DispatchQueue.main.async { self.imageView.image = image } }
 ```
 
 Also `CoFuture` allows to start multiple tasks in parallel and synchronize them later with `await()`.
