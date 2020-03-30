@@ -48,7 +48,7 @@ DispatchQueue.main.startCoroutine {
 
 ### Requirements
 
-- iOS 11.0+ / macOS 10.13+
+- iOS 11.0+ / macOS 10.13+ / Ubuntu 18.0+
 - Xcode 10.2+
 - Swift 5+
 
