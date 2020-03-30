@@ -13,12 +13,23 @@ class CoFutureCancelTests: XCTestCase {
     
     func testCancel() {
         let exp = expectation(description: #function)
-        exp.expectedFulfillmentCount = 2
+        exp.expectedFulfillmentCount = 4
         let future = CoPromise<Bool>()
-        future.whenCanceled { exp.fulfill() }
+        func test() {
+            future.whenCanceled { exp.fulfill() }
+            future.whenFailure { error in
+                if let error = error as? CoFutureError {
+                    XCTAssertEqual(error, .canceled)
+                } else {
+                    XCTFail()
+                }
+                exp.fulfill()
+            }
+        }
+        test()
         XCTAssertFalse(future.isCanceled)
         future.cancel()
-        future.whenCanceled { exp.fulfill() }
+        test()
         XCTAssertTrue(future.isCanceled)
         wait(for: [exp], timeout: 1)
     }

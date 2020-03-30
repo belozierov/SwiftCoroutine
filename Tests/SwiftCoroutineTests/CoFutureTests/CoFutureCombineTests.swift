@@ -15,6 +15,8 @@ import Foundation
 @available(OSX 10.15, iOS 13.0, *)
 class CoFutureCombineTests: XCTestCase {
     
+    struct TestError: Error {}
+    
     func testSubscribe() {
         let exp = expectation(description: "testSubscribe")
         exp.expectedFulfillmentCount = 100
@@ -40,15 +42,40 @@ class CoFutureCombineTests: XCTestCase {
             .map { $0 + 1 }
             .sink(receiveCompletion: {
                 switch $0 {
-                case .finished: break
+                case .finished: exp.fulfill()
                 case .failure(let error):
                     XCTFail(error.localizedDescription)
                 }
-                exp.fulfill()
             }, receiveValue: { XCTAssertEqual($0, 2) })
             .store(in: &cancellables)
         promise.success(1)
         wait(for: [exp], timeout: 1)
+    }
+    
+    func testSubscriptionFail() {
+        let exp = expectation(description: "testSubscriptionFail")
+        var cancellables = Set<AnyCancellable>()
+        let promise = CoPromise<Int>()
+        promise.publisher()
+            .sink(receiveCompletion: {
+                switch $0 {
+                case .failure(_ as TestError):
+                    exp.fulfill()
+                default: XCTFail()
+                }
+            }, receiveValue: { _ in XCTFail() })
+            .store(in: &cancellables)
+        promise.fail(TestError())
+        wait(for: [exp], timeout: 1)
+    }
+    
+    func testSubscriptionCancel() {
+        let promise = CoPromise<Int>()
+        let cancellable = promise.publisher()
+            .sink(receiveCompletion: { _ in XCTFail() },
+                  receiveValue: { _ in XCTFail() })
+        cancellable.cancel()
+        promise.success(1)
     }
     
 }

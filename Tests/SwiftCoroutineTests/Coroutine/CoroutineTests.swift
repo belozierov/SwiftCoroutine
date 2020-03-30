@@ -46,5 +46,35 @@ class CoroutineTests: XCTestCase {
         }
         wait(for: [exp], timeout: 3)
     }
+    
+    func testAwait() {
+        let exp = expectation(description: "testAwait")
+        let queue = DispatchQueue.global()
+        var sum = 0
+        queue.startCoroutine {
+            try Coroutine.await {
+                sum += 1
+                $0()
+            }
+            sum += try Coroutine.await { completion in
+                queue.async {
+                    completion(1)
+                }
+            }
+            sum += try Coroutine.await { completion in
+                queue.async {
+                    completion(1, 0)
+                }
+            }.0
+            sum += try Coroutine.await { completion in
+                queue.async {
+                    completion(1, 0, 0)
+                }
+            }.0
+            XCTAssertEqual(sum, 4)
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1)
+    }
 
 }

@@ -98,8 +98,6 @@
 		1ACB449B241A8634002DB73B /* TestPsxLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACB4499241A8634002DB73B /* TestPsxLock.swift */; };
 		1ADBC5CB23E4A1A7007BCA7C /* CoFuture1+flatMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ADBC5CA23E4A1A7007BCA7C /* CoFuture1+flatMap.swift */; };
 		1ADBC5CC23E4A1A7007BCA7C /* CoFuture1+flatMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ADBC5CA23E4A1A7007BCA7C /* CoFuture1+flatMap.swift */; };
-		1AEB6180242F36CB00A6C2AB /* TaskSchedulerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEB617F242F36CB00A6C2AB /* TaskSchedulerTests.swift */; };
-		1AEB6181242F36CB00A6C2AB /* TaskSchedulerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEB617F242F36CB00A6C2AB /* TaskSchedulerTests.swift */; };
 		1AEB6183242F391C00A6C2AB /* CoroutineScheduler+DispatchQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEB6182242F391C00A6C2AB /* CoroutineScheduler+DispatchQueue.swift */; };
 		1AEB6184242F391C00A6C2AB /* CoroutineScheduler+DispatchQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEB6182242F391C00A6C2AB /* CoroutineScheduler+DispatchQueue.swift */; };
 		1AEC382323CA02C90000101A /* XCTOrderedExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEC382223CA02C90000101A /* XCTOrderedExpectation.swift */; };
@@ -185,7 +183,6 @@
 		1ACB4499241A8634002DB73B /* TestPsxLock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestPsxLock.swift; sourceTree = "<group>"; };
 		1ADBC5CA23E4A1A7007BCA7C /* CoFuture1+flatMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoFuture1+flatMap.swift"; sourceTree = "<group>"; };
 		1AEB617E242E4B3400A6C2AB /* SwiftCoroutine macOS.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = "SwiftCoroutine macOS.xctestplan"; path = "Tests/SwiftCoroutine macOS.xctestplan"; sourceTree = "<group>"; };
-		1AEB617F242F36CB00A6C2AB /* TaskSchedulerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskSchedulerTests.swift; sourceTree = "<group>"; };
 		1AEB6182242F391C00A6C2AB /* CoroutineScheduler+DispatchQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoroutineScheduler+DispatchQueue.swift"; sourceTree = "<group>"; };
 		1AEC382223CA02C90000101A /* XCTOrderedExpectation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCTOrderedExpectation.swift; sourceTree = "<group>"; };
 		1AECF5A823BA0E1D002A0493 /* CoFuture5+wait.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoFuture5+wait.swift"; sourceTree = "<group>"; };
@@ -306,7 +303,6 @@
 			children = (
 				1A57BE6423CC867600639FDD /* CoroutineContextTests.swift */,
 				1A47C24F23D73D3F004CC7B1 /* CoroutineTests.swift */,
-				1AEB617F242F36CB00A6C2AB /* TaskSchedulerTests.swift */,
 				1A8FF4922431E932004077E8 /* CoroutineSchedulerTests.swift */,
 			);
 			path = Coroutine;
@@ -758,7 +754,6 @@
 				1A934FBB23902A5300155B71 /* URL+Extensions.swift in Sources */,
 				1A595BF123E86CFC009B62E7 /* CoFutureWaitTests.swift in Sources */,
 				1A79BA8D23E421C700406AE7 /* CoFutureTests.swift in Sources */,
-				1AEB6180242F36CB00A6C2AB /* TaskSchedulerTests.swift in Sources */,
 				1A71364D24215BBB00DC78FD /* CoFutureAwaitTests.swift in Sources */,
 				1A8FF4932431E932004077E8 /* CoroutineSchedulerTests.swift in Sources */,
 				1AC3578E23E85E7600EC2A50 /* CoPromiseTests.swift in Sources */,
@@ -825,7 +820,6 @@
 				1A94E5C223A3E6A300812AFD /* SwiftCoroutineTests.swift in Sources */,
 				1A595BF223E86CFC009B62E7 /* CoFutureWaitTests.swift in Sources */,
 				1A79BA8E23E421C800406AE7 /* CoFutureTests.swift in Sources */,
-				1AEB6181242F36CB00A6C2AB /* TaskSchedulerTests.swift in Sources */,
 				1A71364E24215BBB00DC78FD /* CoFutureAwaitTests.swift in Sources */,
 				1A8FF4942431E932004077E8 /* CoroutineSchedulerTests.swift in Sources */,
 				1AC3578F23E85E7600EC2A50 /* CoPromiseTests.swift in Sources */,
