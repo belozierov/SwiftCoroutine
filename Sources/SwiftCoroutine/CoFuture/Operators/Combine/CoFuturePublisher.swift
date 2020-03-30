@@ -13,6 +13,7 @@ import Combine
 final class CoFuturePublisher<Output, Future: CoFuture<Output>> {
     
     typealias Failure = Error
+    
     let future: Future
     
     @inlinable init(future: Future) {

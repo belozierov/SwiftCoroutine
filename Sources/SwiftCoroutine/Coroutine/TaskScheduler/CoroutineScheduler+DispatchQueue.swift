@@ -18,7 +18,6 @@ extension DispatchQueue: Equatable {
 }
 
 #endif
-
 import Foundation
 
 extension DispatchQueue: CoroutineScheduler {

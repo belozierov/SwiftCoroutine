@@ -17,6 +17,7 @@ final class CoSubscription<S: Subscriber, T>: Subscription where S.Input == T, S
     
     @inlinable init(subscriber: S, future: CoFuture<T>) {
         self.future = future
+        self.subscriber = subscriber
         future.whenComplete { result in
             guard let subscriber = self.subscriber else { return }
             switch result {
@@ -30,9 +31,7 @@ final class CoSubscription<S: Subscriber, T>: Subscription where S.Input == T, S
     }
     
     @inlinable func cancel() {
-        future.lock()
         subscriber = nil
-        future.unlock()
     }
     
     @inlinable func request(_ demand: Subscribers.Demand) {}

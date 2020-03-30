@@ -16,7 +16,7 @@ import Foundation
 class CoFutureCombineTests: XCTestCase {
     
     func testSubscribe() {
-        let exp = expectation(description: "testSubscription")
+        let exp = expectation(description: "testSubscribe")
         exp.expectedFulfillmentCount = 100
         for i in 0..<100 {
             let future = Future<Int, Never> { promise in
@@ -33,18 +33,22 @@ class CoFutureCombineTests: XCTestCase {
     }
     
     func testSubscription() {
+        let exp = expectation(description: "testSubscription")
+        var cancellables = Set<AnyCancellable>()
         let promise = CoPromise<Int>()
-        let publisher = promise.publisher().map { $0 + 1 }
+        promise.publisher()
+            .map { $0 + 1 }
             .sink(receiveCompletion: {
                 switch $0 {
                 case .finished: break
                 case .failure(let error):
                     XCTFail(error.localizedDescription)
                 }
-            }, receiveValue: {
-            XCTAssertEqual($0, 2)
-        })
+                exp.fulfill()
+            }, receiveValue: { XCTAssertEqual($0, 2) })
+            .store(in: &cancellables)
         promise.success(1)
+        wait(for: [exp], timeout: 1)
     }
     
 }
