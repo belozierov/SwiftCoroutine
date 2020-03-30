@@ -12,6 +12,7 @@ import XCTest
 class CoroutineContextTests: XCTestCase {
     
     func testInitWithPageGuard() {
+        print("sdasd")
         let stackSize = 8 * .pageSize
         let context = CoroutineContext(stackSize: stackSize, guardPage: true)
         XCTAssertEqual(context.stackSize, stackSize)
@@ -24,7 +25,7 @@ class CoroutineContextTests: XCTestCase {
         XCTAssertEqual(context.stackSize, stackSize)
         XCTAssertFalse(context.haveGuardPage)
     }
-    
+
     func testContextSuspendToPoint() {
         let exp = XCTOrderedExpectation(count: 5)
         let context1 = CoroutineContext(stackSize: 8 * .pageSize)

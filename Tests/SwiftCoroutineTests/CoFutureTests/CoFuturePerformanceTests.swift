@@ -6,6 +6,7 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
+#if canImport(Combine)
 import XCTest
 import Combine
 @testable import SwiftCoroutine
@@ -68,3 +69,4 @@ class CoFuturePerformanceTests: XCTestCase {
     }
 
 }
+#endif

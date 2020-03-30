@@ -6,7 +6,11 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
-import Foundation.NSURLSession
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
+import Foundation
 import SwiftCoroutine
 
 extension URLSession {

@@ -8,13 +8,12 @@
 
 #ifndef CCoroutine_h
 #define CCoroutine_h
-#include <setjmp.h>
 
-int __start(jmp_buf ret, const void* stack, const void* param, const void (*block)(const void*));
-void __suspend(jmp_buf env, void** sp, jmp_buf ret, int retVal);
-int __save(jmp_buf env, jmp_buf ret, int retVal);
+int __start(int* ret, const void* stack, const void* param, const void (*block)(const void*));
+void __suspend(int* env, void** sp, int* ret, int retVal);
+int __save(int* env, int* ret, int retVal);
+void __longjmp(int* env, int retVal);
 
-int __atomicCompareExchange(_Atomic long* value, long* expected, long desired);
 long __atomicExchange(_Atomic long* value, long desired);
 void __atomicStore(_Atomic long* value, long desired);
 

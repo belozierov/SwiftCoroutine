@@ -9,7 +9,12 @@
 #if SWIFT_PACKAGE
 import CCoroutine
 #endif
+
+#if os(Linux)
+import Glibc
+#else
 import Darwin
+#endif
 
 internal final class CoroutineContext {
     
@@ -20,14 +25,19 @@ internal final class CoroutineContext {
     internal var block: (() -> Void)?
     
     internal init(stackSize: Int, guardPage: Bool = true) {
-        haveGuardPage = guardPage
         self.stackSize = stackSize
+        #if os(Linux)
+        haveGuardPage = false
+        stack = .allocate(byteCount: stackSize, alignment: .pageSize)
+        #else
+        haveGuardPage = guardPage
         if guardPage {
             stack = .allocate(byteCount: stackSize + .pageSize, alignment: .pageSize)
             mprotect(stack, .pageSize, PROT_READ)
         } else {
             stack = .allocate(byteCount: stackSize, alignment: .pageSize)
         }
+        #endif
         returnEnv = .allocate(capacity: .environmentSize)
     }
     
@@ -39,7 +49,7 @@ internal final class CoroutineContext {
     
     @inlinable internal func start() -> Bool {
        __start(returnEnv, stackTop, Unmanaged.passUnretained(self).toOpaque()) {
-           _longjmp(Unmanaged<CoroutineContext>
+           __longjmp(Unmanaged<CoroutineContext>
                .fromOpaque($0!)
                .takeUnretainedValue()
                .performBlock(), .finished)

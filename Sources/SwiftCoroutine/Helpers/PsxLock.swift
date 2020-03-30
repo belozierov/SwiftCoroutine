@@ -6,7 +6,11 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
+#if os(Linux)
+import Glibc
+#else
 import Darwin
+#endif
 
 @usableFromInline struct PsxLock {
     

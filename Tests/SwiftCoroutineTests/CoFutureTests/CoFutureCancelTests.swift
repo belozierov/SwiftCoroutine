@@ -15,10 +15,10 @@ class CoFutureCancelTests: XCTestCase {
         let exp = expectation(description: #function)
         exp.expectedFulfillmentCount = 2
         let future = CoPromise<Bool>()
-        future.whenCanceled(exp.fulfill)
+        future.whenCanceled { exp.fulfill() }
         XCTAssertFalse(future.isCanceled)
         future.cancel()
-        future.whenCanceled(exp.fulfill)
+        future.whenCanceled { exp.fulfill() }
         XCTAssertTrue(future.isCanceled)
         wait(for: [exp], timeout: 1)
     }

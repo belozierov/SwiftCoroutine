@@ -6,6 +6,19 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
+#if os(Linux)
+import Glibc
+
+extension DispatchQueue: Equatable {
+    
+    public static func == (lhs: DispatchQueue, rhs: DispatchQueue) -> Bool {
+        lhs === rhs
+    }
+    
+}
+
+#endif
+
 import Foundation
 
 extension DispatchQueue: CoroutineScheduler {
@@ -22,7 +35,7 @@ extension DispatchQueue: CoroutineScheduler {
         }
         if self == .main {
             let scheduler = { (block: @escaping () -> Void) in
-                pthread_main_np() != 0 ? block() : self.async(execute: block)
+                Thread.isMainThread ? block() : self.async(execute: block)
             }
             setSpecific(key: .executorKey, value: .main(scheduler))
             scheduler(task)

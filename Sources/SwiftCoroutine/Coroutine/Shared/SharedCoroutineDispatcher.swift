@@ -118,6 +118,12 @@ internal final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
     
     // MARK: - DispatchSourceMemoryPressure
     
+    #if os(Linux)
+    
+    private func startDispatchSource() {}
+    
+    #else
+    
     private lazy var memoryPressureSource: DispatchSourceMemoryPressure = {
         let source = DispatchSource.makeMemoryPressureSource(eventMask: [.warning, .critical])
         source.setEventHandler { [unowned self] in self.reset() }
@@ -131,6 +137,8 @@ internal final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
             memoryPressureSource.resume()
         }
     }
+    
+    #endif
     
     internal func reset() {
         mutex.lock()

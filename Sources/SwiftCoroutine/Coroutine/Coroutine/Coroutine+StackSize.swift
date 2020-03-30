@@ -6,7 +6,11 @@
 //  Copyright © 2019 Alex Belozierov. All rights reserved.
 //
 
+#if os(Linux)
+import Glibc
+#else
 import Darwin
+#endif
 
 extension Coroutine {
     
@@ -18,8 +22,7 @@ extension Coroutine {
 
 extension Coroutine.StackSize {
     
-    internal static let recommended = Coroutine.StackSize(size: Int(SIGSTKSZ))
-    internal static let minimal = Coroutine.StackSize(size: Int(MINSIGSTKSZ))
+    internal static let recommended = Coroutine.StackSize(size: 128 * 1024)
     
     internal static func pages(_ number: Int) -> Coroutine.StackSize {
         .init(size: number * .pageSize)
