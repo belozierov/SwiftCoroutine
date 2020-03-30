@@ -123,6 +123,7 @@ extension NSManagedObjectContext: CoroutineScheduler {
     
 }
 
+//execute coroutine on the main thread
 DispatchQueue.main.startCoroutine {
     let context: NSManagedObjectContext //context with privateQueueConcurrencyType
     let request: NSFetchRequest<Entity> //some complex request
@@ -191,6 +192,7 @@ let future2: CoFuture<Int> = DispatchQueue.global().coFuture {
     return 6
 }
 
+//execute coroutine on the main thread
 DispatchQueue.main.startCoroutine {
     let sum = try future1.await() + future2.await() //will await for 3 sec.
     self.label.text = "Sum is \(sum)"
@@ -200,9 +202,10 @@ DispatchQueue.main.startCoroutine {
 Apple has introduced a new reactive programming framework `Combine` that makes writing asynchronous code easier and includes a lot of convenient and common functionality. We can use it with coroutines by making `CoFuture` a subscriber and await its result.
 
 ```swift
-create Combine publisher
+//create Combine publisher
 let publisher = URLSession.shared.dataTaskPublisher(for: url).map(\.data)
 
+//execute coroutine on the main thread
 DispatchQueue.main.startCoroutine {
     //subscribe CoFuture to publisher
     let future = publisher.subscribeCoFuture()
