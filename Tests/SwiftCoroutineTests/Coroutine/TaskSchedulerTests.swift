@@ -11,16 +11,16 @@ import XCTest
 
 class TaskSchedulerTests: XCTestCase {
     
-    func testAbc() {
-        measure {
-            var counter = 0
-            for _ in 0..<100_000 {
-                DispatchQueue.main.scheduleTask {
-                    counter += 1
-                }
-            }
-            XCTAssertEqual(counter, 100_000)
-        }
-    }
+//    func testAbc() {
+//        measure {
+//            var counter = 0
+//            for _ in 0..<100_000 {
+//                DispatchQueue.main.scheduleTask {
+//                    counter += 1
+//                }
+//            }
+//            XCTAssertEqual(counter, 100_000)
+//        }
+//    }
     
 }

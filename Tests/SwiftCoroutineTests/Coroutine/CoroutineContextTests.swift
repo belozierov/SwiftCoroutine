@@ -11,13 +11,14 @@ import XCTest
 
 class CoroutineContextTests: XCTestCase {
     
+    #if !os(Linux)
     func testInitWithPageGuard() {
-        print("sdasd")
         let stackSize = 8 * .pageSize
         let context = CoroutineContext(stackSize: stackSize, guardPage: true)
         XCTAssertEqual(context.stackSize, stackSize)
         XCTAssertTrue(context.haveGuardPage)
     }
+    #endif
     
     func testInitWithoutPageGuard() {
         let stackSize = 8 * .pageSize
