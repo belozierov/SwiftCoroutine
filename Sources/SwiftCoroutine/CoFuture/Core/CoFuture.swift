@@ -154,12 +154,6 @@ public class CoFuture<Value> {
 
 extension CoFuture {
     
-    @inlinable public convenience
-    init(promise: @escaping (CoPromise<Value>) -> Void) {
-        self.init(mutex: .init(), result: nil)
-        promise(unsafeDowncast(self, to: CoPromise<Value>.self))
-    }
-    
     /// Initializes a future with result.
     /// - Parameter result: The result provided by this future.
     @inlinable public convenience init(result: Result<Value, Error>) {

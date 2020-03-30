@@ -37,7 +37,7 @@ class CoFutureAwaitTests: XCTestCase {
     }
     
     func testConcurrency() {
-        var array = Array(repeating: 0, count: 100_000)
+        let array = UnsafeMutableBufferPointer<Int>.allocate(capacity: 100_000)
         let exp = expectation(description: "testConcurrency")
         exp.expectedFulfillmentCount = array.count
         let queue = DispatchQueue.global()
@@ -53,22 +53,23 @@ class CoFutureAwaitTests: XCTestCase {
                 }
             }
         }
-        wait(for: [exp], timeout: 5)
+        wait(for: [exp], timeout: 10)
         XCTAssertTrue(array.enumerated().allSatisfy { $0.element == $0.offset })
+        array.deallocate()
     }
     
     func testMultipleAwaits() {
         measure {
             for _ in 0..<1_000 {
-                let futures = (0...9).map { _ in
-                    CoFuture<Void> { promise in
-                        DispatchQueue.global().startCoroutine {
-                            for future in (0...9).map({ _ in CoFuture(value: ()) }) {
-                                try? future.await()
-                            }
-                            promise.success()
+                let futures = (0...9).map { _ -> CoPromise<Void> in
+                    let promise = CoPromise<Void>()
+                    DispatchQueue.global().startCoroutine {
+                        for future in (0...9).map({ _ in CoFuture(value: ()) }) {
+                            try? future.await()
                         }
+                        promise.success()
                     }
+                    return promise
                 }
                 try? XCTAssertNoThrow(futures.map { try $0.wait() })
             }
