@@ -7,8 +7,6 @@
   
 ![Swift Coroutine](../master/Sources/logo.png)
 
-##
-
 ![Ubuntu](https://github.com/belozierov/SwiftCoroutine/workflows/Ubuntu/badge.svg?branch=master)
 
 **Beta testing. Unit tests and documentation in progress. Possible minor changes in API.**
