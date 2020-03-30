@@ -1,0 +1,13 @@
+name: macOS
+on: [push]
+jobs:
+  Catalina:
+    runs-on: macos-latest
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_11.4.app/Contents/Developer
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build
+      run: swift build
+    - name: Test
+      run: swift test --enable-test-discovery
