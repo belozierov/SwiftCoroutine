@@ -10,7 +10,7 @@
 #import <stdatomic.h>
 #include <setjmp.h>
 
-int __start(int* ret, const void* stack, const void* param, const void (*block)(const void*)) {
+int __start(void* ret, const void* stack, const void* param, const void (*block)(const void*)) {
     int n = _setjmp(ret);
     if (n) return n;
     #if defined(__x86_64__)
@@ -25,19 +25,19 @@ int __start(int* ret, const void* stack, const void* param, const void (*block)(
     return 0;
 }
 
-void __suspend(int* env, void** sp, int* ret, int retVal) {
+void __suspend(void* env, void** sp, void* ret, int retVal) {
     if (_setjmp(env)) return;
     char x; *sp = (void*)&x;
     _longjmp(ret, retVal);
 }
 
-int __save(int* env, int* ret, int retVal) {
+int __save(void* env, void* ret, int retVal) {
     int n = _setjmp(ret);
     if (n) return n;
     _longjmp(env, retVal);
 }
 
-void __longjmp(int* env, int retVal) {
+void __longjmp(void* env, int retVal) {
     _longjmp(env, retVal);
 }
 
