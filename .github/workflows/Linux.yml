@@ -7,10 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: Linux-support
-      run: echo running on branch Linux-support
-    - name: Update Dependencies
-      run: swift package update
     - name: Build
       run: swift build
     - name: Test
