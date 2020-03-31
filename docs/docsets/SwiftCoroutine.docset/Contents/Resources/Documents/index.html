@@ -55,9 +55,6 @@
                 <a href="Extensions/DispatchQueue.html">DispatchQueue</a>
               </li>
               <li class="nav-group-task">
-                <a href="Extensions/DispatchQueue.html">DispatchQueue</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="Extensions/Publisher.html">Publisher</a>
               </li>
             </ul>
@@ -95,7 +92,8 @@
 
 <p><strong>Beta testing. Unit tests and documentation in progress. Possible minor changes in API.</strong></p>
 
-<p><img src="https://github.com/belozierov/SwiftCoroutine/workflows/Ubuntu/badge.svg?branch=master" alt="Ubuntu"></p>
+<p><img src="https://github.com/belozierov/SwiftCoroutine/workflows/macOS/badge.svg?branch=master" alt="macOS">
+<img src="https://github.com/belozierov/SwiftCoroutine/workflows/Ubuntu/badge.svg?branch=master" alt="Ubuntu"></p>
 
 <p>Many languages, such as Kotlin, JavaScript, Go, Rust, C++, and others, already have <a href="https://en.wikipedia.org/wiki/Coroutine">coroutines</a> support that makes the use of asynchronous code easier. 
 This feature is not yet supported in Swift, but this can be improved by a framework without the need to change the language.</p>
@@ -202,6 +200,7 @@ This feature is not yet supported in Swift, but this can be improved by a framew
 
 <span class="p">}</span>
 
+<span class="c1">//execute coroutine on the main thread</span>
 <span class="kt">DispatchQueue</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">startCoroutine</span> <span class="p">{</span>
     <span class="k">let</span> <span class="nv">context</span><span class="p">:</span> <span class="kt">NSManagedObjectContext</span> <span class="c1">//context with privateQueueConcurrencyType</span>
     <span class="k">let</span> <span class="nv">request</span><span class="p">:</span> <span class="kt">NSFetchRequest</span><span class="o">&lt;</span><span class="kt">Entity</span><span class="o">&gt;</span> <span class="c1">//some complex request</span>
@@ -267,6 +266,7 @@ This feature is not yet supported in Swift, but this can be improved by a framew
     <span class="k">return</span> <span class="mi">6</span>
 <span class="p">}</span>
 
+<span class="c1">//execute coroutine on the main thread</span>
 <span class="kt">DispatchQueue</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">startCoroutine</span> <span class="p">{</span>
     <span class="k">let</span> <span class="nv">sum</span> <span class="o">=</span> <span class="k">try</span> <span class="n">future1</span><span class="o">.</span><span class="nf">await</span><span class="p">()</span> <span class="o">+</span> <span class="n">future2</span><span class="o">.</span><span class="nf">await</span><span class="p">()</span> <span class="c1">//will await for 3 sec.</span>
     <span class="k">self</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">"Sum is </span><span class="se">\(</span><span class="n">sum</span><span class="se">)</span><span class="s">"</span>
@@ -274,9 +274,10 @@ This feature is not yet supported in Swift, but this can be improved by a framew
 </code></pre>
 
 <p>Apple has introduced a new reactive programming framework <code>Combine</code> that makes writing asynchronous code easier and includes a lot of convenient and common functionality. We can use it with coroutines by making <code><a href="Classes/CoFuture.html">CoFuture</a></code> a subscriber and await its result.</p>
-<pre class="highlight swift"><code><span class="n">create</span> <span class="kt">Combine</span> <span class="n">publisher</span>
+<pre class="highlight swift"><code><span class="c1">//create Combine publisher</span>
 <span class="k">let</span> <span class="nv">publisher</span> <span class="o">=</span> <span class="kt">URLSession</span><span class="o">.</span><span class="n">shared</span><span class="o">.</span><span class="nf">dataTaskPublisher</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="nf">map</span><span class="p">(\</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 
+<span class="c1">//execute coroutine on the main thread</span>
 <span class="kt">DispatchQueue</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">startCoroutine</span> <span class="p">{</span>
     <span class="c1">//subscribe CoFuture to publisher</span>
     <span class="k">let</span> <span class="nv">future</span> <span class="o">=</span> <span class="n">publisher</span><span class="o">.</span><span class="nf">subscribeCoFuture</span><span class="p">()</span>
@@ -289,7 +290,7 @@ This feature is not yet supported in Swift, but this can be improved by a framew
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-03-30)</p>
+          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-03-31)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.1</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
