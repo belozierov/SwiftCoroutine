@@ -142,7 +142,6 @@ Futures and promises are represented by the corresponding `CoFuture` class and i
 
 #### Main features
 - **Best performance**. It is much faster than most of other futures and promises implementations.
-- **Build chains**. With `flatMap()` and `map()`, you can create data dependencies via `CoFuture` chains.
 - **Cancellable**. You can cancel the whole chain as well as handle it and complete the related actions.
 - **Awaitable**. You can await the result inside the coroutine.
 - **Combine-ready**. You can create `Publisher` from `CoFuture`, and vice versa make `CoFuture` a subscriber.

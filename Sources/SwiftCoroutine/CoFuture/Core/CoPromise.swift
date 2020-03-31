@@ -14,6 +14,10 @@ public final class CoPromise<Value>: CoFuture<Value> {}
 
 extension CoPromise {
     
+    @inlinable public convenience init() {
+        self.init(mutex: .init(), result: nil)
+    }
+    
     @inlinable public func complete(with result: Result<Value, Error>) {
         setResult(result)
     }
@@ -28,14 +32,6 @@ extension CoPromise {
     
     @inlinable public func complete(with future: CoFuture<Value>) {
         future.whenComplete(setResult)
-    }
-    
-}
-
-extension CoPromise where Value == Void {
-    
-    @inlinable public func success() {
-        setResult(.success(()))
     }
     
 }

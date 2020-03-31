@@ -21,9 +21,7 @@ extension CoroutineScheduler {
     }
     
     @inlinable public func startCoroutine(_ task: @escaping () throws -> Void) {
-        CoroutineDispatcher.default.execute(on: self) {
-            do { try task() } catch { print(error) }
-        }
+        startCoroutine { do { try task() } catch { print(error) } }
     }
     
     // MARK: - await

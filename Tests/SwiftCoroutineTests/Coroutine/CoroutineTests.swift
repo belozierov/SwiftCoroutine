@@ -59,6 +59,7 @@ class CoroutineTests: XCTestCase {
             sum += try Coroutine.await { completion in
                 queue.async {
                     completion(1)
+                    completion(2)
                 }
             }
             sum += try Coroutine.await { completion in
@@ -75,6 +76,26 @@ class CoroutineTests: XCTestCase {
             exp.fulfill()
         }
         wait(for: [exp], timeout: 1)
+    }
+    
+    func testInsideCoroutine() {
+        let exp = expectation(description: "testInsideCoroutine")
+        XCTAssertFalse(Coroutine.isInsideCoroutine)
+        XCTAssertNil(try? Coroutine.current())
+        DispatchQueue.global().startCoroutine {
+            XCTAssertTrue(Coroutine.isInsideCoroutine)
+            let current = try Coroutine.current()
+            try DispatchQueue.global().await {
+                XCTAssertTrue(Coroutine.isInsideCoroutine)
+                XCTAssertTrue(current !== (try? Coroutine.current()))
+            }
+            XCTAssertTrue(Coroutine.isInsideCoroutine)
+            XCTAssertTrue(current === (try? Coroutine.current()))
+            exp.fulfill()
+        }
+        XCTAssertNil(try? Coroutine.current())
+        XCTAssertFalse(Coroutine.isInsideCoroutine)
+        wait(for: [exp], timeout: 5)
     }
 
 }

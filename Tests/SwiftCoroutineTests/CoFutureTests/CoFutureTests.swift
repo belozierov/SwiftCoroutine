@@ -21,43 +21,25 @@ class CoFutureTests: XCTestCase {
     }
     
     func testResult2() {
+        let exp = expectation(description: "testResult2")
+        exp.expectedFulfillmentCount = 4
         let future = CoFuture(result: .success(true))
-        XCTAssertEqual(future.result, true)
+        func test() {
+            XCTAssertEqual(future.result, true)
+            future.whenComplete {
+                XCTAssertEqual(try? $0.get(), true)
+                exp.fulfill()
+            }
+            future.whenSuccess {
+                XCTAssertEqual($0, true)
+                exp.fulfill()
+            }
+            future.whenFailure { _ in XCTFail() }
+            future.whenCanceled { XCTFail() }
+        }
+        test()
         future.cancel()
-        XCTAssertEqual(future.result, true)
-    }
-    
-    func testMapOperators() {
-        let exp = expectation(description: "test")
-        exp.expectedFulfillmentCount = 6
-        let promise = CoPromise<Int>()
-        let a = promise.map { $0 + 1 }
-        a.whenComplete {
-            XCTAssertEqual($0, 1)
-            exp.fulfill()
-        }
-        a.whenComplete {
-            XCTAssertEqual($0, 1)
-            exp.fulfill()
-        }
-        a.map { $0 + 1 }.whenComplete {
-            XCTAssertEqual($0, 2)
-            exp.fulfill()
-        }
-        promise.success(0)
-        let b = promise.map { $0 + 1 }
-        b.whenComplete {
-            XCTAssertEqual($0, 1)
-            exp.fulfill()
-        }
-        b.whenComplete {
-            XCTAssertEqual($0, 1)
-            exp.fulfill()
-        }
-        b.map { $0 + 1 }.whenComplete {
-            XCTAssertEqual($0, 2)
-            exp.fulfill()
-        }
+        test()
         wait(for: [exp], timeout: 1)
     }
     

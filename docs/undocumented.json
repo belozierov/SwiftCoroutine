@@ -23,7 +23,7 @@
     },
     {
       "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Core/CoFuture.swift",
-      "line": 256,
+      "line": 240,
       "symbol": "CoPromise.init()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
@@ -57,14 +57,7 @@
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Core/CoPromise.swift",
-      "line": 37,
-      "symbol": "CoPromise.success()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Operators/CoFuture4+await.swift",
+      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Operators/CoFuture2+await.swift",
       "line": 13,
       "symbol": "CoFuture.await()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",

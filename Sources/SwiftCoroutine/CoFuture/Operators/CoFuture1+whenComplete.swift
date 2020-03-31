@@ -8,28 +8,18 @@
 
 extension CoFuture {
     
-    // MARK: - always
-    
-    /// Adds an observer callback that is called when the `CoFuture` has any result.
-    /// - Parameter callback: The callback that is called when the `CoFuture` is fulfilled.
-    /// - returns: The current `CoFuture`.
-    @inlinable public func always(_ callback: @escaping (Result<Value, Error>) -> Void) -> CoFuture {
-        whenComplete(callback)
-        return self
-    }
-    
     // MARK: - whenComplete
     
     /// Adds an observer callback that is called when the `CoFuture` has any result.
     /// - Parameter callback: The callback that is called when the `CoFuture` is fulfilled.
     public func whenComplete(_ callback: @escaping (Result<Value, Error>) -> Void) {
-        lock()
+        mutex?.lock()
         if let result = _result {
-            unlock()
+            mutex?.unlock()
             callback(result)
         } else {
             append(callback: callback)
-            unlock()
+            mutex?.unlock()
         }
     }
     

@@ -58,21 +58,25 @@ class CoFutureAwaitTests: XCTestCase {
         array.deallocate()
     }
 
-    func testMultipleAwaits() {
+    func testNestetAwaits() {
+        let queue = DispatchQueue.global()
+        let group = DispatchGroup()
         measure {
-            for _ in 0..<1_000 {
-                let futures = (0...9).map { _ -> CoPromise<Void> in
-                    let promise = CoPromise<Void>()
-                    DispatchQueue.global().startCoroutine {
-                        for future in (0...9).map({ _ in CoFuture(value: ()) }) {
-                            try? future.await()
-                        }
-                        promise.success()
+            group.enter()
+            queue.coFuture {
+                try (0..<100).map { _ in
+                    queue.coFuture {
+                        try (0..<100)
+                            .map { _ in CoFuture(value: ()) }
+                            .forEach { try $0.await() }
                     }
-                    return promise
-                }
-                try? XCTAssertNoThrow(futures.map { try $0.wait() })
+                }.forEach { try $0.await() }
+                group.leave()
+            }.whenFailure { _ in
+                XCTFail()
+                group.leave()
             }
+            group.wait()
         }
     }
 

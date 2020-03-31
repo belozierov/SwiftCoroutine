@@ -6,12 +6,6 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
-protocol _CoFutureCancellable: class {
-    
-    func cancel()
-    
-}
-
 ///
 ///Holder for a result that will be provided later.
 ///
@@ -60,28 +54,6 @@ protocol _CoFutureCancellable: class {
 ///
 ///Тести для `CoFuture` та Combine `Future` ви можете знайти в файлі `CoFuturePerformanceTests`.
 ///Тест проводився на MacBook Pro (13-inch, 2017, Two Thunderbolt 3 ports) у release mode.
-///
-///### **Build chains**
-///За допомогою `flatMap()` ви можете створювати chain of `CoFuture`, that allows you to do
-///more asynchronous processing. Або ви можете використати `map()` для  синхронного трансформування.
-///В кінці ви можете використати `whenSuccess()` or `whenFailure()` для observing callback with the result or error.
-///
-///```
-/////some future that will return URLRequest
-///let requestFuture: CoFuture<URLRequest>
-///
-///requestFuture.flatMap { request in
-///    URLSession.shared.dataTaskFuture(for: request)
-///}.flatMap { data, response in
-///    CoFuture(on: .global) {
-///        //do some work on global queue that return some result
-///    }
-///}.map {
-///    transformData($0)
-///}.whenComplete { result in
-///    //result handler
-///}
-///```
 ///
 ///### **Cancellable**
 ///За допомогою `cancel()` ви можете завершити весь upstream chain of CoFutures.
@@ -135,8 +107,7 @@ protocol _CoFutureCancellable: class {
 ///
 public class CoFuture<Value> {
     
-    private let mutex: PsxLock?
-    private var parent: UnownedCancellable?
+    internal let mutex: PsxLock?
     private var callbacks: ContiguousArray<Child>?
     final private(set) var _result: Optional<Result<Value, Error>>
     
@@ -172,37 +143,25 @@ extension CoFuture {
         self.init(result: .failure(error))
     }
     
-    // MARK: - Mutex
-    
-    internal func lock() {
-        mutex?.lock()
-    }
-    
-    internal func unlock() {
-        mutex?.unlock()
-    }
-    
     // MARK: - result
     
     /// Returns completed result or nil if this future has not completed yet.
     public var result: Result<Value, Error>? {
-        lock()
-        defer { unlock() }
+        mutex?.lock()
+        defer { mutex?.unlock() }
         return _result
     }
     
     @usableFromInline internal func setResult(_ result: Result<Value, Error>) {
-        lock()
-        if _result != nil { return unlock() }
-        lockedComplete(with: result)
-    }
-    
-    private func lockedComplete(with result: Result<Value, Error>) {
-        _result = result
-        unlock()
-        callbacks?.forEach { $0.callback(result) }
-        callbacks = nil
-        parent = nil
+        mutex?.lock()
+        if _result != nil {
+            mutex?.unlock()
+        } else {
+            _result = result
+            mutex?.unlock()
+            callbacks?.forEach { $0.callback(result) }
+            callbacks = nil
+        }
     }
     
     // MARK: - Callback
@@ -211,20 +170,11 @@ extension CoFuture {
     private struct Child { let callback: Callback }
     
     internal func append(callback: @escaping Callback) {
-        callbacks.append(.init(callback: callback))
-    }
-    
-    internal func addChild<T>(future: CoFuture<T>, callback: @escaping Callback) {
-        future.parent = .init(cancellable: self)
-        append(callback: callback)
-    }
-    
-}
-
-extension CoFuture: _CoFutureCancellable {
-    
-    private struct UnownedCancellable {
-        unowned(unsafe) let cancellable: _CoFutureCancellable
+        if callbacks == nil {
+            callbacks = [.init(callback: callback)]
+        } else {
+            callbacks?.append(.init(callback: callback))
+        }
     }
     
     // MARK: - cancel
@@ -238,35 +188,8 @@ extension CoFuture: _CoFutureCancellable {
     }
     
     /// Cancel цей та всі пов'язані future, засетавши всім результат з CoFutureError.canceled.
-    public func cancel() {
-        lock()
-        if _result != nil { return unlock() }
-        if let parent = parent {
-            unlock()
-            parent.cancellable.cancel()
-        } else {
-            lockedComplete(with: .failure(CoFutureError.canceled))
-        }
-    }
-    
-}
-
-extension CoPromise {
-    
-    @inlinable public convenience init() {
-        self.init(mutex: .init(), result: nil)
-    }
-    
-}
-
-extension Optional {
-    
-    fileprivate mutating func append<T>(_ element: T) where Wrapped == ContiguousArray<T> {
-        if self == nil {
-            self = [element]
-        } else {
-            self!.append(element)
-        }
+    @inlinable public func cancel() {
+        setResult(.failure(CoFutureError.canceled))
     }
     
 }

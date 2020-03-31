@@ -11,15 +11,15 @@ extension CoFuture {
     // MARK: - await
     
     public func await() throws -> Value {
-        lock()
+        mutex?.lock()
         if let result = _result {
-            unlock()
+            mutex?.unlock()
             return try result.get()
         }
         return try Coroutine.current()
             .await { (callback: @escaping (Result<Value, Error>) -> Void) in
                 self.append(callback: callback)
-                self.unlock()
+                self.mutex?.unlock()
         }.get()
     }
     

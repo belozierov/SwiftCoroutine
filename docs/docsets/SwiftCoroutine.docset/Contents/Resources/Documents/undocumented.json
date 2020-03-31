@@ -142,7 +142,7 @@
     },
     {
       "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/TaskScheduler/CoroutineScheduler+DispatchQueue.swift",
-      "line": 29,
+      "line": 17,
       "symbol": "DispatchQueue.scheduleTask(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"

@@ -13,9 +13,18 @@ class CoFutureCancelTests: XCTestCase {
     
     func testCancel() {
         let exp = expectation(description: #function)
-        exp.expectedFulfillmentCount = 4
+        exp.expectedFulfillmentCount = 6
         let future = CoPromise<Bool>()
         func test() {
+            future.whenComplete {
+                if case .failure(let error as CoFutureError) = $0 {
+                    XCTAssertEqual(error, .canceled)
+                } else {
+                    XCTFail()
+                }
+                exp.fulfill()
+            }
+            future.whenSuccess { _ in XCTFail() }
             future.whenCanceled { exp.fulfill() }
             future.whenFailure { error in
                 if let error = error as? CoFutureError {
@@ -36,10 +45,16 @@ class CoFutureCancelTests: XCTestCase {
     
     func testCancel2() {
         let future = CoPromise<Int>()
-        let map = future.map { $0 + 1 }
-        map.cancel()
+        future.cancel()
         XCTAssertTrue(future.isCanceled)
-        XCTAssertTrue(map.isCanceled)
+    }
+    
+    func testCancelOnDeinit() {
+        let exp = expectation(description: "testCancelOnDeinit")
+        var promise: CoPromise<Int>! = CoPromise<Int>()
+        promise.whenCanceled { exp.fulfill() }
+        promise = nil
+        wait(for: [exp], timeout: 1)
     }
     
 }
