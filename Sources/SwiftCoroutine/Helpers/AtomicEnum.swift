@@ -6,31 +6,21 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
-#if SWIFT_PACKAGE
-import CCoroutine
-#endif
-
 internal struct AtomicEnum<T: RawRepresentable> where T.RawValue == Int {
     
-    private var _value: Int
+    private var atomic: AtomicInt
     
-    init(value: T) {
-        _value = value.rawValue
+    @inlinable init(value: T) {
+        atomic = AtomicInt(value: value.rawValue)
     }
     
-    var value: T {
-        get { T(rawValue: _value)! }
-        set {
-            withUnsafeMutablePointer(to: &_value) {
-                __atomicStore(OpaquePointer($0), newValue.rawValue)
-            }
-        }
+    @inlinable var value: T {
+        get { T(rawValue: atomic.value)! }
+        set { atomic.value = newValue.rawValue }
     }
     
-    mutating func update(_ newValue: T) -> T {
-        withUnsafeMutablePointer(to: &_value) {
-            T(rawValue: __atomicExchange(OpaquePointer($0), newValue.rawValue))!
-        }
+    @inlinable mutating func update(_ newValue: T) -> T {
+        T(rawValue: atomic.update(newValue.rawValue))!
     }
     
 }

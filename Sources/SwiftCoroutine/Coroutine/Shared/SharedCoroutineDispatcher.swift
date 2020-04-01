@@ -20,27 +20,38 @@ internal final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
     private var freeQueues = [SharedCoroutineQueue]()
     private var suspendedQueues = Set<SharedCoroutineQueue>()
     private var tasks = FifoQueue<Task>()
+    private var freeCount: AtomicInt
     
     internal init(contextsCount: Int, stackSize: Int) {
         self.stackSize = stackSize
         self.contextsCount = contextsCount
+        freeCount = AtomicInt(value: contextsCount)
         freeQueues.reserveCapacity(contextsCount)
         suspendedQueues.reserveCapacity(contextsCount)
         startDispatchSource()
     }
     
     internal func execute(on scheduler: CoroutineScheduler, task: @escaping () -> Void) {
-        mutex.lock()
-        if let queue = freeQueue {
-            mutex.unlock()
-            scheduler.scheduleTask {
-                self.start(task: .init(scheduler: scheduler, task: task), on: queue)
-                self.performNext(for: queue)
+        func perform() {
+            freeCount.update { max(0, $0 - 1) }
+            mutex.lock()
+            if let queue = freeQueue {
+                mutex.unlock()
+                start(task: .init(scheduler: scheduler, task: task), on: queue)
+                performNext(for: queue)
+            } else {
+                tasks.push(.init(scheduler: scheduler, task: task))
+                mutex.unlock()
             }
-        } else {
-            tasks.push(.init(scheduler: scheduler, task: task))
-            mutex.unlock()
         }
+        if freeCount.value == 0 {
+            mutex.lock()
+            defer { mutex.unlock() }
+            if freeCount.value == 0 {
+                return tasks.push(.init(scheduler: scheduler, task: task))
+            }
+        }
+        scheduler.scheduleTask(perform)
     }
     
     private var freeQueue: SharedCoroutineQueue? {
@@ -64,11 +75,33 @@ internal final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
     }
     
     internal func resume(_ coroutine: SharedCoroutine) {
+//        func perform() {
+//            mutex.lock()
+//            if suspendedQueues.remove(coroutine.queue) == nil {
+//                coroutine.queue.push(coroutine)
+//                mutex.unlock()
+//            } else {
+//                freeCount.decrease()
+//                mutex.unlock()
+//                coroutine.resume()
+//                performNext(for: coroutine.queue)
+//            }
+//        }
+//        mutex.lock()
+//        if suspendedQueues.contains(coroutine.queue) {
+//            mutex.unlock()
+//            coroutine.scheduler.scheduleTask(perform)
+//        } else {
+//            coroutine.queue.push(coroutine)
+//            mutex.unlock()
+//        }
+        
         mutex.lock()
         if suspendedQueues.remove(coroutine.queue) == nil {
             coroutine.queue.push(coroutine)
             mutex.unlock()
         } else {
+            freeCount.decrease()
             mutex.unlock()
             coroutine.scheduler.scheduleTask {
                 coroutine.resume()
@@ -103,9 +136,11 @@ internal final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
                 }
             } else if queue.started == 0 {
                 freeQueues.append(queue)
+                freeCount.increase()
                 return mutex.unlock()
             } else {
                 suspendedQueues.insert(queue)
+                freeCount.increase()
                 return mutex.unlock()
             }
             if state.update(.none) == .running { return }

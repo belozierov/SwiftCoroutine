@@ -10,6 +10,8 @@
 #import <stdatomic.h>
 #include <setjmp.h>
 
+// MARK: - context
+
 int __start(void* ret, const void* stack, const void* param, const void (*block)(const void*)) {
     int n = _setjmp(ret);
     if (n) return n;
@@ -41,10 +43,20 @@ void __longjmp(void* env, int retVal) {
     _longjmp(env, retVal);
 }
 
+// MARK: - atomic
+
 long __atomicExchange(_Atomic long* value, long desired) {
     return atomic_exchange(value, desired);
 }
 
 void __atomicStore(_Atomic long* value, long desired) {
     atomic_store(value, desired);
+}
+
+void __atomicFetchAdd(_Atomic long* value, long operand) {
+    atomic_fetch_add(value, operand);
+}
+
+int __atomicCompareExchange(_Atomic long* value, long* expected, long desired) {
+    return atomic_compare_exchange_weak(value, expected, desired);
 }

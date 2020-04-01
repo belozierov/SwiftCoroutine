@@ -16,6 +16,7 @@ import Foundation
 class CoFutureCombineTests: XCTestCase {
     
     struct TestError: Error {}
+    var cancellables = Set<AnyCancellable>()
     
     func testSubscribe() {
         let exp = expectation(description: "testSubscribe")
@@ -36,7 +37,6 @@ class CoFutureCombineTests: XCTestCase {
     
     func testSubscription() {
         let exp = expectation(description: "testSubscription")
-        var cancellables = Set<AnyCancellable>()
         let promise = CoPromise<Int>()
         promise.publisher()
             .map { $0 + 1 }
@@ -54,7 +54,6 @@ class CoFutureCombineTests: XCTestCase {
     
     func testSubscriptionFail() {
         let exp = expectation(description: "testSubscriptionFail")
-        var cancellables = Set<AnyCancellable>()
         let promise = CoPromise<Int>()
         promise.publisher()
             .sink(receiveCompletion: {

@@ -59,14 +59,16 @@ class CoFutureAwaitTests: XCTestCase {
     }
 
     func testNestetAwaits() {
-        let queue = DispatchQueue.global()
+        let queue = DispatchQueue.global(qos: .userInteractive)
+        let queue2 = DispatchQueue.global(qos: .utility)
         let group = DispatchGroup()
         measure {
             group.enter()
             queue.coFuture {
-                try (0..<100).map { _ in
-                    queue.coFuture {
-                        try (0..<100)
+                try (0..<100).map { i -> CoFuture<Void> in
+                    let queue = i % 2 == 0 ? queue : queue2
+                    return queue.coFuture {
+                        try (0..<1000)
                             .map { _ in CoFuture(value: ()) }
                             .forEach { try $0.await() }
                     }
@@ -78,6 +80,18 @@ class CoFutureAwaitTests: XCTestCase {
             }
             group.wait()
         }
+    }
+    
+    func testOnBlockedSerial() {
+        let exp = expectation(description: "testAbc")
+        exp.expectedFulfillmentCount = 1000
+        let serial = DispatchQueue(label: "sdadad")
+        serial.async { sleep(5) }
+        for _ in 0..<1000 { serial.startCoroutine { } }
+        for _ in 0..<1000 {
+            DispatchQueue.global().startCoroutine { exp.fulfill() }
+        }
+        wait(for: [exp], timeout: 3)
     }
 
 }
