@@ -28,9 +28,16 @@ extension CoFuture {
             mutex?.unlock()
             return try result.get()
         }
-        return try Coroutine.await { (callback: @escaping (Result<Value, Error>) -> Void) in
-                self.append(callback: callback)
-                self.mutex?.unlock()
+        let coroutine: CoroutineProtocol
+        do {
+            coroutine = try Coroutine.current()
+        } catch {
+            mutex?.unlock()
+            throw error
+        }
+        return try coroutine.await { (callback: @escaping (Result<Value, Error>) -> Void) in
+            self.append(callback: callback)
+            self.mutex?.unlock()
         }.get()
     }
     

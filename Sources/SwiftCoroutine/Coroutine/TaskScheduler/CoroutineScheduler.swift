@@ -51,7 +51,7 @@ extension CoroutineScheduler {
     /// - Parameter task: The closure that will be executed inside coroutine.
     /// If the task throws an error, then the coroutine will be terminated.
     @inlinable public func startCoroutine(_ task: @escaping () throws -> Void) {
-        startCoroutine { do { try task() } catch { print(error) } }
+        startCoroutine { try? task() }
     }
     
     /// Start a coroutine and await its result. Must be called inside other coroutine.

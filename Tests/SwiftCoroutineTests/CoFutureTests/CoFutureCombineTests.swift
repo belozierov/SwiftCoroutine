@@ -20,8 +20,8 @@ class CoFutureCombineTests: XCTestCase {
     
     func testSubscribe() {
         let exp = expectation(description: "testSubscribe")
-        exp.expectedFulfillmentCount = 100
-        for i in 0..<100 {
+        exp.expectedFulfillmentCount = 1000
+        for i in 0..<1000 {
             let future = Future<Int, Never> { promise in
                 DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(100)) {
                     promise(.success(i))
@@ -32,7 +32,7 @@ class CoFutureCombineTests: XCTestCase {
                 exp.fulfill()
             }
         }
-        wait(for: [exp], timeout: 3)
+        wait(for: [exp], timeout: 5)
     }
     
     func testSubscription() {
