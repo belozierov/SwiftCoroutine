@@ -7,8 +7,6 @@
   
 ![Swift Coroutine](../master/Sources/logo.png)
 
-**Beta testing. Unit tests and documentation in progress. Possible minor changes in API.**
-
 ![macOS](https://github.com/belozierov/SwiftCoroutine/workflows/macOS/badge.svg?branch=master)
 ![Ubuntu](https://github.com/belozierov/SwiftCoroutine/workflows/Ubuntu/badge.svg?branch=master)
 
@@ -55,7 +53,11 @@ DispatchQueue.main.startCoroutine {
 
 ### Installation
 
-`SwiftCoroutine` is available through the [Swift Package Manager](https://swift.org/package-manager) for macOS and iOS.
+`SwiftCoroutine` is available through the [Swift Package Manager](https://swift.org/package-manager) for iOS, macOS and Linux.
+
+### Documentation
+
+[API documentation](https://belozierov.github.io/SwiftCoroutine)
 
 ## Working with SwiftCoroutine
 
@@ -141,9 +143,8 @@ The futures and promises approach takes the usage of asynchronous code to the ne
 Futures and promises are represented by the corresponding `CoFuture` class and its `CoPromise` subclass. `CoFuture` is a holder for a result that will be provided later.
 
 #### Main features
-- **Best performance**. It is much faster than most of other futures and promises implementations.
-- **Cancellable**. You can cancel the whole chain as well as handle it and complete the related actions.
 - **Awaitable**. You can await the result inside the coroutine.
+- **Cancellable**. You can cancel the whole chain as well as handle it and complete the related actions.
 - **Combine-ready**. You can create `Publisher` from `CoFuture`, and vice versa make `CoFuture` a subscriber.
 
 Here is an example of `URLSession` extension to creating `CoFuture` for `URLSessionDataTask`. The example of using it with coroutines and `await()` is provided [here](#Usage).
@@ -181,13 +182,13 @@ extension URLSession {
 Also `CoFuture` allows to start multiple tasks in parallel and synchronize them later with `await()`.
 
 ```swift
-//execute task on the global queue and returns CoFuture<Int> with deferred result
-let future1: CoFuture<Int> = DispatchQueue.global().coFuture {
+//execute task on the global queue and returns CoFuture<Int> with future result
+let future1: CoFuture<Int> = DispatchQueue.global().coroutineFuture {
     try Coroutine.delay(.seconds(2)) //some work that takes 2 sec.
     return 5
 }
 
-let future2: CoFuture<Int> = DispatchQueue.global().coFuture {
+let future2: CoFuture<Int> = DispatchQueue.global().coroutineFuture {
     try Coroutine.delay(.seconds(3)) //some work that takes 3 sec.
     return 6
 }

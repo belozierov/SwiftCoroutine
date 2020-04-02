@@ -12,6 +12,7 @@ internal final class SharedCoroutineQueue {
     private var prepared = FifoQueue<SharedCoroutine>()
     private var suspendedCoroutine: SharedCoroutine?
     private(set) var started = 0
+    var isFree = true
     
     internal init(context: CoroutineContext) {
         self.context = context

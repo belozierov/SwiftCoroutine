@@ -37,7 +37,7 @@ internal final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
             mutex.lock()
             if let queue = freeQueue {
                 mutex.unlock()
-                start(task: .init(scheduler: scheduler, task: task), on: queue)
+                SharedCoroutine(dispatcher: self, queue: queue, scheduler: scheduler).start(task)
                 performNext(for: queue)
             } else {
                 tasks.push(.init(scheduler: scheduler, task: task))
@@ -101,12 +101,19 @@ internal final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
             coroutine.queue.push(coroutine)
             mutex.unlock()
         } else {
-            freeCount.decrease()
             mutex.unlock()
+            freeCount.decrease()
             coroutine.scheduler.scheduleTask {
                 coroutine.resume()
                 self.performNext(for: coroutine.queue)
             }
+        }
+    }
+    
+    internal func restart(_ coroutine: SharedCoroutine) {
+        coroutine.scheduler.scheduleTask {
+            coroutine.resume()
+            self.performNext(for: coroutine.queue)
         }
     }
     
@@ -116,7 +123,7 @@ internal final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
     
     private func performNext(for queue: SharedCoroutineQueue) {
         var state = AtomicEnum(value: NextState.none)
-        while true {
+        while queue.isFree {
             mutex.lock()
             if let coroutine = queue.pop() {
                 mutex.unlock()
@@ -130,7 +137,8 @@ internal final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
                 mutex.unlock()
                 state.value = .running
                 task.scheduler.scheduleTask {
-                    self.start(task: task, on: queue)
+                    SharedCoroutine(dispatcher: self, queue: queue, scheduler: task.scheduler)
+                        .start(task.task)
                     if state.update(.none) == .running { return }
                     self.performNext(for: queue)
                 }
@@ -145,10 +153,6 @@ internal final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
             }
             if state.update(.none) == .running { return }
         }
-    }
-    
-    private func start(task: Task, on queue: SharedCoroutineQueue) {
-        SharedCoroutine(dispatcher: self, queue: queue, scheduler: task.scheduler).start(task.task)
     }
     
     // MARK: - DispatchSourceMemoryPressure
@@ -178,6 +182,7 @@ internal final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
     internal func reset() {
         mutex.lock()
         contextsCount += freeQueues.count
+        freeCount.add(freeQueues.count)
         freeQueues.removeAll(keepingCapacity: true)
         mutex.unlock()
     }

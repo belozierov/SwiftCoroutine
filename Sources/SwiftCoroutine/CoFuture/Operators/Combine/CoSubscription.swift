@@ -10,12 +10,12 @@
 import Combine
 
 @available(OSX 10.15, iOS 13.0, *)
-final class CoSubscription<S: Subscriber, T>: Subscription where S.Input == T, S.Failure == Error {
+internal final class CoSubscription<S: Subscriber, T>: Subscription where S.Input == T, S.Failure == Error {
     
     private let future: CoFuture<T>
     private var subscriber: S?
     
-    @inlinable init(subscriber: S, future: CoFuture<T>) {
+    @inlinable internal init(subscriber: S, future: CoFuture<T>) {
         self.future = future
         self.subscriber = subscriber
         future.whenComplete { result in
@@ -30,11 +30,11 @@ final class CoSubscription<S: Subscriber, T>: Subscription where S.Input == T, S
         }
     }
     
-    @inlinable func cancel() {
+    @inlinable internal func cancel() {
         subscriber = nil
     }
     
-    @inlinable func request(_ demand: Subscribers.Demand) {}
+    @inlinable internal func request(_ demand: Subscribers.Demand) {}
     
 }
 #endif

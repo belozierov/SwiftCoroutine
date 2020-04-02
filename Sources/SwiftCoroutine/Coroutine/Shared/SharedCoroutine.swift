@@ -13,7 +13,7 @@ import CCoroutine
 internal final class SharedCoroutine: CoroutineProtocol {
     
     private enum State: Int {
-        case running, suspending, suspended
+        case running, suspending, suspended, restarting
     }
     
     private struct StackBuffer {
@@ -22,7 +22,7 @@ internal final class SharedCoroutine: CoroutineProtocol {
     
     private let dispatcher: SharedCoroutineDispatcher
     internal let queue: SharedCoroutineQueue
-    internal let scheduler: CoroutineScheduler
+    private(set) var scheduler: CoroutineScheduler
     private(set) var environment: UnsafeMutablePointer<CoroutineContext.SuspendData>!
     private var stackBuffer: StackBuffer!
     private var state = AtomicEnum(value: State.running)
@@ -52,10 +52,17 @@ internal final class SharedCoroutine: CoroutineProtocol {
     }
     
     private func perform(_ block: () -> Bool) {
+        queue.isFree = true
         if block() { return }
-        if state.update(.suspended) == .running {
+        switch state.update(.suspended) {
+        case .running:
             state.value = .running
             perform { queue.resume(self) }
+        case .restarting:
+            state.value = .running
+            queue.isFree = false
+            dispatcher.restart(self)
+        default: break
         }
     }
     
@@ -73,6 +80,19 @@ internal final class SharedCoroutine: CoroutineProtocol {
         }
         if state.value == .suspending { suspend() }
         return result
+    }
+    
+    internal func await<T>(on scheduler: CoroutineScheduler, task: () throws -> T) rethrows -> T {
+        let currentScheduler = self.scheduler
+        setScheduler(scheduler)
+        defer { setScheduler(currentScheduler) }
+        return try task()
+    }
+    
+    private func setScheduler(_ scheduler: CoroutineScheduler) {
+        self.scheduler = scheduler
+        state.value = .restarting
+        suspend()
     }
     
     deinit {

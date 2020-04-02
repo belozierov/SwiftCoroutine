@@ -13,7 +13,7 @@
     <a title="SwiftCoroutine  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">SwiftCoroutine Docs</a> (49% documented)</p>
+        <p><a href="index.html">SwiftCoroutine Docs</a> (79% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -90,8 +90,6 @@
 
 <p><img src="../master/Sources/logo.png" alt="Swift Coroutine"></p>
 
-<p><strong>Beta testing. Unit tests and documentation in progress. Possible minor changes in API.</strong></p>
-
 <p><img src="https://github.com/belozierov/SwiftCoroutine/workflows/macOS/badge.svg?branch=master" alt="macOS">
 <img src="https://github.com/belozierov/SwiftCoroutine/workflows/Ubuntu/badge.svg?branch=master" alt="Ubuntu"></p>
 
@@ -133,7 +131,10 @@ This feature is not yet supported in Swift, but this can be improved by a framew
 </ul>
 <h3 id='installation' class='heading'>Installation</h3>
 
-<p><code>SwiftCoroutine</code> is available through the <a href="https://swift.org/package-manager">Swift Package Manager</a> for macOS and iOS.</p>
+<p><code>SwiftCoroutine</code> is available through the <a href="https://swift.org/package-manager">Swift Package Manager</a> for iOS, macOS and Linux.</p>
+<h3 id='documentation' class='heading'>Documentation</h3>
+
+<p><a href="https://belozierov.github.io/SwiftCoroutine">API documentation</a></p>
 <h2 id='working-with-swiftcoroutine' class='heading'>Working with SwiftCoroutine</h2>
 <h3 id='async-await' class='heading'>Async/await</h3>
 
@@ -217,10 +218,8 @@ This feature is not yet supported in Swift, but this can be improved by a framew
 <h4 id='main-features' class='heading'>Main features</h4>
 
 <ul>
-<li><strong>Best performance</strong>. It is much faster than most of other futures and promises implementations.</li>
-<li><strong>Build chains</strong>. With <code>flatMap()</code> and <code>map()</code>, you can create data dependencies via <code><a href="Classes/CoFuture.html">CoFuture</a></code> chains.</li>
-<li><strong>Cancellable</strong>. You can cancel the whole chain as well as handle it and complete the related actions.</li>
 <li><strong>Awaitable</strong>. You can await the result inside the coroutine.</li>
+<li><strong>Cancellable</strong>. You can cancel the whole chain as well as handle it and complete the related actions.</li>
 <li><strong>Combine-ready</strong>. You can create <code>Publisher</code> from <code><a href="Classes/CoFuture.html">CoFuture</a></code>, and vice versa make <code><a href="Classes/CoFuture.html">CoFuture</a></code> a subscriber.</li>
 </ul>
 
@@ -255,13 +254,13 @@ This feature is not yet supported in Swift, but this can be improved by a framew
 </code></pre>
 
 <p>Also <code><a href="Classes/CoFuture.html">CoFuture</a></code> allows to start multiple tasks in parallel and synchronize them later with <code>await()</code>.</p>
-<pre class="highlight swift"><code><span class="c1">//execute task on the global queue and returns CoFuture&lt;Int&gt; with deferred result</span>
-<span class="k">let</span> <span class="nv">future1</span><span class="p">:</span> <span class="kt">CoFuture</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span> <span class="o">=</span> <span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">global</span><span class="p">()</span><span class="o">.</span><span class="n">coFuture</span> <span class="p">{</span>
+<pre class="highlight swift"><code><span class="c1">//execute task on the global queue and returns CoFuture&lt;Int&gt; with future result</span>
+<span class="k">let</span> <span class="nv">future1</span><span class="p">:</span> <span class="kt">CoFuture</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span> <span class="o">=</span> <span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">global</span><span class="p">()</span><span class="o">.</span><span class="n">coroutineFuture</span> <span class="p">{</span>
     <span class="k">try</span> <span class="kt">Coroutine</span><span class="o">.</span><span class="nf">delay</span><span class="p">(</span><span class="o">.</span><span class="nf">seconds</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span> <span class="c1">//some work that takes 2 sec.</span>
     <span class="k">return</span> <span class="mi">5</span>
 <span class="p">}</span>
 
-<span class="k">let</span> <span class="nv">future2</span><span class="p">:</span> <span class="kt">CoFuture</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span> <span class="o">=</span> <span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">global</span><span class="p">()</span><span class="o">.</span><span class="n">coFuture</span> <span class="p">{</span>
+<span class="k">let</span> <span class="nv">future2</span><span class="p">:</span> <span class="kt">CoFuture</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span> <span class="o">=</span> <span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">global</span><span class="p">()</span><span class="o">.</span><span class="n">coroutineFuture</span> <span class="p">{</span>
     <span class="k">try</span> <span class="kt">Coroutine</span><span class="o">.</span><span class="nf">delay</span><span class="p">(</span><span class="o">.</span><span class="nf">seconds</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span> <span class="c1">//some work that takes 3 sec.</span>
     <span class="k">return</span> <span class="mi">6</span>
 <span class="p">}</span>
@@ -290,8 +289,8 @@ This feature is not yet supported in Swift, but this can be improved by a framew
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-03-31)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.1</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-04-02)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
     </div>

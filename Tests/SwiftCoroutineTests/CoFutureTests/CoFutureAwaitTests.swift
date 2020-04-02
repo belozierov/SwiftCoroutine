@@ -64,10 +64,10 @@ class CoFutureAwaitTests: XCTestCase {
         let group = DispatchGroup()
         measure {
             group.enter()
-            queue.coFuture {
+            queue.coroutineFuture {
                 try (0..<100).map { i -> CoFuture<Void> in
                     let queue = i % 2 == 0 ? queue : queue2
-                    return queue.coFuture {
+                    return queue.coroutineFuture {
                         try (0..<1000)
                             .map { _ in CoFuture(value: ()) }
                             .forEach { try $0.await() }
@@ -83,15 +83,84 @@ class CoFutureAwaitTests: XCTestCase {
     }
     
     func testOnBlockedSerial() {
-        let exp = expectation(description: "testAbc")
+        let exp = expectation(description: "testOnBlockedSerial")
         exp.expectedFulfillmentCount = 1000
-        let serial = DispatchQueue(label: "sdadad")
+        let serial = DispatchQueue(label: "com.testOnBlockedSerial")
         serial.async { sleep(5) }
         for _ in 0..<1000 { serial.startCoroutine { } }
         for _ in 0..<1000 {
             DispatchQueue.global().startCoroutine { exp.fulfill() }
         }
         wait(for: [exp], timeout: 3)
+    }
+    
+    func testSerial() {
+        let exp = expectation(description: "testSerial")
+        exp.expectedFulfillmentCount = 100_000
+        let queue = DispatchQueue(label: "com.testSerial")
+        var counter = 0
+        for i in 0..<100_000 {
+            queue.startCoroutine {
+                XCTAssertEqual(i, counter)
+                counter += 1
+                exp.fulfill()
+            }
+        }
+        wait(for: [exp], timeout: 5)
+    }
+    
+    func testTestMultiAwait() {
+        let exp = expectation(description: "testTestMultiAwait")
+        var count = 0
+        DispatchQueue.global().startCoroutine {
+            for _ in 0..<1000 {
+                try Coroutine.await {
+                    DispatchQueue.global().async(execute: $0)
+                }
+                try DispatchQueue.global().await {}
+                count += 1
+            }
+            XCTAssertEqual(count, 1000)
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 5)
+    }
+    
+    func testSchedulerAwait() {
+        let group = DispatchGroup()
+        measure {
+            group.enter()
+            var sum = 0
+            DispatchQueue.global().startCoroutine {
+                for i in 0..<10_000 {
+                    sum += try DispatchQueue.global().await { i }
+                    sum += try DispatchQueue.global().await { i }
+                    sum += try DispatchQueue.global().await { i }
+                    sum += try DispatchQueue.global().await { i }
+                    sum += try DispatchQueue.global().await { i }
+                }
+                XCTAssertEqual(sum, (0..<10_000).reduce(0, +) * 5)
+                group.leave()
+            }
+            group.wait()
+        }
+    }
+    
+    func testRethrowError() {
+        let exp = expectation(description: "testRethrowError")
+        DispatchQueue.global().startCoroutine {
+            do {
+                try DispatchQueue.global().await {
+                    throw CoFutureError.canceled
+                }
+            } catch let error as CoFutureError {
+                XCTAssertEqual(error, .canceled)
+            } catch {
+                XCTFail()
+            }
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 5)
     }
 
 }

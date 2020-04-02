@@ -31,7 +31,7 @@ extension CoFuture {
         }
     }
     
-    /// Adds an observer callback is called when the `CoFuture` has a failure result.
+    /// Adds an observer callback that is called when the `CoFuture` has a failure result.
     /// - Parameter callback: The callback that is called with the failed result of the `CoFuture`.
     @inlinable public func whenFailure(_ callback: @escaping (Error) -> Void) {
         whenComplete { result in
@@ -39,8 +39,8 @@ extension CoFuture {
         }
     }
     
-    /// Adds an observer callback is called when the `CoFuture` was canceled.
-    /// - Parameter callback: The callback that is called when the `CoFuture` was canceled.
+    /// Adds an observer callback that is called when the `CoFuture` is canceled.
+    /// - Parameter callback: The callback that is called when the `CoFuture` is canceled.
     @inlinable public func whenCanceled(_ callback: @escaping () -> Void) {
         whenComplete { result in
             if case .failure(let error as CoFutureError) = result,

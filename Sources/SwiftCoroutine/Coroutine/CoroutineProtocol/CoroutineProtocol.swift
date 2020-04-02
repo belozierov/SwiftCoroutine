@@ -11,6 +11,7 @@
     typealias StackSize = Coroutine.StackSize
     
     func await<T>(_ callback: (@escaping (T) -> Void) -> Void) -> T
+    func await<T>(on scheduler: CoroutineScheduler, task: () throws -> T) rethrows -> T
     
 }
 

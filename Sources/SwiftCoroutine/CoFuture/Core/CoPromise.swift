@@ -8,8 +8,9 @@
 
 /// A promise to provide a result later.
 ///
-/// `CoPromise` is subclass of `CoFuture`, що має методи, які дозволяють fulfill it. Це дозволяє інкапсулювати result provider.
-/// Ви можете тільки один раз засетати результат в `CoPromise`, всі інші рази будуть ігноруватись.
+/// `CoPromise` is a subclass of `CoFuture` that allows to deliver the result.
+/// You can set the result to `CoPromise` only once, other attempts will be ignored.
+///
 public final class CoPromise<Value>: CoFuture<Value> {}
 
 extension CoPromise {

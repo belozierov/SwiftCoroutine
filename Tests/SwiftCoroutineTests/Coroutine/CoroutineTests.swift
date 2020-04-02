@@ -87,7 +87,7 @@ class CoroutineTests: XCTestCase {
             let current = try Coroutine.current()
             try DispatchQueue.global().await {
                 XCTAssertTrue(Coroutine.isInsideCoroutine)
-                XCTAssertTrue(current !== (try? Coroutine.current()))
+                XCTAssertTrue(current === (try? Coroutine.current()))
             }
             XCTAssertTrue(Coroutine.isInsideCoroutine)
             XCTAssertTrue(current === (try? Coroutine.current()))

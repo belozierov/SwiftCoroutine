@@ -28,7 +28,7 @@ class CoroutineSchedulerTests: XCTestCase {
         let date = Date()
         let exp = expectation(description: "testAwait")
         DispatchQueue.global().startCoroutine {
-            try DispatchQueue.global().coFuture {
+            try DispatchQueue.global().coroutineFuture {
                 try Coroutine.delay(.seconds(1))
             }.await()
             XCTAssertDuration(from: date, in: 1..<2)
