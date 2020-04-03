@@ -21,11 +21,12 @@ internal final class CoroutineContext {
     internal let haveGuardPage: Bool
     internal let stackSize: Int
     private let stack: UnsafeMutableRawPointer
-    private let returnEnv: UnsafeMutablePointer<Int32>
+    private let returnEnv: UnsafeMutableRawPointer
     internal var block: (() -> Void)?
     
     internal init(stackSize: Int, guardPage: Bool = true) {
         self.stackSize = stackSize
+        returnEnv = .allocate(byteCount: .environmentSize, alignment: 16)
         #if os(Linux)
         haveGuardPage = false
         stack = .allocate(byteCount: stackSize, alignment: .pageSize)
@@ -38,7 +39,6 @@ internal final class CoroutineContext {
             stack = .allocate(byteCount: stackSize, alignment: .pageSize)
         }
         #endif
-        returnEnv = .allocate(capacity: .environmentSize)
     }
     
     @inlinable internal var stackTop: UnsafeMutableRawPointer {
@@ -56,7 +56,7 @@ internal final class CoroutineContext {
        } == .finished
     }
     
-    private func performBlock() -> UnsafeMutablePointer<Int32> {
+    private func performBlock() -> UnsafeMutableRawPointer {
         block?()
         block = nil
         return returnEnv
