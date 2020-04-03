@@ -6,7 +6,7 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
-@usableFromInline protocol _CoroutineTaskExecutor: class {
+@usableFromInline protocol CoroutineTaskExecutor: class {
     
     func execute(on scheduler: CoroutineScheduler, task: @escaping () -> Void)
     
@@ -22,7 +22,7 @@
         return CoroutineDispatcher(executor: executor)
     }
     
-    @usableFromInline let executor: _CoroutineTaskExecutor
+    @usableFromInline let executor: CoroutineTaskExecutor
     
     @inlinable internal func execute(on scheduler: CoroutineScheduler, task: @escaping () -> Void) {
         executor.execute(on: scheduler, task: task)

@@ -2,24 +2,25 @@
 //  SharedCoroutineDispatcher.swift
 //  SwiftCoroutine
 //
-//  Created by Alex Belozierov on 09.03.2020.
+//  Created by Alex Belozierov on 03.04.2020.
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
 import Dispatch
 
-internal final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
+internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
     
-    private struct Task {
+    internal struct Task {
         let scheduler: CoroutineScheduler, task: () -> Void
     }
     
     private let mutex = PsxLock()
     private let stackSize: Int
+    private var tasks = FifoQueue<Task>()
+    
     private var contextsCount: Int
     private var freeQueues = [SharedCoroutineQueue]()
     private var suspendedQueues = Set<SharedCoroutineQueue>()
-    private var tasks = FifoQueue<Task>()
     private var freeCount: AtomicInt
     
     internal init(contextsCount: Int, stackSize: Int) {
@@ -31,14 +32,15 @@ internal final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
         startDispatchSource()
     }
     
+    // MARK: - Start
+    
     internal func execute(on scheduler: CoroutineScheduler, task: @escaping () -> Void) {
         func perform() {
             freeCount.update { max(0, $0 - 1) }
             mutex.lock()
             if let queue = freeQueue {
                 mutex.unlock()
-                SharedCoroutine(dispatcher: self, queue: queue, scheduler: scheduler).start(task)
-                performNext(for: queue)
+                queue.start(dispatcher: self, task: .init(scheduler: scheduler, task: task))
             } else {
                 tasks.push(.init(scheduler: scheduler, task: task))
                 mutex.unlock()
@@ -58,8 +60,7 @@ internal final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
         if let queue = freeQueues.popLast() { return queue }
         if contextsCount > 0 {
             contextsCount -= 1
-            let context = CoroutineContext(stackSize: stackSize)
-            return SharedCoroutineQueue(context: context)
+            return SharedCoroutineQueue(stackSize: stackSize)
         } else if suspendedQueues.count < 2 {
             return suspendedQueues.popFirst()
         }
@@ -74,28 +75,9 @@ internal final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
         return suspendedQueues.remove(min)
     }
     
+    // MARK: - Resume
+    
     internal func resume(_ coroutine: SharedCoroutine) {
-//        func perform() {
-//            mutex.lock()
-//            if suspendedQueues.remove(coroutine.queue) == nil {
-//                coroutine.queue.push(coroutine)
-//                mutex.unlock()
-//            } else {
-//                freeCount.decrease()
-//                mutex.unlock()
-//                coroutine.resume()
-//                performNext(for: coroutine.queue)
-//            }
-//        }
-//        mutex.lock()
-//        if suspendedQueues.contains(coroutine.queue) {
-//            mutex.unlock()
-//            coroutine.scheduler.scheduleTask(perform)
-//        } else {
-//            coroutine.queue.push(coroutine)
-//            mutex.unlock()
-//        }
-        
         mutex.lock()
         if suspendedQueues.remove(coroutine.queue) == nil {
             coroutine.queue.push(coroutine)
@@ -104,54 +86,33 @@ internal final class SharedCoroutineDispatcher: _CoroutineTaskExecutor {
             mutex.unlock()
             freeCount.decrease()
             coroutine.scheduler.scheduleTask {
-                coroutine.resume()
-                self.performNext(for: coroutine.queue)
+                coroutine.queue.resume(coroutine: coroutine)
             }
         }
     }
     
-    internal func restart(_ coroutine: SharedCoroutine) {
-        coroutine.scheduler.scheduleTask {
-            coroutine.resume()
-            self.performNext(for: coroutine.queue)
-        }
-    }
+    // MARK: - Next
     
-    private enum NextState: Int {
-        case running, none
-    }
-    
-    private func performNext(for queue: SharedCoroutineQueue) {
-        var state = AtomicEnum(value: NextState.none)
-        while queue.isFree {
-            mutex.lock()
-            if let coroutine = queue.pop() {
-                mutex.unlock()
-                state.value = .running
-                coroutine.scheduler.scheduleTask {
-                    coroutine.resume()
-                    if state.update(.none) == .running { return }
-                    self.performNext(for: queue)
-                }
-            } else if let task = tasks.pop() {
-                mutex.unlock()
-                state.value = .running
-                task.scheduler.scheduleTask {
-                    SharedCoroutine(dispatcher: self, queue: queue, scheduler: task.scheduler)
-                        .start(task.task)
-                    if state.update(.none) == .running { return }
-                    self.performNext(for: queue)
-                }
-            } else if queue.started == 0 {
+    internal func performNext(for queue: SharedCoroutineQueue) {
+        mutex.lock()
+        if let coroutine = queue.pop() {
+            mutex.unlock()
+            coroutine.scheduler.scheduleTask {
+                queue.resume(coroutine: coroutine)
+            }
+        } else if let task = tasks.pop() {
+            mutex.unlock()
+            task.scheduler.scheduleTask {
+                queue.start(dispatcher: self, task: task)
+            }
+        } else {
+            if queue.started == 0 {
                 freeQueues.append(queue)
-                freeCount.increase()
-                return mutex.unlock()
             } else {
                 suspendedQueues.insert(queue)
-                freeCount.increase()
-                return mutex.unlock()
             }
-            if state.update(.none) == .running { return }
+            freeCount.increase()
+            mutex.unlock()
         }
     }
     
