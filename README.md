@@ -47,6 +47,10 @@ DispatchQueue.main.startCoroutine {
 }
 ```
 
+### Documentation
+
+[API documentation](https://belozierov.github.io/SwiftCoroutine)
+
 ### Requirements
 
 - iOS 11.0+ / macOS 10.13+ / Ubuntu 18.0+
@@ -56,10 +60,6 @@ DispatchQueue.main.startCoroutine {
 ### Installation
 
 `SwiftCoroutine` is available through the [Swift Package Manager](https://swift.org/package-manager) for iOS, macOS and Linux.
-
-### Documentation
-
-[API documentation](https://belozierov.github.io/SwiftCoroutine)
 
 ## Working with SwiftCoroutine
 
