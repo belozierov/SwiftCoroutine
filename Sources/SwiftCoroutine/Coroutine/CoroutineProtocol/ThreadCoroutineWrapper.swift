@@ -20,9 +20,9 @@ import Darwin
         if let pointer = pthread_getspecific(key) {
             return Unmanaged<ThreadCoroutineWrapper>.fromOpaque(pointer).takeUnretainedValue()
         }
-        let wrapper = ThreadCoroutineWrapper()
-        pthread_setspecific(key, Unmanaged.passRetained(wrapper).toOpaque())
-        return wrapper
+        let wrapper = Unmanaged.passRetained(ThreadCoroutineWrapper())
+        pthread_setspecific(key, wrapper.toOpaque())
+        return wrapper.takeUnretainedValue()
     }
 
     private static let key: pthread_key_t = {

@@ -11,7 +11,7 @@ internal final class SharedCoroutine {
     internal typealias CompletionState = SharedCoroutineQueue.CompletionState
     
     private enum State: Int {
-        case running, suspending, suspended, restarting, finished
+        case running, suspending, suspended, restarting
     }
     
     private struct StackBuffer {

@@ -52,4 +52,14 @@ class CoFutureTests: XCTestCase {
         XCTAssertEqual(promise1.hashValue, promise1.hashValue)
     }
     
+    func testOptional() {
+        let promise = CoPromise<Int?>()
+        promise.success(nil)
+        promise.success(1)
+        switch promise.result {
+        case .success(let value) where value == nil: break
+        default: XCTFail()
+        }
+    }
+    
 }
