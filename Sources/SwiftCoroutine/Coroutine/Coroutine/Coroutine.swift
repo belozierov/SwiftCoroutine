@@ -15,16 +15,6 @@ import Dispatch
 ///
 public struct Coroutine {
     
-    @inlinable static func current() throws -> CoroutineProtocol {
-        if let coroutine = ThreadCoroutineWrapper.current.coroutine { return coroutine }
-        throw CoroutineError.mustBeCalledInsideCoroutine
-    }
-    
-    /// Returns `true` if this property is called inside a coroutine.
-    @inlinable public static var isInsideCoroutine: Bool {
-        ThreadCoroutineWrapper.current.coroutine != nil
-    }
-    
     // MARK: - await
     
     /// Suspends a coroutine поки не буде викликаний callback.
