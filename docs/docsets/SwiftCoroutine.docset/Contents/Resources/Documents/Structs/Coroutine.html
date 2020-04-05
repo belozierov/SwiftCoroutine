@@ -164,7 +164,7 @@ a thread-blocking mechanism is used for waiting the result.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Suspends a coroutine поки не буде викликаний callback. Must be called inside a coroutine.</p>
+                        <p>Suspends a coroutine and resumes it on callback. Must be called inside a coroutine.</p>
 <pre class="highlight swift"><code><span class="n">queue</span><span class="o">.</span><span class="n">startCoroutine</span> <span class="p">{</span>
     <span class="kt">Coroutine</span><span class="o">.</span><span class="n">await</span> <span class="p">{</span> <span class="n">callback</span> <span class="k">in</span>
         <span class="n">someAsyncFunc</span> <span class="p">{</span> <span class="nf">callback</span><span class="p">()</span> <span class="p">}</span>
