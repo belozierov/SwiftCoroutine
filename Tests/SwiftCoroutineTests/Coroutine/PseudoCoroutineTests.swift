@@ -11,6 +11,7 @@ import XCTest
 
 class PseudoCoroutineTests: XCTestCase {
     
+    #if os(macOS)
     func testNestedMain() {
         let result = try? PseudoCoroutine.shared.await(on: DispatchQueue.main) {
             () throws -> Int in
@@ -19,6 +20,7 @@ class PseudoCoroutineTests: XCTestCase {
         }
         XCTAssertEqual(result, 1)
     }
+    #endif
     
     func testSuccess() {
         let result = PseudoCoroutine.shared.await(on: DispatchQueue.global()) { () -> Int in
