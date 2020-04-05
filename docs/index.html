@@ -43,9 +43,6 @@
               <li class="nav-group-task">
                 <a href="Enums/CoFutureError.html">CoFutureError</a>
               </li>
-              <li class="nav-group-task">
-                <a href="Enums/CoroutineError.html">CoroutineError</a>
-              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -56,6 +53,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="Extensions/Publisher.html">Publisher</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/URLSession.html">URLSession</a>
               </li>
             </ul>
           </li>
@@ -113,15 +113,16 @@ This feature is not yet supported in Swift, but this can be improved by a framew
     <span class="k">guard</span> <span class="k">let</span> <span class="nv">image</span> <span class="o">=</span> <span class="kt">UIImage</span><span class="p">(</span><span class="nv">data</span><span class="p">:</span> <span class="n">data</span><span class="p">)</span> <span class="k">else</span> <span class="p">{</span> <span class="k">throw</span> <span class="kt">URLError</span><span class="p">(</span><span class="o">.</span><span class="n">cannotParseResponse</span><span class="p">)</span> <span class="p">}</span>
 
     <span class="c1">//execute heavy task on global queue and await the result without blocking the thread</span>
-    <span class="k">let</span> <span class="nv">thumbnail</span> <span class="o">=</span> <span class="k">try</span> <span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">global</span><span class="p">()</span><span class="o">.</span><span class="n">await</span> <span class="p">{</span> 
-        <span class="n">image</span><span class="o">.</span><span class="nf">makeThumbnail</span><span class="p">()</span> <span class="c1">//some method that returns UIImage</span>
-    <span class="p">}</span>
+    <span class="k">let</span> <span class="nv">thumbnail</span> <span class="o">=</span> <span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">global</span><span class="p">()</span><span class="o">.</span><span class="n">await</span> <span class="p">{</span> <span class="n">image</span><span class="o">.</span><span class="nf">makeThumbnail</span><span class="p">()</span> <span class="p">}</span>
 
     <span class="c1">//set image in UIImageView on the main thread</span>
     <span class="k">self</span><span class="o">.</span><span class="n">imageView</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">thumbnail</span>
 
 <span class="p">}</span>
 </code></pre>
+<h3 id='documentation' class='heading'>Documentation</h3>
+
+<p><a href="https://belozierov.github.io/SwiftCoroutine">API documentation</a></p>
 <h3 id='requirements' class='heading'>Requirements</h3>
 
 <ul>
@@ -132,9 +133,6 @@ This feature is not yet supported in Swift, but this can be improved by a framew
 <h3 id='installation' class='heading'>Installation</h3>
 
 <p><code>SwiftCoroutine</code> is available through the <a href="https://swift.org/package-manager">Swift Package Manager</a> for iOS, macOS and Linux.</p>
-<h3 id='documentation' class='heading'>Documentation</h3>
-
-<p><a href="https://belozierov.github.io/SwiftCoroutine">API documentation</a></p>
 <h2 id='working-with-swiftcoroutine' class='heading'>Working with SwiftCoroutine</h2>
 <h3 id='async-await' class='heading'>Async/await</h3>
 
@@ -167,7 +165,7 @@ This feature is not yet supported in Swift, but this can be improved by a framew
 <p>The following example shows the usage of  <code>await()</code> inside a coroutine to manage asynchronous calls.</p>
 <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">awaitThumbnail</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="kt">URL</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">UIImage</span> <span class="p">{</span>
     <span class="c1">//await URLSessionDataTask response without blocking the thread</span>
-    <span class="k">let</span> <span class="p">(</span><span class="nv">data</span><span class="p">,</span> <span class="nv">_</span><span class="p">,</span> <span class="nv">error</span><span class="p">)</span> <span class="o">=</span> <span class="k">try</span> <span class="kt">Coroutine</span><span class="o">.</span><span class="n">await</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="p">(</span><span class="nv">data</span><span class="p">,</span> <span class="nv">_</span><span class="p">,</span> <span class="nv">error</span><span class="p">)</span> <span class="o">=</span> <span class="kt">Coroutine</span><span class="o">.</span><span class="n">await</span> <span class="p">{</span>
         <span class="kt">URLSession</span><span class="o">.</span><span class="n">shared</span><span class="o">.</span><span class="nf">dataTask</span><span class="p">(</span><span class="nv">with</span><span class="p">:</span> <span class="n">url</span><span class="p">,</span> <span class="nv">completionHandler</span><span class="p">:</span> <span class="nv">$0</span><span class="p">)</span><span class="o">.</span><span class="nf">resume</span><span class="p">()</span>
     <span class="p">}</span>
 
@@ -176,7 +174,7 @@ This feature is not yet supported in Swift, but this can be improved by a framew
         <span class="k">else</span> <span class="p">{</span> <span class="k">throw</span> <span class="n">error</span> <span class="p">??</span> <span class="kt">URLError</span><span class="p">(</span><span class="o">.</span><span class="n">cannotParseResponse</span><span class="p">)</span> <span class="p">}</span>
 
     <span class="c1">//execute heavy task on global queue and await its result</span>
-    <span class="k">return</span> <span class="k">try</span> <span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">global</span><span class="p">()</span><span class="o">.</span><span class="n">await</span> <span class="p">{</span> <span class="n">image</span><span class="o">.</span><span class="nf">makeThumbnail</span><span class="p">()</span> <span class="p">}</span>
+    <span class="k">return</span> <span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">global</span><span class="p">()</span><span class="o">.</span><span class="n">await</span> <span class="p">{</span> <span class="n">image</span><span class="o">.</span><span class="nf">makeThumbnail</span><span class="p">()</span> <span class="p">}</span>
 <span class="p">}</span>
 
 <span class="kd">func</span> <span class="nf">setThumbnail</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="kt">URL</span><span class="p">)</span> <span class="p">{</span>
@@ -256,12 +254,12 @@ This feature is not yet supported in Swift, but this can be improved by a framew
 <p>Also <code><a href="Classes/CoFuture.html">CoFuture</a></code> allows to start multiple tasks in parallel and synchronize them later with <code>await()</code>.</p>
 <pre class="highlight swift"><code><span class="c1">//execute task on the global queue and returns CoFuture&lt;Int&gt; with future result</span>
 <span class="k">let</span> <span class="nv">future1</span><span class="p">:</span> <span class="kt">CoFuture</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span> <span class="o">=</span> <span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">global</span><span class="p">()</span><span class="o">.</span><span class="n">coroutineFuture</span> <span class="p">{</span>
-    <span class="k">try</span> <span class="kt">Coroutine</span><span class="o">.</span><span class="nf">delay</span><span class="p">(</span><span class="o">.</span><span class="nf">seconds</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span> <span class="c1">//some work that takes 2 sec.</span>
+    <span class="kt">Coroutine</span><span class="o">.</span><span class="nf">delay</span><span class="p">(</span><span class="o">.</span><span class="nf">seconds</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span> <span class="c1">//some work that takes 2 sec.</span>
     <span class="k">return</span> <span class="mi">5</span>
 <span class="p">}</span>
 
 <span class="k">let</span> <span class="nv">future2</span><span class="p">:</span> <span class="kt">CoFuture</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span> <span class="o">=</span> <span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">global</span><span class="p">()</span><span class="o">.</span><span class="n">coroutineFuture</span> <span class="p">{</span>
-    <span class="k">try</span> <span class="kt">Coroutine</span><span class="o">.</span><span class="nf">delay</span><span class="p">(</span><span class="o">.</span><span class="nf">seconds</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span> <span class="c1">//some work that takes 3 sec.</span>
+    <span class="kt">Coroutine</span><span class="o">.</span><span class="nf">delay</span><span class="p">(</span><span class="o">.</span><span class="nf">seconds</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span> <span class="c1">//some work that takes 3 sec.</span>
     <span class="k">return</span> <span class="mi">6</span>
 <span class="p">}</span>
 
@@ -289,7 +287,7 @@ This feature is not yet supported in Swift, but this can be improved by a framew
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-04-02)</p>
+          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-04-05)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

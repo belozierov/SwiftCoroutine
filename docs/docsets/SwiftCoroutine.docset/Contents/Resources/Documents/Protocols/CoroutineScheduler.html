@@ -44,9 +44,6 @@
               <li class="nav-group-task">
                 <a href="../Enums/CoFutureError.html">CoFutureError</a>
               </li>
-              <li class="nav-group-task">
-                <a href="../Enums/CoroutineError.html">CoroutineError</a>
-              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -57,6 +54,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Extensions/Publisher.html">Publisher</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/URLSession.html">URLSession</a>
               </li>
             </ul>
           </li>
@@ -91,9 +91,22 @@
             <p>A protocol that defines how to execute a task.</p>
 
 <p>This protocol has extension methods that allow to launch coroutines on a current scheduler.
-Inside the coroutine you can use such methods as <code><a href="../Structs/Coroutine.html#/s:14SwiftCoroutine0B0V5awaityyyyycXEKFZ">Coroutine.await(_:)</a></code>, <code><a href="../Classes/CoFuture.html#/s:14SwiftCoroutine8CoFutureC5awaitxyKF">CoFuture.await()</a></code>,
+Inside the coroutine you can use such methods as <code><a href="../Structs/Coroutine.html#/s:14SwiftCoroutine0B0V5awaityyyyycXEFZ">Coroutine.await(_:)</a></code>, <code><a href="../Classes/CoFuture.html#/s:14SwiftCoroutine8CoFutureC5awaitxyKF">CoFuture.await()</a></code>,
 and <code><a href="../Protocols/CoroutineScheduler.html#/s:14SwiftCoroutine0B9SchedulerPAAE5awaityqd__qd__yKXEKlF">CoroutineScheduler.await(_:)</a></code> to suspend the coroutine without blocking a thread
 and resume it when the result is ready.</p>
+
+<p>To launch a coroutine, use <code><a href="../Protocols/CoroutineScheduler.html#/s:14SwiftCoroutine0B9SchedulerPAAE05startB0yyyyKcF">CoroutineScheduler.startCoroutine(_:)</a></code>.</p>
+<pre class="highlight swift"><code><span class="c1">//execute coroutine on the main thread</span>
+<span class="kt">DispatchQueue</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">startCoroutine</span> <span class="p">{</span>
+
+    <span class="c1">//extension that returns CoFuture&lt;(data: Data, response: URLResponse)&gt;</span>
+    <span class="k">let</span> <span class="nv">dataFuture</span> <span class="o">=</span> <span class="kt">URLSession</span><span class="o">.</span><span class="n">shared</span><span class="o">.</span><span class="nf">dataTaskFuture</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="n">url</span><span class="p">)</span>
+
+    <span class="c1">//await result that suspends coroutine and doesn't block the thread</span>
+    <span class="k">let</span> <span class="nv">data</span> <span class="o">=</span> <span class="k">try</span> <span class="n">dataFuture</span><span class="o">.</span><span class="nf">await</span><span class="p">()</span><span class="o">.</span><span class="n">data</span>
+
+<span class="p">}</span>
+</code></pre>
 
 <p>The framework includes the implementation of this protocol for <code>DispatchQueue</code>
 and you can easily make the same for other schedulers as well.</p>
@@ -155,12 +168,12 @@ and you can easily make the same for other schedulers as well.</p>
                       <div class="abstract">
                         <p>Start a new coroutine on the current scheduler.</p>
 
-<p>As an example, with <code><a href="../Structs/Coroutine.html#/s:14SwiftCoroutine0B0V5awaityyyyycXEKFZ">Coroutine.await(_:)</a></code> you can wrap asynchronous functions with callbacks
+<p>As an example, with <code><a href="../Structs/Coroutine.html#/s:14SwiftCoroutine0B0V5awaityyyyycXEFZ">Coroutine.await(_:)</a></code> you can wrap asynchronous functions with callbacks
 to synchronously receive its result without blocking the thread.</p>
 <pre class="highlight swift"><code><span class="c1">//start new coroutine on the main thread</span>
 <span class="kt">DispatchQueue</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">startCoroutine</span> <span class="p">{</span>
     <span class="c1">//execute someAsyncFunc() and await result from its callback</span>
-    <span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="k">try</span> <span class="kt">Coroutine</span><span class="o">.</span><span class="n">await</span> <span class="p">{</span> <span class="nf">someAsyncFunc</span><span class="p">(</span><span class="nv">callback</span><span class="p">:</span> <span class="nv">$0</span><span class="p">)</span> <span class="p">}</span>
+    <span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="kt">Coroutine</span><span class="o">.</span><span class="n">await</span> <span class="p">{</span> <span class="nf">someAsyncFunc</span><span class="p">(</span><span class="nv">callback</span><span class="p">:</span> <span class="nv">$0</span><span class="p">)</span> <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
 
@@ -219,13 +232,12 @@ If the task throws an error, then the coroutine will be terminated.</p>
 <pre class="highlight swift"><code><span class="c1">//start coroutine on the main thread</span>
 <span class="kt">DispatchQueue</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">startCoroutine</span> <span class="p">{</span>
     <span class="c1">//execute someSyncFunc() on global queue and await its result</span>
-    <span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="k">try</span> <span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">global</span><span class="p">()</span><span class="o">.</span><span class="n">await</span> <span class="p">{</span> <span class="nf">someSyncFunc</span><span class="p">()</span> <span class="p">}</span>
+    <span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">global</span><span class="p">()</span><span class="o">.</span><span class="n">await</span> <span class="p">{</span> <span class="nf">someSyncFunc</span><span class="p">()</span> <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
 <div class="aside aside-throws">
     <p class="aside-title">Throws</p>
-    Rethrows an error from the task or
-throws <code><a href="../Enums/CoroutineError.html#/s:14SwiftCoroutine0B5ErrorO018mustBeCalledInsideB0yA2CmF">CoroutineError.mustBeCalledInsideCoroutine</a></code> if the method is called outside a coroutine.
+    Rethrows an error from the task.
 
 </div>
 
@@ -235,7 +247,7 @@ throws <code><a href="../Enums/CoroutineError.html#/s:14SwiftCoroutine0B5ErrorO0
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@inlinable</span>
-<span class="kd">public</span> <span class="kd">func</span> <span class="n">await</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">task</span><span class="p">:</span> <span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">T</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">T</span></code></pre>
+<span class="kd">public</span> <span class="kd">func</span> <span class="n">await</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">task</span><span class="p">:</span> <span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">T</span><span class="p">)</span> <span class="k">rethrows</span> <span class="o">-&gt;</span> <span class="kt">T</span></code></pre>
 
                         </div>
                       </div>
@@ -334,7 +346,7 @@ throws <code><a href="../Enums/CoroutineError.html#/s:14SwiftCoroutine0B5ErrorO0
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-04-02)</p>
+          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-04-05)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

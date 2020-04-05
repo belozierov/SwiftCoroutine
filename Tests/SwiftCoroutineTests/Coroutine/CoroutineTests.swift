@@ -17,7 +17,7 @@ class CoroutineTests: XCTestCase {
         for i in 0..<1000 {
             DispatchQueue.main.startCoroutine {
                 var a = Int.random(in: 0..<1000)
-                a += try! Coroutine.await { completion in
+                a += Coroutine.await { completion in
                     if i == 0 { sleep(1) }
                     a += Int.random(in: 0..<1000)
                     DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
@@ -40,7 +40,7 @@ class CoroutineTests: XCTestCase {
         let exp = expectation(description: "testDelay")
         let date = Date()
         DispatchQueue.global().startCoroutine {
-            try? Coroutine.delay(.seconds(1))
+            Coroutine.delay(.seconds(1))
             XCTAssertDuration(from: date, in: 1..<2)
             exp.fulfill()
         }
@@ -52,22 +52,22 @@ class CoroutineTests: XCTestCase {
         let queue = DispatchQueue.global()
         var sum = 0
         queue.startCoroutine {
-            try Coroutine.await {
+            Coroutine.await {
                 sum += 1
                 $0()
             }
-            sum += try Coroutine.await { completion in
+            sum += Coroutine.await { completion in
                 queue.async {
                     completion(1)
                     completion(2)
                 }
             }
-            sum += try Coroutine.await { completion in
+            sum += Coroutine.await { completion in
                 queue.async {
                     completion(1, 0)
                 }
             }.0
-            sum += try Coroutine.await { completion in
+            sum += Coroutine.await { completion in
                 queue.async {
                     completion(1, 0, 0)
                 }
@@ -81,19 +81,17 @@ class CoroutineTests: XCTestCase {
     func testInsideCoroutine() {
         let exp = expectation(description: "testInsideCoroutine")
         XCTAssertFalse(Coroutine.isInsideCoroutine)
-        XCTAssertNil(try? Coroutine.current())
         DispatchQueue.global().startCoroutine {
             XCTAssertTrue(Coroutine.isInsideCoroutine)
-            let current = try Coroutine.current()
-            try DispatchQueue.global().await {
+            let current = Coroutine.current
+            DispatchQueue.global().await {
                 XCTAssertTrue(Coroutine.isInsideCoroutine)
-                XCTAssertTrue(current === (try? Coroutine.current()))
+                XCTAssertTrue(current === Coroutine.current)
             }
             XCTAssertTrue(Coroutine.isInsideCoroutine)
-            XCTAssertTrue(current === (try? Coroutine.current()))
+            XCTAssertTrue(current === Coroutine.current)
             exp.fulfill()
         }
-        XCTAssertNil(try? Coroutine.current())
         XCTAssertFalse(Coroutine.isInsideCoroutine)
         wait(for: [exp], timeout: 5)
     }

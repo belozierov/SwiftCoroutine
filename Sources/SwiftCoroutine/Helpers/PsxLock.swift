@@ -12,24 +12,24 @@ import Glibc
 import Darwin
 #endif
 
-@usableFromInline struct PsxLock {
+@usableFromInline internal struct PsxLock {
     
-    @usableFromInline let mutex: UnsafeMutablePointer<pthread_mutex_t>
+    @usableFromInline internal let mutex: UnsafeMutablePointer<pthread_mutex_t>
     
-    @inlinable init() {
+    @inlinable internal init() {
         mutex = .allocate(capacity: 1)
         pthread_mutex_init(mutex, nil)
     }
     
-    @inlinable func lock() {
+    @inlinable internal func lock() {
         pthread_mutex_lock(mutex)
     }
     
-    @inlinable func unlock() {
+    @inlinable internal func unlock() {
         pthread_mutex_unlock(mutex)
     }
     
-    @inlinable func free() {
+    @inlinable internal func free() {
         pthread_mutex_destroy(mutex)
         mutex.deallocate()
     }

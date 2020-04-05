@@ -37,9 +37,7 @@ DispatchQueue.main.startCoroutine {
     guard let image = UIImage(data: data) else { throw URLError(.cannotParseResponse) }
     
     //execute heavy task on global queue and await the result without blocking the thread
-    let thumbnail = try DispatchQueue.global().await { 
-        image.makeThumbnail() //some method that returns UIImage
-    }
+    let thumbnail = DispatchQueue.global().await { image.makeThumbnail() }
 
     //set image in UIImageView on the main thread
     self.imageView.image = thumbnail
@@ -92,7 +90,7 @@ The following example shows the usage of  `await()` inside a coroutine to manage
 ```swift
 func awaitThumbnail(url: URL) throws -> UIImage {
     //await URLSessionDataTask response without blocking the thread
-    let (data, _, error) = try Coroutine.await {
+    let (data, _, error) = Coroutine.await {
         URLSession.shared.dataTask(with: url, completionHandler: $0).resume()
     }
     
@@ -101,7 +99,7 @@ func awaitThumbnail(url: URL) throws -> UIImage {
         else { throw error ?? URLError(.cannotParseResponse) }
     
     //execute heavy task on global queue and await its result
-    return try DispatchQueue.global().await { image.makeThumbnail() }
+    return DispatchQueue.global().await { image.makeThumbnail() }
 }
 
 func setThumbnail(url: URL) {
@@ -186,12 +184,12 @@ Also `CoFuture` allows to start multiple tasks in parallel and synchronize them 
 ```swift
 //execute task on the global queue and returns CoFuture<Int> with future result
 let future1: CoFuture<Int> = DispatchQueue.global().coroutineFuture {
-    try Coroutine.delay(.seconds(2)) //some work that takes 2 sec.
+    Coroutine.delay(.seconds(2)) //some work that takes 2 sec.
     return 5
 }
 
 let future2: CoFuture<Int> = DispatchQueue.global().coroutineFuture {
-    try Coroutine.delay(.seconds(3)) //some work that takes 3 sec.
+    Coroutine.delay(.seconds(3)) //some work that takes 3 sec.
     return 6
 }
 

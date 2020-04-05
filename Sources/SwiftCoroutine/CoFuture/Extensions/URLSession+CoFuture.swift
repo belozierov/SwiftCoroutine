@@ -1,5 +1,5 @@
 //
-//  URLSession.swift
+//  URLSession+CoFuture.swift
 //  SwiftCoroutine
 //
 //  Created by Alex Belozierov on 14.03.2020.
@@ -11,7 +11,6 @@ import FoundationNetworking
 #endif
 
 import Foundation
-import SwiftCoroutine
 
 extension URLSession {
     

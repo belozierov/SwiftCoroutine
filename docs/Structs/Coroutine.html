@@ -44,9 +44,6 @@
               <li class="nav-group-task">
                 <a href="../Enums/CoFutureError.html">CoFutureError</a>
               </li>
-              <li class="nav-group-task">
-                <a href="../Enums/CoroutineError.html">CoroutineError</a>
-              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -57,6 +54,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Extensions/Publisher.html">Publisher</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/URLSession.html">URLSession</a>
               </li>
             </ul>
           </li>
@@ -91,10 +91,14 @@
             <p>Additional struct with utility methods to work with coroutines.</p>
 <div class="aside aside-important">
     <p class="aside-title">Important</p>
-    All methods must be called inside a coroutine,
-otherwise <code><a href="../Enums/CoroutineError.html#/s:14SwiftCoroutine0B5ErrorO018mustBeCalledInsideB0yA2CmF">CoroutineError.mustBeCalledInsideCoroutine</a></code> will be thrown.
+    All <code>await()</code> methods must be called inside a coroutine.
 
 </div>
+
+<p>To check if inside a coroutine, use <code><a href="../Structs/Coroutine.html#/s:14SwiftCoroutine0B0V08isInsideB0SbvpZ">Coroutine.isInsideCoroutine</a></code>.
+If you call <code>await()</code> outside the coroutine, the precondition inside these methods will fail, and you&#39;ill get an error.
+In -Ounchecked builds, where preconditions are not evaluated to avoid any crashes,
+a thread-blocking mechanism is used for waiting the result.</p>
 
           </section>
           <section class="section task-group-section">
@@ -114,6 +118,12 @@ otherwise <code><a href="../Enums/CoroutineError.html#/s:14SwiftCoroutine0B5Erro
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>Returns <code>true</code> if this property is called inside a coroutine.</p>
+<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">awaitSomeData</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Data</span> <span class="p">{</span>
+    <span class="c1">//check if inside a coroutine</span>
+    <span class="k">guard</span> <span class="kt">Coroutine</span><span class="o">.</span><span class="n">isInsideCoroutine</span> <span class="k">else</span> <span class="p">{</span> <span class="k">throw</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> <span class="kd">some</span> <span class="n">error</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> <span class="p">}</span>
+    <span class="kt">Coroutine</span><span class="o">.</span><span class="n">await</span> <span class="p">{</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> <span class="k">return</span> <span class="kd">some</span> <span class="n">data</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
 
                       </div>
                       <div class="declaration">
@@ -144,9 +154,9 @@ otherwise <code><a href="../Enums/CoroutineError.html#/s:14SwiftCoroutine0B5Erro
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine0B0V5awaityyyyycXEKFZ"></a>
+                    <a name="/s:14SwiftCoroutine0B0V5awaityyyyycXEFZ"></a>
                     <a name="//apple_ref/swift/Method/await(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine0B0V5awaityyyyycXEKFZ">await(_:<wbr>)</a>
+                    <a class="token" href="#/s:14SwiftCoroutine0B0V5awaityyyyycXEFZ">await(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -154,18 +164,13 @@ otherwise <code><a href="../Enums/CoroutineError.html#/s:14SwiftCoroutine0B5Erro
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Suspends a coroutine поки не буде викликаний callback.</p>
+                        <p>Suspends a coroutine поки не буде викликаний callback. Must be called inside a coroutine.</p>
 <pre class="highlight swift"><code><span class="n">queue</span><span class="o">.</span><span class="n">startCoroutine</span> <span class="p">{</span>
-    <span class="k">try</span> <span class="kt">Coroutine</span><span class="o">.</span><span class="n">await</span> <span class="p">{</span> <span class="n">callback</span> <span class="k">in</span>
+    <span class="kt">Coroutine</span><span class="o">.</span><span class="n">await</span> <span class="p">{</span> <span class="n">callback</span> <span class="k">in</span>
         <span class="n">someAsyncFunc</span> <span class="p">{</span> <span class="nf">callback</span><span class="p">()</span> <span class="p">}</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
-<div class="aside aside-throws">
-    <p class="aside-title">Throws</p>
-    CoroutineError.mustBeCalledInsideCoroutine якщо метод був викликаний за межами коротини.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -173,7 +178,7 @@ otherwise <code><a href="../Enums/CoroutineError.html#/s:14SwiftCoroutine0B5Erro
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@inlinable</span>
-<span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">await</span><span class="p">(</span><span class="n">_</span> <span class="nv">callback</span><span class="p">:</span> <span class="p">(</span><span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">throws</span></code></pre>
+<span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">await</span><span class="p">(</span><span class="n">_</span> <span class="nv">callback</span><span class="p">:</span> <span class="p">(</span><span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -202,9 +207,9 @@ otherwise <code><a href="../Enums/CoroutineError.html#/s:14SwiftCoroutine0B5Erro
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine0B0V5awaityxyyxcXEKlFZ"></a>
+                    <a name="/s:14SwiftCoroutine0B0V5awaityxyyxcXElFZ"></a>
                     <a name="//apple_ref/swift/Method/await(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine0B0V5awaityxyyxcXEKlFZ">await(_:<wbr>)</a>
+                    <a class="token" href="#/s:14SwiftCoroutine0B0V5awaityxyyxcXElFZ">await(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -214,16 +219,11 @@ otherwise <code><a href="../Enums/CoroutineError.html#/s:14SwiftCoroutine0B5Erro
                       <div class="abstract">
                         <p>Suspends a coroutine and resumes it on callback.</p>
 <pre class="highlight swift"><code><span class="n">queue</span><span class="o">.</span><span class="n">startCoroutine</span> <span class="p">{</span>
-    <span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="k">try</span> <span class="kt">Coroutine</span><span class="o">.</span><span class="n">await</span> <span class="p">{</span> <span class="n">callback</span> <span class="k">in</span>
+    <span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="kt">Coroutine</span><span class="o">.</span><span class="n">await</span> <span class="p">{</span> <span class="n">callback</span> <span class="k">in</span>
         <span class="n">someAsyncFunc</span> <span class="p">{</span> <span class="n">result</span> <span class="k">in</span> <span class="nf">callback</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="p">}</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
-<div class="aside aside-throws">
-    <p class="aside-title">Throws</p>
-    <code><a href="../Enums/CoroutineError.html#/s:14SwiftCoroutine0B5ErrorO018mustBeCalledInsideB0yA2CmF">CoroutineError.mustBeCalledInsideCoroutine</a></code> if the method is called outside a coroutine.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -231,7 +231,7 @@ otherwise <code><a href="../Enums/CoroutineError.html#/s:14SwiftCoroutine0B5Erro
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@inlinable</span>
-<span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="n">await</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">callback</span><span class="p">:</span> <span class="p">(</span><span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">T</span></code></pre>
+<span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="n">await</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">callback</span><span class="p">:</span> <span class="p">(</span><span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">T</span></code></pre>
 
                         </div>
                       </div>
@@ -247,7 +247,7 @@ otherwise <code><a href="../Enums/CoroutineError.html#/s:14SwiftCoroutine0B5Erro
                               </td>
                               <td>
                                 <div>
-                                  <p>The callback for resuming a coroutine.</p>
+                                  <p>The callback for resuming a coroutine. Must be called inside a coroutine.</p>
                                 </div>
                               </td>
                             </tr>
@@ -264,9 +264,9 @@ otherwise <code><a href="../Enums/CoroutineError.html#/s:14SwiftCoroutine0B5Erro
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine0B0V5awaityx_q_tyyx_q_tcXEKr0_lFZ"></a>
+                    <a name="/s:14SwiftCoroutine0B0V5awaityx_q_tyyx_q_tcXEr0_lFZ"></a>
                     <a name="//apple_ref/swift/Method/await(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine0B0V5awaityx_q_tyyx_q_tcXEKr0_lFZ">await(_:<wbr>)</a>
+                    <a class="token" href="#/s:14SwiftCoroutine0B0V5awaityx_q_tyyx_q_tcXEr0_lFZ">await(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -274,18 +274,13 @@ otherwise <code><a href="../Enums/CoroutineError.html#/s:14SwiftCoroutine0B5Erro
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Suspends a coroutine and resumes it on callback.</p>
+                        <p>Suspends a coroutine and resumes it on callback. Must be called inside a coroutine.</p>
 <pre class="highlight swift"><code><span class="n">queue</span><span class="o">.</span><span class="n">startCoroutine</span> <span class="p">{</span>
-    <span class="k">let</span> <span class="p">(</span><span class="nv">a</span><span class="p">,</span> <span class="nv">b</span><span class="p">)</span> <span class="o">=</span> <span class="k">try</span> <span class="kt">Coroutine</span><span class="o">.</span><span class="n">await</span> <span class="p">{</span> <span class="n">callback</span> <span class="k">in</span>
+    <span class="k">let</span> <span class="p">(</span><span class="nv">a</span><span class="p">,</span> <span class="nv">b</span><span class="p">)</span> <span class="o">=</span> <span class="kt">Coroutine</span><span class="o">.</span><span class="n">await</span> <span class="p">{</span> <span class="n">callback</span> <span class="k">in</span>
         <span class="nf">someAsyncFunc</span><span class="p">(</span><span class="nv">callback</span><span class="p">:</span> <span class="n">callback</span><span class="p">)</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
-<div class="aside aside-throws">
-    <p class="aside-title">Throws</p>
-    <code><a href="../Enums/CoroutineError.html#/s:14SwiftCoroutine0B5ErrorO018mustBeCalledInsideB0yA2CmF">CoroutineError.mustBeCalledInsideCoroutine</a></code> if the method is called outside a coroutine.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -293,7 +288,7 @@ otherwise <code><a href="../Enums/CoroutineError.html#/s:14SwiftCoroutine0B5Erro
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@inlinable</span>
-<span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="n">await</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">,</span> <span class="kt">N</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">callback</span><span class="p">:</span> <span class="p">(</span><span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">N</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">N</span><span class="p">)</span></code></pre>
+<span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="n">await</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">,</span> <span class="kt">N</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">callback</span><span class="p">:</span> <span class="p">(</span><span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">N</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">N</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -326,9 +321,9 @@ otherwise <code><a href="../Enums/CoroutineError.html#/s:14SwiftCoroutine0B5Erro
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine0B0V5awaityx_q_q0_tyyx_q_q0_tcXEKr1_lFZ"></a>
+                    <a name="/s:14SwiftCoroutine0B0V5awaityx_q_q0_tyyx_q_q0_tcXEr1_lFZ"></a>
                     <a name="//apple_ref/swift/Method/await(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine0B0V5awaityx_q_q0_tyyx_q_q0_tcXEKr1_lFZ">await(_:<wbr>)</a>
+                    <a class="token" href="#/s:14SwiftCoroutine0B0V5awaityx_q_q0_tyyx_q_q0_tcXEr1_lFZ">await(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -338,16 +333,11 @@ otherwise <code><a href="../Enums/CoroutineError.html#/s:14SwiftCoroutine0B5Erro
                       <div class="abstract">
                         <p>Suspends a coroutine and resumes it on callback.</p>
 <pre class="highlight swift"><code><span class="n">queue</span><span class="o">.</span><span class="n">startCoroutine</span> <span class="p">{</span>
-    <span class="k">let</span> <span class="p">(</span><span class="nv">a</span><span class="p">,</span> <span class="nv">b</span><span class="p">,</span> <span class="nv">c</span><span class="p">)</span> <span class="o">=</span> <span class="k">try</span> <span class="kt">Coroutine</span><span class="o">.</span><span class="n">await</span> <span class="p">{</span> <span class="n">callback</span> <span class="k">in</span>
+    <span class="k">let</span> <span class="p">(</span><span class="nv">a</span><span class="p">,</span> <span class="nv">b</span><span class="p">,</span> <span class="nv">c</span><span class="p">)</span> <span class="o">=</span> <span class="kt">Coroutine</span><span class="o">.</span><span class="n">await</span> <span class="p">{</span> <span class="n">callback</span> <span class="k">in</span>
         <span class="nf">someAsyncFunc</span><span class="p">(</span><span class="nv">callback</span><span class="p">:</span> <span class="n">callback</span><span class="p">)</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
-<div class="aside aside-throws">
-    <p class="aside-title">Throws</p>
-    <code><a href="../Enums/CoroutineError.html#/s:14SwiftCoroutine0B5ErrorO018mustBeCalledInsideB0yA2CmF">CoroutineError.mustBeCalledInsideCoroutine</a></code> if the method is called outside a coroutine.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -355,7 +345,7 @@ otherwise <code><a href="../Enums/CoroutineError.html#/s:14SwiftCoroutine0B5Erro
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@inlinable</span>
-<span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="n">await</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">,</span> <span class="kt">N</span><span class="p">,</span> <span class="kt">M</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">callback</span><span class="p">:</span> <span class="p">(</span><span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">N</span><span class="p">,</span> <span class="kt">M</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">N</span><span class="p">,</span> <span class="kt">M</span><span class="p">)</span></code></pre>
+<span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="n">await</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">,</span> <span class="kt">N</span><span class="p">,</span> <span class="kt">M</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">callback</span><span class="p">:</span> <span class="p">(</span><span class="kd">@escaping</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">N</span><span class="p">,</span> <span class="kt">M</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="kt">T</span><span class="p">,</span> <span class="kt">N</span><span class="p">,</span> <span class="kt">M</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -371,7 +361,7 @@ otherwise <code><a href="../Enums/CoroutineError.html#/s:14SwiftCoroutine0B5Erro
                               </td>
                               <td>
                                 <div>
-                                  <p>The callback для resume coroutine.</p>
+                                  <p>The callback для resume coroutine. Must be called inside a coroutine.</p>
                                 </div>
                               </td>
                             </tr>
@@ -401,9 +391,9 @@ otherwise <code><a href="../Enums/CoroutineError.html#/s:14SwiftCoroutine0B5Erro
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine0B0V5delayyy8Dispatch0D12TimeIntervalOKFZ"></a>
+                    <a name="/s:14SwiftCoroutine0B0V5delayyy8Dispatch0D12TimeIntervalOFZ"></a>
                     <a name="//apple_ref/swift/Method/delay(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine0B0V5delayyy8Dispatch0D12TimeIntervalOKFZ">delay(_:<wbr>)</a>
+                    <a class="token" href="#/s:14SwiftCoroutine0B0V5delayyy8Dispatch0D12TimeIntervalOFZ">delay(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -411,18 +401,13 @@ otherwise <code><a href="../Enums/CoroutineError.html#/s:14SwiftCoroutine0B5Erro
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Suspends a coroutine for a certain time.</p>
+                        <p>Suspends a coroutine for a certain time.  Must be called inside a coroutine.</p>
 <pre class="highlight swift"><code><span class="n">queue</span><span class="o">.</span><span class="n">startCoroutine</span> <span class="p">{</span>
     <span class="k">while</span> <span class="o">!</span><span class="nf">someCondition</span><span class="p">()</span> <span class="p">{</span>
-        <span class="k">try</span> <span class="kt">Coroutine</span><span class="o">.</span><span class="nf">delay</span><span class="p">(</span><span class="o">.</span><span class="nf">seconds</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+        <span class="kt">Coroutine</span><span class="o">.</span><span class="nf">delay</span><span class="p">(</span><span class="o">.</span><span class="nf">seconds</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
-<div class="aside aside-throws">
-    <p class="aside-title">Throws</p>
-    CoroutineError.mustBeCalledInsideCoroutine якщо метод був викликаний за межами коротини.
-
-</div>
 
                       </div>
                       <div class="declaration">
@@ -430,7 +415,7 @@ otherwise <code><a href="../Enums/CoroutineError.html#/s:14SwiftCoroutine0B5Erro
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@inlinable</span>
-<span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">delay</span><span class="p">(</span><span class="n">_</span> <span class="nv">time</span><span class="p">:</span> <span class="kt">DispatchTimeInterval</span><span class="p">)</span> <span class="k">throws</span></code></pre>
+<span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">delay</span><span class="p">(</span><span class="n">_</span> <span class="nv">time</span><span class="p">:</span> <span class="kt">DispatchTimeInterval</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -461,7 +446,7 @@ otherwise <code><a href="../Enums/CoroutineError.html#/s:14SwiftCoroutine0B5Erro
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-04-02)</p>
+          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-04-05)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

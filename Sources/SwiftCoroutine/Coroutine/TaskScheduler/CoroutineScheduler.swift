@@ -13,6 +13,20 @@
 /// and `CoroutineScheduler.await(_:)` to suspend the coroutine without blocking a thread
 /// and resume it when the result is ready.
 ///
+/// To launch a coroutine, use `CoroutineScheduler.startCoroutine(_:)`.
+/// ```
+/// //execute coroutine on the main thread
+/// DispatchQueue.main.startCoroutine {
+///
+///     //extension that returns CoFuture<(data: Data, response: URLResponse)>
+///     let dataFuture = URLSession.shared.dataTaskFuture(for: url)
+///
+///     //await result that suspends coroutine and doesn't block the thread
+///     let data = try dataFuture.await().data
+///
+/// }
+/// ```
+///
 /// The framework includes the implementation of this protocol for `DispatchQueue`
 /// and you can easily make the same for other schedulers as well.
 /// ```
@@ -45,7 +59,7 @@ extension CoroutineScheduler {
     /// //start new coroutine on the main thread
     /// DispatchQueue.main.startCoroutine {
     ///     //execute someAsyncFunc() and await result from its callback
-    ///     let result = try Coroutine.await { someAsyncFunc(callback: $0) }
+    ///     let result = Coroutine.await { someAsyncFunc(callback: $0) }
     /// }
     /// ```
     /// - Parameter task: The closure that will be executed inside coroutine.
@@ -61,15 +75,14 @@ extension CoroutineScheduler {
     /// //start coroutine on the main thread
     /// DispatchQueue.main.startCoroutine {
     ///     //execute someSyncFunc() on global queue and await its result
-    ///     let result = try DispatchQueue.global().await { someSyncFunc() }
+    ///     let result = DispatchQueue.global().await { someSyncFunc() }
     /// }
     /// ```
     /// - Parameter task: The closure that will be executed inside coroutine.
-    /// - Throws: Rethrows an error from the task or
-    /// throws `CoroutineError.mustBeCalledInsideCoroutine` if the method is called outside a coroutine.
+    /// - Throws: Rethrows an error from the task.
     /// - Returns: Returns the result of the task.
-    @inlinable public func await<T>(_ task: () throws -> T) throws -> T {
-        try Coroutine.current().await(on: self, task: task)
+    @inlinable public func await<T>(_ task: () throws -> T) rethrows -> T {
+        try Coroutine.current.await(on: self, task: task)
     }
     
     /// Starts a new coroutine and returns its future result.

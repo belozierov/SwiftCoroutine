@@ -41,14 +41,22 @@ extension CoroutineProtocol {
 
 extension Coroutine {
     
-    /// Returns `true` if this property is called inside a coroutine.
-    @inlinable public static var isInsideCoroutine: Bool {
-        pthread_getspecific(.coroutine) != nil
+    @inlinable internal static var currentPointer: UnsafeMutableRawPointer? {
+        pthread_getspecific(.coroutine)
     }
     
-    @inlinable static func current() throws -> CoroutineProtocol {
-        guard let pointer = pthread_getspecific(.coroutine)
-            else { throw CoroutineError.mustBeCalledInsideCoroutine }
+    @inlinable internal static var current: CoroutineProtocol {
+        guard let pointer = currentPointer else {
+            precondition(false,
+                         """
+            Await must be called inside a coroutine.
+            
+            To launch the coroutine, use `startCoroutine()`, e.g. `DispatchQueue.main.startCoroutine()`.
+            OR
+            To check if inside the coroutine, use `Coroutine.isInsideCoroutine`.
+            """)
+            return PseudoCoroutine.shared
+        }
         return Unmanaged<AnyObject>.fromOpaque(pointer).takeUnretainedValue() as! CoroutineProtocol
     }
     
@@ -57,10 +65,9 @@ extension Coroutine {
 extension pthread_key_t {
     
     @usableFromInline internal static let coroutine: pthread_key_t = {
-        let key = UnsafeMutablePointer<pthread_key_t>.allocate(capacity: 1)
-        pthread_key_create(key, nil)
-        defer { key.deallocate() }
-        return key.pointee
+        var key: pthread_key_t = .zero
+        pthread_key_create(&key, nil)
+        return key
     }()
     
 }

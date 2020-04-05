@@ -20,7 +20,7 @@ extension CoFuture {
     ///     let result = try future.await()
     /// }
     /// ```
-    /// - Throws: The failed result of the `CoFuture` or `CoroutineError.mustBeCalledInsideCoroutine`
+    /// - Throws: The failed result of the `CoFuture`.
     /// - Returns: The value of the `CoFuture` when it is completed.
     public func await() throws -> Value {
         mutex?.lock()
@@ -28,14 +28,7 @@ extension CoFuture {
             mutex?.unlock()
             return try result.get()
         }
-        let coroutine: CoroutineProtocol
-        do {
-            coroutine = try Coroutine.current()
-        } catch {
-            mutex?.unlock()
-            throw error
-        }
-        return try coroutine.await { (callback: @escaping (Result<Value, Error>) -> Void) in
+        return try Coroutine.current.await { (callback: @escaping (Result<Value, Error>) -> Void) in
             self.append(callback: callback)
             self.mutex?.unlock()
         }.get()

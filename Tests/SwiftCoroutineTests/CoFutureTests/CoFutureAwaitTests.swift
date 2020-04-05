@@ -11,18 +11,6 @@ import XCTest
 
 class CoFutureAwaitTests: XCTestCase {
 
-    func testOutCoroutineCall() {
-        let promise = CoPromise<Int>()
-        do {
-            _ = try promise.await()
-            XCTFail()
-        } catch let error as CoroutineError {
-            return XCTAssertEqual(error, .mustBeCalledInsideCoroutine)
-        } catch {
-            XCTFail()
-        }
-    }
-
     func testAwait() {
         let exp = expectation(description: "testAwait")
         let promise = CoPromise<Int>()
@@ -114,10 +102,10 @@ class CoFutureAwaitTests: XCTestCase {
         var count = 0
         DispatchQueue.global().startCoroutine {
             for _ in 0..<1000 {
-                try Coroutine.await {
+                Coroutine.await {
                     DispatchQueue.global().async(execute: $0)
                 }
-                try DispatchQueue.global().await {}
+                DispatchQueue.global().await {}
                 count += 1
             }
             XCTAssertEqual(count, 1000)
@@ -133,11 +121,11 @@ class CoFutureAwaitTests: XCTestCase {
             var sum = 0
             DispatchQueue.global().startCoroutine {
                 for i in 0..<10_000 {
-                    sum += try DispatchQueue.global().await { i }
-                    sum += try DispatchQueue.global().await { i }
-                    sum += try DispatchQueue.global().await { i }
-                    sum += try DispatchQueue.global().await { i }
-                    sum += try DispatchQueue.global().await { i }
+                    sum += DispatchQueue.global().await { i }
+                    sum += DispatchQueue.global().await { i }
+                    sum += DispatchQueue.global().await { i }
+                    sum += DispatchQueue.global().await { i }
+                    sum += DispatchQueue.global().await { i }
                 }
                 XCTAssertEqual(sum, (0..<10_000).reduce(0, +) * 5)
                 group.leave()

@@ -15,13 +15,6 @@
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/CoFutureError.swift",
-      "line": 10,
-      "symbol": "CoFutureError.timeout",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
       "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Core/CoPromise.swift",
       "line": 18,
       "symbol": "CoPromise.init()",
@@ -57,17 +50,24 @@
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/Coroutine/CoroutineError.swift",
-      "line": 9,
-      "symbol": "CoroutineError",
-      "symbol_kind": "source.lang.swift.decl.enum",
+      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Extensions/URLSession+CoFuture.swift",
+      "line": 17,
+      "symbol": "URLSession.DataResponse",
+      "symbol_kind": "source.lang.swift.decl.typealias",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/Coroutine/CoroutineError.swift",
-      "line": 10,
-      "symbol": "CoroutineError.mustBeCalledInsideCoroutine",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Extensions/URLSession+CoFuture.swift",
+      "line": 19,
+      "symbol": "URLSession.dataTaskFuture(for:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Extensions/URLSession+CoFuture.swift",
+      "line": 23,
+      "symbol": "URLSession.dataTaskFuture(for:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     }
   ],
