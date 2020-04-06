@@ -13,8 +13,8 @@ internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
     }
     
     private let queuesCount: Int
-    private let queues: UnsafeMutablePointer<SharedCoroutineQueue>
     private var tasks = ThreadSafeFifoQueues<Task>()
+    private let queues: UnsafeMutablePointer<SharedCoroutineQueue>
     private var freeQueuesMask = AtomicBitMask()
     private var suspendedQueuesMask = AtomicBitMask()
     
@@ -36,7 +36,7 @@ internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
     private var freeQueue: SharedCoroutineQueue? {
         if !freeQueuesMask.isEmpty, let index = freeQueuesMask.pop() { return queues[index] }
         if !suspendedQueuesMask.isEmpty, let index = suspendedQueuesMask
-                .pop(offset: suspendedQueuesMask.rawValue % queuesCount) {
+            .pop(offset: suspendedQueuesMask.rawValue % queuesCount) {
             return queues[index]
         }
         return nil
@@ -85,7 +85,9 @@ internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
             coroutine.resumeOnQueue()
         } else if let task = tasks.pop() {
             queue.mutex.unlock()
-            start(task: task)
+            task.scheduler.scheduleTask {
+                queue.start(dispatcher: self, task: task)
+            }
         } else {
             queue.started == 0
                 ? freeQueuesMask.insert(queue.tag)
