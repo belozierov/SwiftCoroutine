@@ -83,11 +83,6 @@ internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
         if let coroutine = queue.prepared.pop() {
             queue.mutex.unlock()
             coroutine.resumeOnQueue()
-        } else if let task = tasks.pop() {
-            queue.mutex.unlock()
-            task.scheduler.scheduleTask {
-                queue.start(dispatcher: self, task: task)
-            }
         } else {
             queue.started == 0
                 ? freeQueuesMask.insert(queue.tag)
