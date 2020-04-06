@@ -30,7 +30,6 @@ struct AtomicBitMask {
     }
     
     mutating func pop() -> Int? {
-        if isEmpty { return nil }
         var index: Int!
         atomic.update {
             if $0 == 0 { index = nil; return $0 }

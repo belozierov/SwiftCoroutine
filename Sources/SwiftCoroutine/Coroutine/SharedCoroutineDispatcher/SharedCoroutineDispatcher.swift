@@ -14,7 +14,6 @@ internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
         let scheduler: CoroutineScheduler, task: () -> Void
     }
     
-    private let stackSize: Int
     private var tasks = ThreadSafeFifoQueues<Task>()
     
     private let queuesCount: Int
@@ -27,7 +26,6 @@ internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
     }
     
     internal init(contextsCount: Int, stackSize: Int) {
-        self.stackSize = stackSize
         queuesCount = contextsCount
         queues = .allocate(capacity: contextsCount)
         (0..<contextsCount).forEach {
@@ -60,7 +58,7 @@ internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
     private var freeQueue: SharedCoroutineQueue? {
         if !freeQueuesMask.isEmpty, let index = freeQueuesMask.pop() { return queues[index] }
         if !suspendedQueuesMask.isEmpty,
-            let index = suspendedQueuesMask.pop(offset: suspendedIterator.value % 64) {
+            let index = suspendedQueuesMask.pop(offset: suspendedIterator.value % queuesCount) {
             suspendedIterator.increase()
             return queues[index]
         }
