@@ -45,12 +45,25 @@ internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
                 tasks.push(.init(scheduler: scheduler, task: task))
             }
         }
-        guard hasFree else {
+        if !hasFree {
             tasks.push(.init(scheduler: scheduler, task: task))
-//            precondition(!hasFree)
+            if hasFree { checkForResumableTasks() }
             return
         }
         scheduler.scheduleTask(perform)
+    }
+    
+    private func checkForResumableTasks() {
+        guard let task = tasks.pop() else { return }
+        task.scheduler.scheduleTask {
+            if let queue = self.freeQueue {
+//                print("checkForResumableTasks started")
+                queue.start(dispatcher: self, task: task)
+            } else {
+//                print("checkForResumableTasks pushed")
+                self.tasks.push(task)
+            }
+        }
     }
     
     private var suspendedIterator = AtomicInt(value: 0)
@@ -99,6 +112,7 @@ internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
                 ? freeQueuesMask.insert(queue.tag)
                 : suspendedQueuesMask.insert(queue.tag)
             queue.mutex.unlock()
+            if hasFree { checkForResumableTasks() }
         }
     }
     
