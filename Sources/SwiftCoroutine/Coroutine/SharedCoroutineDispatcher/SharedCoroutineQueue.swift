@@ -14,24 +14,39 @@ internal final class SharedCoroutineQueue {
         case finished, suspended, restarting
     }
     
+    internal let tag: Int
     internal let context: CoroutineContext
+    let mutex = PsxLock()
     private var coroutine: SharedCoroutine?
-    private var prepared = FifoQueue<SharedCoroutine>()
+    var prepared = FifoQueue<SharedCoroutine>()
     private(set) var started = 0
     
-    internal init(stackSize size: Int) {
+//    private var queueCount = AtomicInt(value: 0)
+    
+//    var isEmpty: Bool {
+//        queueCount.value == 0
+//    }
+    
+    internal init(tag: Int, stackSize size: Int) {
+        self.tag = tag
         context = CoroutineContext(stackSize: size)
     }
     
     // MARK: - Queue
     
-    internal func push(_ coroutine: SharedCoroutine) {
-        prepared.push(coroutine)
-    }
-    
-    internal func pop() -> SharedCoroutine? {
-        prepared.pop()
-    }
+//    internal func push(_ coroutine: SharedCoroutine) {
+//        mutex.lock()
+//        queueCount.increase()
+//        prepared.push(coroutine)
+//        mutex.unlock()
+//    }
+//    
+//    internal func pop() -> SharedCoroutine? {
+//        mutex.lock()
+//        defer { mutex.unlock() }
+//        queueCount.decrease()
+//        return prepared.pop()
+//    }
     
     // MARK: - Actions
     

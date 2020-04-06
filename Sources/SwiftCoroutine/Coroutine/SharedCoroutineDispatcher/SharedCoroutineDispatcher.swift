@@ -14,21 +14,26 @@ internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
         let scheduler: CoroutineScheduler, task: () -> Void
     }
     
-    private let mutex = PsxLock()
     private let stackSize: Int
-    private var tasks = FifoQueue<Task>()
+    private var tasks = ThreadSafeFifoQueues<Task>()
     
-    private var contextsCount: Int
-    private var freeQueues = [SharedCoroutineQueue]()
-    private var suspendedQueues = Set<SharedCoroutineQueue>()
-    private var freeCount: AtomicInt
+    private let queuesCount: Int
+    private let queues: UnsafeMutablePointer<SharedCoroutineQueue>
+    private var freeQueuesMask = AtomicBitMask()
+    private var suspendedQueuesMask = AtomicBitMask()
+    
+    private var hasFree: Bool {
+        !freeQueuesMask.isEmpty || !suspendedQueuesMask.isEmpty
+    }
     
     internal init(contextsCount: Int, stackSize: Int) {
         self.stackSize = stackSize
-        self.contextsCount = contextsCount
-        freeCount = AtomicInt(value: contextsCount)
-        freeQueues.reserveCapacity(contextsCount)
-        suspendedQueues.reserveCapacity(contextsCount)
+        queuesCount = contextsCount
+        queues = .allocate(capacity: contextsCount)
+        (0..<contextsCount).forEach {
+            freeQueuesMask.insert($0)
+            (queues + $0).initialize(to: .init(tag: $0, stackSize: stackSize))
+        }
         startDispatchSource()
     }
     
@@ -36,83 +41,66 @@ internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
     
     internal func execute(on scheduler: CoroutineScheduler, task: @escaping () -> Void) {
         func perform() {
-            freeCount.update { max(0, $0 - 1) }
-            mutex.lock()
             if let queue = freeQueue {
-                mutex.unlock()
                 queue.start(dispatcher: self, task: .init(scheduler: scheduler, task: task))
             } else {
                 tasks.push(.init(scheduler: scheduler, task: task))
-                mutex.unlock()
             }
         }
-        if freeCount.value == 0 {
-            mutex.lock()
-            defer { mutex.unlock() }
-            if freeCount.value == 0 {
-                return tasks.push(.init(scheduler: scheduler, task: task))
-            }
+        guard hasFree else {
+            tasks.push(.init(scheduler: scheduler, task: task))
+//            precondition(!hasFree)
+            return
         }
         scheduler.scheduleTask(perform)
     }
     
+    private var suspendedIterator = AtomicInt(value: 0)
+    
     private var freeQueue: SharedCoroutineQueue? {
-        if let queue = freeQueues.popLast() { return queue }
-        if contextsCount > 0 {
-            contextsCount -= 1
-            return SharedCoroutineQueue(stackSize: stackSize)
-        } else if suspendedQueues.count < 2 {
-            return suspendedQueues.popFirst()
+        if !freeQueuesMask.isEmpty, let index = freeQueuesMask.pop() { return queues[index] }
+        if !suspendedQueuesMask.isEmpty,
+            let index = suspendedQueuesMask.pop(offset: suspendedIterator.value % 64) {
+            suspendedIterator.increase()
+            return queues[index]
         }
-        var min = suspendedQueues.first!
-        for queue in suspendedQueues {
-            if queue.started == 1 {
-                return suspendedQueues.remove(queue)
-            } else if queue.started < min.started {
-                min = queue
-            }
-        }
-        return suspendedQueues.remove(min)
+        return nil
     }
     
     // MARK: - Resume
     
     internal func resume(_ coroutine: SharedCoroutine) {
-        mutex.lock()
-        if suspendedQueues.remove(coroutine.queue) == nil {
-            coroutine.queue.push(coroutine)
-            mutex.unlock()
-        } else {
-            mutex.unlock()
-            freeCount.decrease()
+        coroutine.queue.mutex.lock()
+        if suspendedQueuesMask.remove(coroutine.queue.tag) {
+            coroutine.queue.mutex.unlock()
             coroutine.scheduler.scheduleTask {
                 coroutine.queue.resume(coroutine: coroutine)
             }
+        } else {
+            coroutine.queue.prepared.push(coroutine)
+            coroutine.queue.mutex.unlock()
         }
     }
     
     // MARK: - Next
     
     internal func performNext(for queue: SharedCoroutineQueue) {
-        mutex.lock()
-        if let coroutine = queue.pop() {
-            mutex.unlock()
+        queue.mutex.lock()
+        if let coroutine = queue.prepared.pop() {
+            queue.mutex.unlock()
             coroutine.scheduler.scheduleTask {
                 queue.resume(coroutine: coroutine)
             }
         } else if let task = tasks.pop() {
-            mutex.unlock()
+            queue.mutex.unlock()
             task.scheduler.scheduleTask {
                 queue.start(dispatcher: self, task: task)
             }
         } else {
-            if queue.started == 0 {
-                freeQueues.append(queue)
-            } else {
-                suspendedQueues.insert(queue)
-            }
-            freeCount.increase()
-            mutex.unlock()
+            queue.started == 0
+                ? freeQueuesMask.insert(queue.tag)
+                : suspendedQueuesMask.insert(queue.tag)
+            queue.mutex.unlock()
         }
     }
     
@@ -141,15 +129,11 @@ internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
     #endif
     
     internal func reset() {
-        mutex.lock()
-        contextsCount += freeQueues.count
-        freeCount.add(freeQueues.count)
-        freeQueues.removeAll(keepingCapacity: true)
-        mutex.unlock()
-    }
-    
-    deinit {
-        mutex.free()
+//        mutex.lock()
+//        contextsCount += freeQueues.count
+//        freeCount.add(freeQueues.count)
+//        freeQueues.removeAll(keepingCapacity: true)
+//        mutex.unlock()
     }
     
 }
