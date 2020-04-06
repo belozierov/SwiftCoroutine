@@ -21,12 +21,6 @@ internal final class SharedCoroutineQueue {
     var prepared = FifoQueue<SharedCoroutine>()
     private(set) var started = 0
     
-//    private var queueCount = AtomicInt(value: 0)
-    
-//    var isEmpty: Bool {
-//        queueCount.value == 0
-//    }
-    
     internal init(tag: Int, stackSize size: Int) {
         self.tag = tag
         context = CoroutineContext(stackSize: size)
@@ -84,16 +78,8 @@ internal final class SharedCoroutineQueue {
         }
     }
     
-}
-
-extension SharedCoroutineQueue: Hashable {
-    
-    @inlinable internal static func == (lhs: SharedCoroutineQueue, rhs: SharedCoroutineQueue) -> Bool {
-        lhs === rhs
-    }
-    
-    @inlinable internal func hash(into hasher: inout Hasher) {
-        ObjectIdentifier(self).hash(into: &hasher)
+    deinit {
+        mutex.free()
     }
     
 }
