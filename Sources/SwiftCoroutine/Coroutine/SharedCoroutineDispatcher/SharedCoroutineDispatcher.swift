@@ -19,7 +19,7 @@ internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
     private var tasks = ThreadSafeFifoQueues<Task>()
     
     internal init(contextsCount: Int, stackSize: Int) {
-        queuesCount = min(contextsCount, 64)
+        queuesCount = min(contextsCount, 63)
         queues = .allocate(capacity: queuesCount)
         (0..<queuesCount).forEach {
             freeQueuesMask.insert($0)
@@ -50,11 +50,9 @@ internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
     // MARK: - Start
     
     internal func execute(on scheduler: CoroutineScheduler, task: @escaping () -> Void) {
-        if hasFree {
-            startTask(.init(scheduler: scheduler, task: task))
-        } else {
-            pushTask(.init(scheduler: scheduler, task: task))
-        }
+        hasFree
+            ? startTask(.init(scheduler: scheduler, task: task))
+            : pushTask(.init(scheduler: scheduler, task: task))
     }
     
     private func startTask(_ task: Task) {

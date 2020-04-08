@@ -33,9 +33,6 @@ internal struct AtomicInt {
         }
     }
     
-    @inlinable mutating func increase() { add(1) }
-    @inlinable mutating func decrease() { add(-1) }
-    
     @discardableResult @inlinable
     mutating func update(_ transform: (Int) -> Int) -> (old: Int, new: Int) {
         withUnsafeMutablePointer(to: &_value) {

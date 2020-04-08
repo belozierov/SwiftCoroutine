@@ -38,10 +38,6 @@ internal struct PsxCondition {
         pthread_cond_signal(condition)
     }
     
-    @inlinable internal func broadcast() {
-        pthread_cond_broadcast(condition)
-    }
-    
     @inlinable internal func free() {
         pthread_cond_destroy(condition)
         condition.deallocate()

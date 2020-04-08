@@ -42,10 +42,6 @@ internal struct ThreadSafeFifoQueues<T> {
     private var popIndex = AtomicInt(value: -1)
     private var counter = AtomicInt(value: 0)
     
-    @inlinable internal var isEmpty: Bool {
-        counter.value == 0
-    }
-    
     internal init(count: Int = .processorsNumber) {
         self.count = count
         queues = .allocate(capacity: count)
@@ -53,7 +49,7 @@ internal struct ThreadSafeFifoQueues<T> {
     }
     
     internal mutating func push(_ item: T) {
-        counter.increase()
+        counter.add(1)
         let index = pushIndex.update { $0 + 1 < count ? $0 + 1 : 0 }.new
         (queues + index).pointee.push(item)
     }

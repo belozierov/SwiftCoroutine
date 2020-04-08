@@ -35,7 +35,8 @@ struct AtomicBitMask {
         var index: Int!
         atomic.update {
             if $0 == 0 { index = nil; return $0 }
-            let value = UInt($0) & (0 &- UInt($0))
+            let uint = UInt(bitPattern: $0)
+            let value = uint & (0 &- uint)
             index = deBruijn[Int((value &* 285870213051386505) >> 58)]
             return $0 & ~(1 << index)
         }
@@ -46,8 +47,8 @@ struct AtomicBitMask {
         var index: Int!
         atomic.update {
             if $0 == 0 { index = nil; return $0 }
-            let shifted = UInt(bitPattern: ($0 << offset) + ($0 >> (64 - offset)))
-            let value = shifted & (0 &- shifted)
+            let uint = UInt(bitPattern: ($0 << offset) + ($0 >> (64 - offset)))
+            let value = uint & (0 &- uint)
             index = deBruijn[Int((value &* 285870213051386505) >> 58)] - offset
             if index < 0 { index += 64 }
             return $0 & ~(1 << index)

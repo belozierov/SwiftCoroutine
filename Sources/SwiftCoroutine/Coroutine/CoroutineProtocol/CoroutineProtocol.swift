@@ -24,15 +24,10 @@ import Darwin
 extension CoroutineProtocol {
     
     @inlinable internal func performAsCurrent<T>(_ block: () -> T) -> T {
-        if let caller = pthread_getspecific(.coroutine) {
-            pthread_setspecific(.coroutine, Unmanaged.passUnretained(self).toOpaque())
-            defer { pthread_setspecific(.coroutine, caller) }
-            return block()
-        } else {
-            pthread_setspecific(.coroutine, Unmanaged.passUnretained(self).toOpaque())
-            defer { pthread_setspecific(.coroutine, nil) }
-            return block()
-        }
+        let caller = pthread_getspecific(.coroutine)
+        pthread_setspecific(.coroutine, Unmanaged.passUnretained(self).toOpaque())
+        defer { pthread_setspecific(.coroutine, caller) }
+        return block()
     }
     
 }

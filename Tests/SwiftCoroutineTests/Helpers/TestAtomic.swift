@@ -41,7 +41,7 @@ class TestAtomic: XCTestCase {
     func testIntIncrease() {
         var atomic = AtomicInt(value: 0)
         DispatchQueue.concurrentPerform(iterations: 100_000) { _ in
-            atomic.increase()
+            atomic.add(1)
         }
         XCTAssertEqual(atomic.value, 100_000)
     }
