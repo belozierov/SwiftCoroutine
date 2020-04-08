@@ -18,10 +18,8 @@ private let deBruijn = [00, 01, 48, 02, 57, 49, 28, 03,
 struct AtomicBitMask {
     
     private var atomic = AtomicInt(value: 0)
-    
-    var rawValue: Int {
-        atomic.value
-    }
+    var rawValue: Int { atomic.value }
+    var isEmpty: Bool { atomic.value == 0 }
     
     mutating func insert(_ index: Int) {
         atomic.update { $0 | (1 << index) }
@@ -55,10 +53,6 @@ struct AtomicBitMask {
             return $0 & ~(1 << index)
         }
         return index
-    }
-    
-    var isEmpty: Bool {
-        atomic.value == 0
     }
     
 }

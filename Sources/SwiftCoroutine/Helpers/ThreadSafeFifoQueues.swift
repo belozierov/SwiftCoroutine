@@ -6,7 +6,7 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
-struct ThreadSafeFifoQueues<T> {
+internal struct ThreadSafeFifoQueues<T> {
     
     private struct Queue {
         
@@ -42,30 +42,30 @@ struct ThreadSafeFifoQueues<T> {
     private var popIndex = AtomicInt(value: -1)
     private var counter = AtomicInt(value: 0)
     
-    var isEmpty: Bool {
+    @inlinable internal var isEmpty: Bool {
         counter.value == 0
     }
     
-    init(count: Int = .processorsNumber) {
+    internal init(count: Int = .processorsNumber) {
         self.count = count
         queues = .allocate(capacity: count)
         (0..<count).forEach { (queues + $0).initialize(to: .init()) }
     }
     
-    mutating func push(_ item: T) {
+    internal mutating func push(_ item: T) {
         counter.increase()
         let index = pushIndex.update { $0 + 1 < count ? $0 + 1 : 0 }.new
         (queues + index).pointee.push(item)
     }
     
-    mutating func pop() -> T? {
-        if isEmpty { return nil }
+    internal mutating func pop() -> T? {
+        if count == 0 { return nil }
         if counter.update({ max(0, $0 - 1) }).old == 0 { return nil }
         let index = popIndex.update { $0 + 1 < count ? $0 + 1 : 0 }.new
         return (queues + index).pointee.pop()
     }
     
-    func free() {
+    internal func free() {
         (0..<count).forEach { queues[$0].condition.free() }
         queues.deinitialize(count: count)
         queues.deallocate()

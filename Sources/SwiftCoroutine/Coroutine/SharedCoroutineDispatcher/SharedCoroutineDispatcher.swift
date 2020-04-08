@@ -13,10 +13,10 @@ internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
     }
     
     private let queuesCount: Int
-    private var tasks = ThreadSafeFifoQueues<Task>()
     private let queues: UnsafeMutablePointer<SharedCoroutineQueue>
     private var freeQueuesMask = AtomicBitMask()
     private var suspendedQueuesMask = AtomicBitMask()
+    private var tasks = ThreadSafeFifoQueues<Task>()
     
     internal init(contextsCount: Int, stackSize: Int) {
         queuesCount = min(contextsCount, 64)
@@ -42,23 +42,27 @@ internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
         return nil
     }
     
+    private func pushTask(_ task: Task) {
+        tasks.push(task)
+        if hasFree { tasks.pop().map(startTask) }
+    }
+    
     // MARK: - Start
     
     internal func execute(on scheduler: CoroutineScheduler, task: @escaping () -> Void) {
         if hasFree {
-            start(task: .init(scheduler: scheduler, task: task))
+            startTask(.init(scheduler: scheduler, task: task))
         } else {
-            tasks.push(.init(scheduler: scheduler, task: task))
-            if hasFree { tasks.pop().map(start) }
+            pushTask(.init(scheduler: scheduler, task: task))
         }
     }
     
-    private func start(task: Task) {
+    private func startTask(_ task: Task) {
         task.scheduler.scheduleTask {
             if let queue = self.freeQueue {
                 queue.start(dispatcher: self, task: task)
             } else {
-                self.tasks.push(task)
+                self.pushTask(task)
             }
         }
     }
@@ -88,7 +92,7 @@ internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
                 ? freeQueuesMask.insert(queue.tag)
                 : suspendedQueuesMask.insert(queue.tag)
             queue.mutex.unlock()
-            if hasFree { tasks.pop().map(start) }
+            if hasFree { tasks.pop().map(startTask) }
         }
     }
     
