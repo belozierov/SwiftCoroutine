@@ -14,23 +14,16 @@ internal final class SharedCoroutineQueue {
         case finished, suspended, restarting
     }
     
+    internal let tag: Int
     internal let context: CoroutineContext
+    internal let mutex = PsxLock()
+    internal var prepared = FifoQueue<SharedCoroutine>()
     private var coroutine: SharedCoroutine?
-    private var prepared = FifoQueue<SharedCoroutine>()
     private(set) var started = 0
     
-    internal init(stackSize size: Int) {
+    internal init(tag: Int, stackSize size: Int) {
+        self.tag = tag
         context = CoroutineContext(stackSize: size)
-    }
-    
-    // MARK: - Queue
-    
-    internal func push(_ coroutine: SharedCoroutine) {
-        prepared.push(coroutine)
-    }
-    
-    internal func pop() -> SharedCoroutine? {
-        prepared.pop()
     }
     
     // MARK: - Actions
@@ -69,16 +62,8 @@ internal final class SharedCoroutineQueue {
         }
     }
     
-}
-
-extension SharedCoroutineQueue: Hashable {
-    
-    @inlinable internal static func == (lhs: SharedCoroutineQueue, rhs: SharedCoroutineQueue) -> Bool {
-        lhs === rhs
-    }
-    
-    @inlinable internal func hash(into hasher: inout Hasher) {
-        ObjectIdentifier(self).hash(into: &hasher)
+    deinit {
+        mutex.free()
     }
     
 }

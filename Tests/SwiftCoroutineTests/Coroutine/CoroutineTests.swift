@@ -11,6 +11,32 @@ import XCTest
 
 class CoroutineTests: XCTestCase {
     
+    struct ImmediateScheduler: CoroutineScheduler {
+        func scheduleTask(_ task: @escaping () -> Void) { task() }
+    }
+    
+    func testNested() {
+        let exp = expectation(description: "testAwait")
+        exp.expectedFulfillmentCount = 2
+        let dispatcher = CoroutineDispatcher.default
+        DispatchQueue.global().async {
+            dispatcher.execute(on: ImmediateScheduler()) {
+               let coroutine = Coroutine.current
+               dispatcher.execute(on: ImmediateScheduler()) {
+                    XCTAssertFalse(coroutine === Coroutine.current)
+                    Coroutine.await {
+                        DispatchQueue.global().asyncAfter(deadline: .now() + 1, execute: $0)
+                    }
+                    XCTAssertFalse(coroutine === Coroutine.current)
+                    exp.fulfill()
+               }
+               XCTAssertTrue(coroutine === Coroutine.current)
+               exp.fulfill()
+            }
+        }
+        wait(for: [exp], timeout: 3)
+    }
+    
     func testEscaping() {
         let exp = expectation(description: "testAwait")
         exp.expectedFulfillmentCount = 1000

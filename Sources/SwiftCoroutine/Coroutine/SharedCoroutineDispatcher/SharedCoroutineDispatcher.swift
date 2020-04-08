@@ -6,151 +6,105 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
-import Dispatch
-
 internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
     
     internal struct Task {
         let scheduler: CoroutineScheduler, task: () -> Void
     }
     
-    private let mutex = PsxLock()
-    private let stackSize: Int
-    private var tasks = FifoQueue<Task>()
-    
-    private var contextsCount: Int
-    private var freeQueues = [SharedCoroutineQueue]()
-    private var suspendedQueues = Set<SharedCoroutineQueue>()
-    private var freeCount: AtomicInt
+    private let queuesCount: Int
+    private let queues: UnsafeMutablePointer<SharedCoroutineQueue>
+    private var freeQueuesMask = AtomicBitMask()
+    private var suspendedQueuesMask = AtomicBitMask()
+    private var tasks = ThreadSafeFifoQueues<Task>()
     
     internal init(contextsCount: Int, stackSize: Int) {
-        self.stackSize = stackSize
-        self.contextsCount = contextsCount
-        freeCount = AtomicInt(value: contextsCount)
-        freeQueues.reserveCapacity(contextsCount)
-        suspendedQueues.reserveCapacity(contextsCount)
-        startDispatchSource()
+        queuesCount = min(contextsCount, 63)
+        queues = .allocate(capacity: queuesCount)
+        (0..<queuesCount).forEach {
+            freeQueuesMask.insert($0)
+            (queues + $0).initialize(to: .init(tag: $0, stackSize: stackSize))
+        }
+    }
+    
+    // MARK: - Free
+    
+    private var hasFree: Bool {
+        !freeQueuesMask.isEmpty || !suspendedQueuesMask.isEmpty
+    }
+    
+    private var freeQueue: SharedCoroutineQueue? {
+        if !freeQueuesMask.isEmpty, let index = freeQueuesMask.pop() { return queues[index] }
+        if !suspendedQueuesMask.isEmpty, let index = suspendedQueuesMask
+            .pop(offset: suspendedQueuesMask.rawValue % queuesCount) {
+            return queues[index]
+        }
+        return nil
+    }
+    
+    private func pushTask(_ task: Task) {
+        tasks.push(task)
+        if hasFree { tasks.pop().map(startTask) }
     }
     
     // MARK: - Start
     
     internal func execute(on scheduler: CoroutineScheduler, task: @escaping () -> Void) {
-        func perform() {
-            freeCount.update { max(0, $0 - 1) }
-            mutex.lock()
-            if let queue = freeQueue {
-                mutex.unlock()
-                queue.start(dispatcher: self, task: .init(scheduler: scheduler, task: task))
-            } else {
-                tasks.push(.init(scheduler: scheduler, task: task))
-                mutex.unlock()
-            }
-        }
-        if freeCount.value == 0 {
-            mutex.lock()
-            defer { mutex.unlock() }
-            if freeCount.value == 0 {
-                return tasks.push(.init(scheduler: scheduler, task: task))
-            }
-        }
-        scheduler.scheduleTask(perform)
+        hasFree
+            ? startTask(.init(scheduler: scheduler, task: task))
+            : pushTask(.init(scheduler: scheduler, task: task))
     }
     
-    private var freeQueue: SharedCoroutineQueue? {
-        if let queue = freeQueues.popLast() { return queue }
-        if contextsCount > 0 {
-            contextsCount -= 1
-            return SharedCoroutineQueue(stackSize: stackSize)
-        } else if suspendedQueues.count < 2 {
-            return suspendedQueues.popFirst()
-        }
-        var min = suspendedQueues.first!
-        for queue in suspendedQueues {
-            if queue.started == 1 {
-                return suspendedQueues.remove(queue)
-            } else if queue.started < min.started {
-                min = queue
+    private func startTask(_ task: Task) {
+        task.scheduler.scheduleTask {
+            if let queue = self.freeQueue {
+                queue.start(dispatcher: self, task: task)
+            } else {
+                self.pushTask(task)
             }
         }
-        return suspendedQueues.remove(min)
     }
     
     // MARK: - Resume
     
     internal func resume(_ coroutine: SharedCoroutine) {
-        mutex.lock()
-        if suspendedQueues.remove(coroutine.queue) == nil {
-            coroutine.queue.push(coroutine)
-            mutex.unlock()
+        coroutine.queue.mutex.lock()
+        if suspendedQueuesMask.remove(coroutine.queue.tag) {
+            coroutine.queue.mutex.unlock()
+            coroutine.resumeOnQueue()
         } else {
-            mutex.unlock()
-            freeCount.decrease()
-            coroutine.scheduler.scheduleTask {
-                coroutine.queue.resume(coroutine: coroutine)
-            }
+            coroutine.queue.prepared.push(coroutine)
+            coroutine.queue.mutex.unlock()
         }
     }
     
     // MARK: - Next
     
     internal func performNext(for queue: SharedCoroutineQueue) {
-        mutex.lock()
-        if let coroutine = queue.pop() {
-            mutex.unlock()
-            coroutine.scheduler.scheduleTask {
-                queue.resume(coroutine: coroutine)
-            }
-        } else if let task = tasks.pop() {
-            mutex.unlock()
-            task.scheduler.scheduleTask {
-                queue.start(dispatcher: self, task: task)
-            }
+        queue.mutex.lock()
+        if let coroutine = queue.prepared.pop() {
+            queue.mutex.unlock()
+            coroutine.resumeOnQueue()
         } else {
-            if queue.started == 0 {
-                freeQueues.append(queue)
-            } else {
-                suspendedQueues.insert(queue)
-            }
-            freeCount.increase()
-            mutex.unlock()
+            queue.started == 0
+                ? freeQueuesMask.insert(queue.tag)
+                : suspendedQueuesMask.insert(queue.tag)
+            queue.mutex.unlock()
+            if hasFree { tasks.pop().map(startTask) }
         }
-    }
-    
-    // MARK: - DispatchSourceMemoryPressure
-    
-    #if os(Linux)
-    
-    private func startDispatchSource() {}
-    
-    #else
-    
-    private lazy var memoryPressureSource: DispatchSourceMemoryPressure = {
-        let source = DispatchSource.makeMemoryPressureSource(eventMask: [.warning, .critical])
-        source.setEventHandler { [unowned self] in self.reset() }
-        return source
-    }()
-    
-    private func startDispatchSource() {
-        if #available(OSX 10.12, iOS 10.0, *) {
-            memoryPressureSource.activate()
-        } else {
-            memoryPressureSource.resume()
-        }
-    }
-    
-    #endif
-    
-    internal func reset() {
-        mutex.lock()
-        contextsCount += freeQueues.count
-        freeCount.add(freeQueues.count)
-        freeQueues.removeAll(keepingCapacity: true)
-        mutex.unlock()
     }
     
     deinit {
-        mutex.free()
+        queues.deinitialize(count: queuesCount)
+        queues.deallocate()
     }
     
 }
 
+extension SharedCoroutine {
+    
+    fileprivate func resumeOnQueue() {
+        scheduler.scheduleTask { self.queue.resume(coroutine: self) }
+    }
+    
+}
