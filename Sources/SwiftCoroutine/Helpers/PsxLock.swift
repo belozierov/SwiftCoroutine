@@ -16,7 +16,7 @@ import Darwin
     
     @usableFromInline internal let mutex: UnsafeMutablePointer<pthread_mutex_t>
     
-    @inlinable internal init() {
+    @usableFromInline internal init() {
         mutex = .allocate(capacity: 1)
         pthread_mutex_init(mutex, nil)
     }
