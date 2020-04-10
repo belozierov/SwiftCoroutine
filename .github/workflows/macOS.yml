@@ -13,6 +13,4 @@ jobs:
     - name: Test
       run: swift test --enable-test-discovery --enable-code-coverage
     - name: Codecov
-      run: |
-        xcrun llvm-cov export -format="lcov" .build/debug/SwiftCoroutine.xctest/Contents/MacOS/SwiftCoroutine -instr-profile .build/debug/codecov/default.profdata --ignore-filename-regex "Tests/.*" > info.lcov
-        bash <(curl -s https://codecov.io/bash)
+      run: bash <(curl -s https://codecov.io/bash)
