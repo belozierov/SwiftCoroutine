@@ -6,6 +6,12 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
+protocol _CoFutureCancellable: class {
+
+    func cancel()
+    
+}
+
 /// Holder for a result that will be provided later.
 ///
 /// `CoFuture` and its subclass `CoPromise` are the implementation of the Future/Promise approach.
@@ -42,9 +48,10 @@
 ///     }
 /// }
 /// ```
-public class CoFuture<Value> {
+public class CoFuture<Value>: _CoFutureCancellable {
     
     internal let mutex: PsxLock?
+    private var parent: UnownedCancellable?
     private var callbacks: ContiguousArray<Child>?
     final private(set) var _result: Optional<Result<Value, Error>>
     
@@ -61,23 +68,23 @@ public class CoFuture<Value> {
 }
 
 extension CoFuture {
+
+    /// Starts a new coroutine and initializes future with its result.
+    /// ```
+    /// func sum(future1: CoFuture<Int>, future2: CoFuture<Int>) -> CoFuture<Int> {
+    ///     CoFuture { try future1.await() + future2.await() }
+    /// }
+    /// ```
+    /// - Parameter task: The closure that will be executed inside the coroutine.
+    public convenience init(task: @escaping () throws -> Value) {
+        self.init(mutex: .init(), result: nil)
+        Coroutine.start { self.setResult(Result(catching: task)) }
+    }
     
     /// Initializes a future with result.
     /// - Parameter result: The result provided by this future.
-    @inlinable public convenience init(result: Result<Value, Error>) {
+    public convenience init(result: Result<Value, Error>) {
         self.init(mutex: nil, result: result)
-    }
-    
-    /// Initializes a future with success value.
-    /// - Parameter value: The value provided by this future.
-    @inlinable public convenience init(value: Value) {
-        self.init(result: .success(value))
-    }
-    
-    /// Initializes a future with error.
-    /// - Parameter error: The error provided by this future.
-    @inlinable public convenience init(error: Error) {
-        self.init(result: .failure(error))
     }
     
     // MARK: - result
@@ -91,14 +98,15 @@ extension CoFuture {
     
     @usableFromInline internal func setResult(_ result: Result<Value, Error>) {
         mutex?.lock()
-        if _result != nil {
-            mutex?.unlock()
-        } else {
-            _result = result
-            mutex?.unlock()
-            callbacks?.forEach { $0.callback(result) }
-            callbacks = nil
-        }
+        _result != nil ? mutex?.unlock() : lockedComplete(with: result)
+    }
+    
+    private func lockedComplete(with result: Result<Value, Error>) {
+        _result = result
+        mutex?.unlock()
+        callbacks?.forEach { $0.callback(result) }
+        callbacks = nil
+        parent = nil
     }
     
     // MARK: - Callback
@@ -114,7 +122,16 @@ extension CoFuture {
         }
     }
     
+    internal func addChild<T>(future: CoFuture<T>, callback: @escaping Callback) {
+        future.parent = .init(cancellable: self)
+        append(callback: callback)
+    }
+    
     // MARK: - cancel
+    
+    private struct UnownedCancellable {
+        unowned(unsafe) let cancellable: _CoFutureCancellable
+    }
 
     /// Returns `true` when the current future is canceled.
     @inlinable public var isCanceled: Bool {
@@ -125,8 +142,15 @@ extension CoFuture {
     }
     
     /// Cancels the current future.
-    @inlinable public func cancel() {
-        setResult(.failure(CoFutureError.canceled))
+    public func cancel() {
+        mutex?.lock()
+        if _result != nil { mutex?.unlock(); return }
+        if let parent = parent {
+            mutex?.unlock()
+            parent.cancellable.cancel()
+        } else {
+            lockedComplete(with: .failure(CoFutureError.canceled))
+        }
     }
     
 }

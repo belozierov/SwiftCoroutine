@@ -42,7 +42,7 @@ class CoFutureAwaitTests: XCTestCase {
             }
         }
         wait(for: [exp], timeout: 10)
-//        XCTAssertTrue(array.enumerated().allSatisfy { $0.element == $0.offset })
+        XCTAssertTrue(array.enumerated().allSatisfy { $0.element == $0.offset })
         array.deallocate()
     }
 
@@ -58,7 +58,7 @@ class CoFutureAwaitTests: XCTestCase {
                     let queue = i % 2 == 0 ? queue : queue2
                     return queue.coroutineFuture {
                         try (0..<1000)
-                            .map { _ in CoFuture(value: ()) }
+                            .map { _ in CoFuture(result: .success(())) }
                             .forEach { try $0.await() }
                     }
                 }.forEach { try $0.await() }
@@ -83,20 +83,20 @@ class CoFutureAwaitTests: XCTestCase {
         wait(for: [exp], timeout: 3)
     }
     
-//    func testSerial() {
-//        let exp = expectation(description: "testSerial")
-//        exp.expectedFulfillmentCount = 100_000
-//        let queue = DispatchQueue(label: "com.testSerial")
-//        var counter = 0
-//        for i in 0..<100_000 {
-//            queue.startCoroutine {
-//                XCTAssertEqual(i, counter)
-//                counter += 1
-//                exp.fulfill()
-//            }
-//        }
-//        wait(for: [exp], timeout: 5)
-//    }
+    func testSerial() {
+        let exp = expectation(description: "testSerial")
+        exp.expectedFulfillmentCount = 100_000
+        let queue = DispatchQueue(label: "com.testSerial")
+        var counter = 0
+        for i in 0..<100_000 {
+            queue.startCoroutine {
+                XCTAssertEqual(i, counter)
+                counter += 1
+                exp.fulfill()
+            }
+        }
+        wait(for: [exp], timeout: 5)
+    }
     
     func testTestMultiAwait() {
         let exp = expectation(description: "testTestMultiAwait")

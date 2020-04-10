@@ -8,6 +8,13 @@
 
 import Dispatch
 
+@usableFromInline internal struct ImmediateScheduler: CoroutineScheduler {
+    
+    @usableFromInline init() {}
+    @inlinable func scheduleTask(_ task: @escaping () -> Void) { task() }
+    
+}
+
 /// Additional struct with utility methods to work with coroutines.
 ///
 /// - Important: All `await()` methods must be called inside a coroutine.
@@ -29,6 +36,10 @@ public struct Coroutine {
     /// ```
     @inlinable public static var isInsideCoroutine: Bool {
         currentPointer != nil
+    }
+    
+    @inlinable internal static func start(_ task: @escaping () -> Void) {
+        ImmediateScheduler().startCoroutine(task)
     }
     
     // MARK: - await

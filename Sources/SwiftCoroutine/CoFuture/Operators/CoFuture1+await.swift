@@ -1,5 +1,5 @@
 //
-//  CoFuture+await.swift
+//  CoFuture3+await.swift
 //  SwiftCoroutine
 //
 //  Created by Alex Belozierov on 31.12.2019.

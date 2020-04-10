@@ -62,4 +62,47 @@ class CoFutureTests: XCTestCase {
         }
     }
     
+    func testMap() {
+        let exp = expectation(description: #function)
+        exp.expectedFulfillmentCount = 2
+        let promise = CoPromise<Int>()
+        func test() {
+            promise.map { $0 + 1 }.recover { _ in
+                XCTFail()
+                return 200
+            }.mapResult { _ in
+                Result<Int, Error>.failure(CoFutureError.canceled)
+            }.recover {
+                XCTAssertTrue($0 is CoFutureError)
+                return 2
+            }.whenSuccess {
+                XCTAssertEqual($0, 2)
+                exp.fulfill()
+            }
+        }
+        test()
+        promise.success(0)
+        test()
+        wait(for: [exp], timeout: 1)
+    }
+    
+    func testCoroutineInit() {
+        let date = Date()
+        let exp = expectation(description: "testCoroutineInit")
+        let future1 = DispatchQueue.global().coroutineFuture { () -> Int in
+            Coroutine.delay(.seconds(1))
+            return 5
+        }
+        let future2 = DispatchQueue.global().coroutineFuture { () -> Int in
+            Coroutine.delay(.seconds(2))
+            return 6
+        }
+        CoFuture { try future1.await() + future2.await() }.whenSuccess {
+            XCTAssertEqual($0, 11)
+            XCTAssertDuration(from: date, in: 2..<3)
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 3)
+    }
+    
 }

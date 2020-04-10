@@ -57,4 +57,12 @@ class CoFutureCancelTests: XCTestCase {
         wait(for: [exp], timeout: 1)
     }
     
+    func testCancelParent() {
+        let promise = CoPromise<Int>()
+        let map = promise.map { $0 }
+        map.cancel()
+        XCTAssertTrue(promise.isCanceled)
+        XCTAssertTrue(map.isCanceled)
+    }
+    
 }

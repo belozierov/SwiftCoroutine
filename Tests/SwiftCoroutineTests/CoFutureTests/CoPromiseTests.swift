@@ -37,19 +37,19 @@ class CoPromiseTests: XCTestCase {
     }
     
     func testFutureResult() {
-        let future = CoFuture(value: 1)
+        let future = CoFuture(result: .success(1))
         let promise = CoPromise<Int>()
         promise.complete(with: future)
         XCTAssertEqual(promise.result, 1)
     }
     
     func testPromiseInit() {
-        let future = CoFuture(value: 1)
+        let future = CoFuture(result: .success(1))
         XCTAssertEqual(future.result, 1)
     }
     
     func testPromiseInit2() {
-        let future = CoFuture<Int>(error: TestError())
+        let future = CoFuture<Int>(result: .failure(TestError()))
         do {
             _ = try future.result?.get()
             XCTFail()

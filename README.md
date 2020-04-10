@@ -179,7 +179,7 @@ extension URLSession {
 }
 ```
 
-Also `CoFuture` allows to start multiple tasks in parallel and synchronize them later with `await()`.
+Also `CoFuture` allows to start multiple tasks in parallel and synchronize them later.
 
 ```swift
 //execute task on the global queue and returns CoFuture<Int> with future result
@@ -193,11 +193,8 @@ let future2: CoFuture<Int> = DispatchQueue.global().coroutineFuture {
     return 6
 }
 
-//execute coroutine on the main thread
-DispatchQueue.main.startCoroutine {
-    let sum = try future1.await() + future2.await() //will await for 3 sec.
-    self.label.text = "Sum is \(sum)"
-}
+//create new CoFuture with sum that will take 3 sec.
+let sumFuture = CoFuture { try future1.await() + future2.await() }
 ```
 
 Apple has introduced a new reactive programming framework `Combine` that makes writing asynchronous code easier and includes a lot of convenient and common functionality. We can use it with coroutines by making `CoFuture` a subscriber and await its result.

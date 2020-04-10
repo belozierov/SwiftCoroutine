@@ -1,5 +1,5 @@
 //
-//  CoFuture+whenComplete.swift
+//  CoFuture2+whenComplete.swift
 //  SwiftCoroutine
 //
 //  Created by Alex Belozierov on 26.01.2020.

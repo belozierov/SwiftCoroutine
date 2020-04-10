@@ -1,5 +1,5 @@
 //
-//  CoFuture6+hashable.swift
+//  CoFuture4+hashable.swift
 //  SwiftCoroutine
 //
 //  Created by Alex Belozierov on 16.03.2020.
