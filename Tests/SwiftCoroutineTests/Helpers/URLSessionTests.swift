@@ -6,6 +6,10 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 import XCTest
 @testable import SwiftCoroutine
 
