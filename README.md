@@ -194,7 +194,7 @@ let future2: CoFuture<Int> = DispatchQueue.global().coroutineFuture {
     return 6
 }
 
-//create new CoFuture with sum that will take 3 sec.
+//create new CoFuture with sum that will be completed in 3 sec.
 let sumFuture = CoFuture { try future1.await() + future2.await() }
 ```
 
