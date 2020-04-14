@@ -10,5 +10,5 @@ import XCTest
 @testable import SwiftCoroutineTests
 
 XCTMain([
-    testCase(SwiftCoroutineTests.allTests),
+    testCase(SwiftCoroutineTests.allTests)
 ])

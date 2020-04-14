@@ -8,7 +8,9 @@
 
 internal final class SharedCoroutineQueue {
     
-    internal typealias Task = SharedCoroutineDispatcher.Task
+    private struct Task {
+        let scheduler: CoroutineScheduler, task: () -> Void
+    }
     
     internal enum CompletionState {
         case finished, suspended, restarting
@@ -16,45 +18,74 @@ internal final class SharedCoroutineQueue {
     
     internal let tag: Int
     internal let context: CoroutineContext
-    internal let mutex = PsxLock()
-    internal var prepared = FifoQueue<SharedCoroutine>()
+    private let storage: SharedCoroutineStorage
+    
+    private var prepared = ThreadSaveFifoQueue<SharedCoroutine>()
     private var coroutine: SharedCoroutine?
     private(set) var started = 0
     
-    internal init(tag: Int, stackSize size: Int) {
+    internal init(storage: SharedCoroutineStorage, tag: Int, stackSize size: Int) {
+        self.storage = storage
         self.tag = tag
         context = CoroutineContext(stackSize: size)
     }
     
+    var hasPrepared: Bool {
+        !prepared.isEmpty
+    }
+    
+    func startPrepared() {
+        prepared.pop().map(resumeOnQueue)
+    }
+    
     // MARK: - Actions
     
-    internal func start(dispatcher: SharedCoroutineDispatcher, task: Task) {
-        coroutine?.saveStack()
-        let coroutine = SharedCoroutine(dispatcher: dispatcher, queue: self,
-                                        scheduler: task.scheduler)
-        self.coroutine = coroutine
+    internal func start(dispatcher: SharedCoroutineDispatcher,
+                        scheduler: CoroutineScheduler, task: @escaping () -> Void) {
+        let coroutine: SharedCoroutine
+        if let previous = self.coroutine, previous.dispatcher == nil {
+            coroutine = previous
+            coroutine.dispatcher = dispatcher
+            coroutine.scheduler = scheduler
+        } else {
+            self.coroutine?.saveStack()
+            coroutine = SharedCoroutine(dispatcher: dispatcher, queue: self,
+                                        scheduler: scheduler)
+            self.coroutine = coroutine
+        }
         started += 1
-        context.block = task.task
+        context.block = task
         complete(coroutine: coroutine, state: coroutine.start())
     }
     
     internal func resume(coroutine: SharedCoroutine) {
+        storage.removeSuspended(with: tag)
+            ? resumeOnQueue(coroutine)
+            : prepared.push(coroutine)
+    }
+    
+    private func resumeOnQueue(_ coroutine: SharedCoroutine) {
         if self.coroutine !== coroutine {
-            self.coroutine?.saveStack()
+            if let coroutine = self.coroutine, coroutine.dispatcher != nil {
+                coroutine.saveStack()
+            }
             coroutine.restoreStack()
             self.coroutine = coroutine
         }
-        complete(coroutine: coroutine, state: coroutine.resume())
+        coroutine.scheduler.scheduleTask {
+            self.complete(coroutine: coroutine, state: coroutine.resume())
+        }
     }
     
     private func complete(coroutine: SharedCoroutine, state: CompletionState) {
         switch state {
         case .finished:
             started -= 1
-            self.coroutine = nil
-            coroutine.dispatcher.performNext(for: self)
+            let dispatcher = coroutine.dispatcher!
+            self.coroutine?.reset()
+            performNext(for: dispatcher)
         case .suspended:
-            coroutine.dispatcher.performNext(for: self)
+            performNext(for: coroutine.dispatcher)
         case .restarting:
             coroutine.scheduler.scheduleTask {
                 self.complete(coroutine: coroutine, state: coroutine.resume())
@@ -62,8 +93,17 @@ internal final class SharedCoroutineQueue {
         }
     }
     
+    private func performNext(for dispatcher: SharedCoroutineDispatcher) {
+        if let coroutine = prepared.pop() {
+            resumeOnQueue(coroutine)
+        } else {
+            dispatcher.receiveQueue(self)
+        }
+    }
+    
     deinit {
-        mutex.free()
+        prepared.free()
     }
     
 }
+

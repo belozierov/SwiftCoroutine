@@ -15,12 +15,12 @@
 @usableFromInline internal struct CoroutineDispatcher {
     
     @usableFromInline
-    internal static let `default` = newShared(coroutinePoolSize: .processorsNumber * 2)
+    internal static let `default` = UniversalSharedCoroutineDispatcher(storage: .shared)
     
-    internal static func newShared(coroutinePoolSize poolSize: Int, stackSize: Coroutine.StackSize = .recommended) -> CoroutineDispatcher {
-        let executor = SharedCoroutineDispatcher(contextsCount: poolSize, stackSize: stackSize.size)
-        return CoroutineDispatcher(executor: executor)
-    }
+//    internal static func newShared(coroutinePoolSize poolSize: Int, stackSize: Coroutine.StackSize = .recommended) -> CoroutineDispatcher {
+//        let executor = SharedCoroutineDispatcher(
+//        return CoroutineDispatcher(executor: executor)
+//    }
     
     @usableFromInline let executor: CoroutineTaskExecutor
     

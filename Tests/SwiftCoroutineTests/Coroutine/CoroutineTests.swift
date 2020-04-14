@@ -10,7 +10,7 @@ import XCTest
 @testable import SwiftCoroutine
 
 class CoroutineTests: XCTestCase {
-    
+
     struct ImmediateScheduler: CoroutineScheduler {
         func scheduleTask(_ task: @escaping () -> Void) { task() }
     }

@@ -18,9 +18,9 @@ internal final class SharedCoroutine {
         let stack: UnsafeMutableRawPointer, size: Int
     }
     
-    internal let dispatcher: SharedCoroutineDispatcher
     internal let queue: SharedCoroutineQueue
-    private(set) var scheduler: CoroutineScheduler
+    internal var dispatcher: SharedCoroutineDispatcher!
+    internal var scheduler: CoroutineScheduler!
     private var state = AtomicEnum(value: State.running)
     
     private var environment: UnsafeMutablePointer<CoroutineContext.SuspendData>!
@@ -30,6 +30,12 @@ internal final class SharedCoroutine {
         self.dispatcher = dispatcher
         self.queue = queue
         self.scheduler = scheduler
+    }
+    
+    internal func reset() {
+        dispatcher = nil
+        scheduler = nil
+        state.value = .running
     }
     
     // MARK: - Actions
@@ -94,7 +100,7 @@ extension SharedCoroutine: CoroutineProtocol {
             if result != nil { return }
             result = $0
             if self.state.update(.running) == .suspended {
-                self.dispatcher.resume(self)
+                self.queue.resume(coroutine: self)
             }
         }
         if state.value == .suspending { suspend() }
@@ -102,7 +108,7 @@ extension SharedCoroutine: CoroutineProtocol {
     }
     
     internal func await<T>(on scheduler: CoroutineScheduler, task: () throws -> T) rethrows -> T {
-        let currentScheduler = self.scheduler
+        let currentScheduler = self.scheduler!
         setScheduler(scheduler)
         defer { setScheduler(currentScheduler) }
         return try task()

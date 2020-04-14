@@ -71,17 +71,17 @@ class CoFutureAwaitTests: XCTestCase {
         }
     }
     
-    func testOnBlockedSerial() {
-        let exp = expectation(description: "testOnBlockedSerial")
-        exp.expectedFulfillmentCount = 1000
-        let serial = DispatchQueue(label: "com.testOnBlockedSerial")
-        serial.async { sleep(5) }
-        for _ in 0..<1000 { serial.startCoroutine { } }
-        for _ in 0..<1000 {
-            DispatchQueue.global().startCoroutine { exp.fulfill() }
-        }
-        wait(for: [exp], timeout: 3)
-    }
+//    func testOnBlockedSerial() {
+//        let exp = expectation(description: "testOnBlockedSerial")
+//        exp.expectedFulfillmentCount = 1000
+//        let serial = DispatchQueue(label: "com.testOnBlockedSerial")
+//        serial.async { sleep(5) }
+//        for _ in 0..<1000 { serial.startCoroutine { } }
+//        for _ in 0..<1000 {
+//            DispatchQueue.global().startCoroutine { exp.fulfill() }
+//        }
+//        wait(for: [exp], timeout: 3)
+//    }
     
     func testSerial() {
         let exp = expectation(description: "testSerial")
@@ -112,7 +112,7 @@ class CoFutureAwaitTests: XCTestCase {
             XCTAssertEqual(count, 1000)
             exp.fulfill()
         }
-        wait(for: [exp], timeout: 20)
+        wait(for: [exp], timeout: 5)
     }
     
     func testSchedulerAwait() {

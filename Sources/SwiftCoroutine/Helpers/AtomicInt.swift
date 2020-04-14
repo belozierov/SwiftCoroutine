@@ -14,7 +14,7 @@ internal struct AtomicInt {
     
     private var _value: Int
     
-    @inlinable init(value: Int) {
+    @inlinable init(value: Int = 0) {
         _value = value
     }
     
