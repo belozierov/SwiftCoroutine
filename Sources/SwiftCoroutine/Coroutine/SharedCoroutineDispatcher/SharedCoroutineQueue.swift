@@ -16,37 +16,29 @@ internal final class SharedCoroutineQueue {
         case finished, suspended, restarting
     }
     
-    internal let tag: Int
     internal let context: CoroutineContext
-    private let storage: SharedCoroutineStorage
-    
-    private var prepared = ThreadSaveFifoQueue<SharedCoroutine>()
     private var coroutine: SharedCoroutine?
-    private(set) var started = 0
     
-    internal init(storage: SharedCoroutineStorage, tag: Int, stackSize size: Int) {
-        self.storage = storage
-        self.tag = tag
+    private(set) var started = 0
+    private var atomic = AtomicTuple()
+    private var prepared = BlockingFifoQueue<SharedCoroutine>()
+    
+    internal init(stackSize size: Int) {
         context = CoroutineContext(stackSize: size)
     }
     
-    var hasPrepared: Bool {
-        !prepared.isEmpty
-    }
-    
-    func startPrepared() {
-        prepared.pop().map(resumeOnQueue)
+    internal func occupy() -> Bool {
+        atomic.update(keyPath: \.0, with: .running) == .isFree
     }
     
     // MARK: - Actions
     
-    internal func start(dispatcher: SharedCoroutineDispatcher,
-                        scheduler: CoroutineScheduler, task: @escaping () -> Void) {
+    internal func start(dispatcher: SharedCoroutineDispatcher, scheduler: CoroutineScheduler, task: @escaping () -> Void) {
         let coroutine: SharedCoroutine
         if let previous = self.coroutine, previous.dispatcher == nil {
             coroutine = previous
-            coroutine.dispatcher = dispatcher
             coroutine.scheduler = scheduler
+            coroutine.dispatcher = dispatcher
         } else {
             self.coroutine?.saveStack()
             coroutine = SharedCoroutine(dispatcher: dispatcher, queue: self,
@@ -59,9 +51,10 @@ internal final class SharedCoroutineQueue {
     }
     
     internal func resume(coroutine: SharedCoroutine) {
-        storage.removeSuspended(with: tag)
-            ? resumeOnQueue(coroutine)
-            : prepared.push(coroutine)
+        let wasFree = atomic.update { state, count in
+            (.running, state == .isFree ? count : count + 1)
+        }.old.0 == .isFree
+        wasFree ? resumeOnQueue(coroutine) : prepared.push(coroutine)
     }
     
     private func resumeOnQueue(_ coroutine: SharedCoroutine) {
@@ -82,7 +75,7 @@ internal final class SharedCoroutineQueue {
         case .finished:
             started -= 1
             let dispatcher = coroutine.dispatcher!
-            self.coroutine?.reset()
+            coroutine.reset()
             performNext(for: dispatcher)
         case .suspended:
             performNext(for: coroutine.dispatcher)
@@ -94,11 +87,10 @@ internal final class SharedCoroutineQueue {
     }
     
     private func performNext(for dispatcher: SharedCoroutineDispatcher) {
-        if let coroutine = prepared.pop() {
-            resumeOnQueue(coroutine)
-        } else {
-            dispatcher.receiveQueue(self)
-        }
+        let isFinished = atomic.update { _, count in
+            count > 0 ? (.running, count - 1) : (.isFree, 0)
+        }.new.0 == .isFree
+        isFinished ? dispatcher.push(self) : resumeOnQueue(prepared.pop())
     }
     
     deinit {
@@ -107,3 +99,9 @@ internal final class SharedCoroutineQueue {
     
 }
 
+extension Int32 {
+    
+    fileprivate static let running: Int32 = 0
+    fileprivate static let isFree: Int32 = 1
+    
+}

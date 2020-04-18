@@ -53,8 +53,8 @@ void __atomicStore(_Atomic long* value, long desired) {
     atomic_store(value, desired);
 }
 
-void __atomicFetchAdd(_Atomic long* value, long operand) {
-    atomic_fetch_add(value, operand);
+long __atomicFetchAdd(_Atomic long* value, long operand) {
+    return atomic_fetch_add(value, operand);
 }
 
 int __atomicCompareExchange(_Atomic long* value, long* expected, long desired) {

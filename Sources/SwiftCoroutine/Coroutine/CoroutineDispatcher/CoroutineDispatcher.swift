@@ -15,7 +15,8 @@
 @usableFromInline internal struct CoroutineDispatcher {
     
     @usableFromInline
-    internal static let `default` = UniversalSharedCoroutineDispatcher(storage: .shared)
+    internal static let `default` = SharedCoroutineDispatcher(capacity: .processorsNumber * 2,
+                                                  stackSize: .recommended)
     
 //    internal static func newShared(coroutinePoolSize poolSize: Int, stackSize: Coroutine.StackSize = .recommended) -> CoroutineDispatcher {
 //        let executor = SharedCoroutineDispatcher(

@@ -6,19 +6,23 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
-struct FifoQueue<T> {
+internal struct FifoQueue<T> {
     
     private var input = [T](), output: [T]
     
-    @inlinable init() {
+    @inlinable internal init() {
         output = []
     }
     
-    @inlinable mutating func push(_ item: T) {
+    @inlinable internal mutating func insertAtStart(_ item: T) {
+        output.append(item)
+    }
+    
+    @inlinable internal mutating func push(_ item: T) {
         input.append(item)
     }
     
-    mutating func pop() -> T? {
+    internal mutating func pop() -> T? {
         if let item = output.popLast() { return item }
         switch input.count {
         case 0: return nil
