@@ -14,7 +14,7 @@ internal struct AtomicInt {
     
     private var _value: Int
     
-    @inlinable init(value: Int) {
+    @inlinable init(value: Int = 0) {
         _value = value
     }
     
@@ -27,7 +27,8 @@ internal struct AtomicInt {
         }
     }
     
-    @inlinable mutating func add(_ value: Int) {
+    @discardableResult @inlinable
+    mutating func add(_ value: Int) -> Int {
         withUnsafeMutablePointer(to: &_value) {
             __atomicFetchAdd(OpaquePointer($0), value)
         }

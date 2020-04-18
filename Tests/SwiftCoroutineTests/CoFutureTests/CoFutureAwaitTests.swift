@@ -50,7 +50,6 @@ class CoFutureAwaitTests: XCTestCase {
         let queue = DispatchQueue.global(qos: .userInteractive)
         let queue2 = DispatchQueue.global(qos: .utility)
         let group = DispatchGroup()
-        let _ = CoroutineDispatcher.default
         measure {
             group.enter()
             queue.coroutineFuture {
@@ -108,16 +107,16 @@ class CoFutureAwaitTests: XCTestCase {
                 }
                 DispatchQueue.global().await {}
                 count += 1
+                print(count)
             }
             XCTAssertEqual(count, 1000)
             exp.fulfill()
         }
-        wait(for: [exp], timeout: 20)
+        wait(for: [exp], timeout: 10)
     }
     
     func testSchedulerAwait() {
         let group = DispatchGroup()
-        let _ = CoroutineDispatcher.default
         measure {
             group.enter()
             var sum = 0

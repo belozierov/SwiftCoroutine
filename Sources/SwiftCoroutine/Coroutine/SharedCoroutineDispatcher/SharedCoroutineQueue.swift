@@ -8,62 +8,95 @@
 
 internal final class SharedCoroutineQueue {
     
-    internal typealias Task = SharedCoroutineDispatcher.Task
+    private struct Task {
+        let scheduler: CoroutineScheduler, task: () -> Void
+    }
     
     internal enum CompletionState {
         case finished, suspended, restarting
     }
     
-    internal let tag: Int
     internal let context: CoroutineContext
-    internal let mutex = PsxLock()
-    internal var prepared = FifoQueue<SharedCoroutine>()
-    private var coroutine: SharedCoroutine?
-    private(set) var started = 0
+    private var coroutine: SharedCoroutine
     
-    internal init(tag: Int, stackSize size: Int) {
-        self.tag = tag
+    private(set) var started = 0
+    private var atomic = AtomicTuple()
+    private var prepared = BlockingFifoQueue<SharedCoroutine>()
+    
+    internal init(stackSize size: Int) {
         context = CoroutineContext(stackSize: size)
+        coroutine = SharedCoroutine()
+    }
+    
+    internal func occupy() -> Bool {
+        atomic.update(keyPath: \.0, with: .running) == .isFree
     }
     
     // MARK: - Actions
     
-    internal func start(dispatcher: SharedCoroutineDispatcher, task: Task) {
-        coroutine?.saveStack()
-        let coroutine = SharedCoroutine(dispatcher: dispatcher, queue: self,
-                                        scheduler: task.scheduler)
-        self.coroutine = coroutine
+    internal func start(dispatcher: SharedCoroutineDispatcher, scheduler: CoroutineScheduler, task: @escaping () -> Void) {
+        if coroutine.configuration != nil {
+            coroutine.saveStack()
+            coroutine = SharedCoroutine()
+        }
+        coroutine.configuration = .init(dispatcher: dispatcher, queue: self, scheduler: scheduler)
         started += 1
-        context.block = task.task
-        complete(coroutine: coroutine, state: coroutine.start())
+        context.block = task
+        complete(with: coroutine.start())
     }
     
     internal func resume(coroutine: SharedCoroutine) {
+        let wasFree = atomic.update { state, count in
+            (.running, state == .isFree ? count : count + 1)
+        }.old.0 == .isFree
+        wasFree ? resumeOnQueue(coroutine) : prepared.push(coroutine)
+    }
+    
+    private func resumeOnQueue(_ coroutine: SharedCoroutine) {
         if self.coroutine !== coroutine {
-            self.coroutine?.saveStack()
+            if self.coroutine.configuration != nil {
+                self.coroutine.saveStack()
+            }
             coroutine.restoreStack()
             self.coroutine = coroutine
         }
-        complete(coroutine: coroutine, state: coroutine.resume())
+        coroutine.configuration.scheduler.scheduleTask {
+            self.complete(with: coroutine.resume())
+        }
     }
     
-    private func complete(coroutine: SharedCoroutine, state: CompletionState) {
+    private func complete(with state: CompletionState) {
         switch state {
         case .finished:
             started -= 1
-            self.coroutine = nil
-            coroutine.dispatcher.performNext(for: self)
+            let dispatcher = coroutine.configuration.dispatcher
+            coroutine.reset()
+            performNext(for: dispatcher)
         case .suspended:
-            coroutine.dispatcher.performNext(for: self)
+            performNext(for: coroutine.configuration.dispatcher)
         case .restarting:
-            coroutine.scheduler.scheduleTask {
-                self.complete(coroutine: coroutine, state: coroutine.resume())
+            coroutine.configuration.scheduler.scheduleTask {
+                self.complete(with: self.coroutine.resume())
             }
         }
     }
     
-    deinit {
-        mutex.free()
+    private func performNext(for dispatcher: SharedCoroutineDispatcher) {
+        let isFinished = atomic.update { _, count in
+            count > 0 ? (.running, count - 1) : (.isFree, 0)
+        }.new.0 == .isFree
+        isFinished ? dispatcher.push(self) : resumeOnQueue(prepared.pop())
     }
+    
+    deinit {
+        prepared.free()
+    }
+    
+}
+
+extension Int32 {
+    
+    fileprivate static let running: Int32 = 0
+    fileprivate static let isFree: Int32 = 1
     
 }

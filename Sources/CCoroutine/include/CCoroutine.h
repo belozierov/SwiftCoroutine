@@ -20,7 +20,7 @@ void __longjmp(void* env, int retVal);
 
 long __atomicExchange(_Atomic long* value, long desired);
 void __atomicStore(_Atomic long* value, long desired);
-void __atomicFetchAdd(_Atomic long* value, long operand);
+long __atomicFetchAdd(_Atomic long* value, long operand);
 int __atomicCompareExchange(_Atomic long* value, long* expected, long desired);
 
 #endif

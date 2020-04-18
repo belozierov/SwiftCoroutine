@@ -56,7 +56,7 @@ public struct Coroutine {
     @inlinable public static func await(_ callback: (@escaping () -> Void) -> Void) {
         current.await { completion in callback { completion(()) } }
     }
-    
+
     /// Suspends a coroutine and resumes it on callback.
     /// ```
     /// queue.startCoroutine {

@@ -11,16 +11,6 @@ import XCTest
 
 class TestFifoQueue: XCTestCase {
     
-    func test() {
-        var mask = AtomicBitMask()
-        mask.insert(3)
-        mask.insert(60)
-        mask.insert(5)
-        XCTAssertEqual(mask.pop(offset: 4), 60)
-        XCTAssertEqual(mask.pop(offset: 4), 3)
-        XCTAssertEqual(mask.pop(offset: 4), 5)
-    }
-    
     func testThreadSafeFifoQueues() {
         var queue = ThreadSafeFifoQueues<Int>()
         DispatchQueue.concurrentPerform(iterations: 100_000) { index in
@@ -28,6 +18,21 @@ class TestFifoQueue: XCTestCase {
             XCTAssertNotNil(queue.pop())
         }
         queue.free()
+    }
+    
+    func testThreadSafeFifoQueues2() {
+        var queue = ThreadSafeFifoQueues<Int>()
+        queue.push(0)
+        queue.push(3)
+        XCTAssertEqual(queue.pop(), 0)
+        queue.insertAtStart(2)
+        queue.insertAtStart(1)
+        queue.push(4)
+        queue.push(5)
+        queue.insertAtStart(0)
+        for i in 0..<6 {
+            XCTAssertEqual(queue.pop(), i)
+        }
     }
     
     func testQueue() {
