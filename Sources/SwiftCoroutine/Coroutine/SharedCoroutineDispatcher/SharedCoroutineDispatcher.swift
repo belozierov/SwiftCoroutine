@@ -10,11 +10,12 @@
 internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
     
     private let stackSize, capacity: Int
-    private var queues = ThreadSafeFifoQueues<SharedCoroutineQueue>()
+    private var queues: ThreadSafeFifoQueues<SharedCoroutineQueue>
     
     internal init(capacity: Int, stackSize: Coroutine.StackSize) {
         self.stackSize = stackSize.size
         self.capacity = capacity
+        queues = .init(number: capacity)
     }
     
     @usableFromInline

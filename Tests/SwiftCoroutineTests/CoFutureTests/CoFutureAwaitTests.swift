@@ -50,7 +50,6 @@ class CoFutureAwaitTests: XCTestCase {
         let queue = DispatchQueue.global(qos: .userInteractive)
         let queue2 = DispatchQueue.global(qos: .utility)
         let group = DispatchGroup()
-        let _ = CoroutineDispatcher.default
         measure {
             group.enter()
             queue.coroutineFuture {

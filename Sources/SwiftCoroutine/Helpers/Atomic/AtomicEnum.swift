@@ -23,9 +23,4 @@ internal struct AtomicEnum<T: RawRepresentable> where T.RawValue == Int {
         T(rawValue: atomic.update(newValue.rawValue))!
     }
     
-    @discardableResult @inlinable
-    mutating func update(_ transform: (T) -> T) -> (old: T, new: T) {
-        fatalError()
-    }
-    
 }

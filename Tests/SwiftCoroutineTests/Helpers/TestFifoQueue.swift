@@ -20,6 +20,21 @@ class TestFifoQueue: XCTestCase {
         queue.free()
     }
     
+    func testThreadSafeFifoQueues2() {
+        var queue = ThreadSafeFifoQueues<Int>()
+        queue.push(0)
+        queue.push(3)
+        XCTAssertEqual(queue.pop(), 0)
+        queue.insertAtStart(2)
+        queue.insertAtStart(1)
+        queue.push(4)
+        queue.push(5)
+        queue.insertAtStart(0)
+        for i in 0..<6 {
+            XCTAssertEqual(queue.pop(), i)
+        }
+    }
+    
     func testQueue() {
         var queue = FifoQueue<Int>()
         for i in 0..<100 { queue.push(i) }

@@ -18,30 +18,27 @@ internal final class SharedCoroutine {
         let stack: UnsafeMutableRawPointer, size: Int
     }
     
-    internal let queue: SharedCoroutineQueue
-    internal var dispatcher: SharedCoroutineDispatcher!
-    internal var scheduler: CoroutineScheduler!
+    internal struct Configuration {
+        let dispatcher: SharedCoroutineDispatcher
+        let queue: SharedCoroutineQueue
+        var scheduler: CoroutineScheduler
+    }
+    
+    internal var configuration: Configuration!
     private var state = AtomicEnum(value: State.running)
     
     private var environment: UnsafeMutablePointer<CoroutineContext.SuspendData>!
     private var stackBuffer: StackBuffer!
     
-    internal init(dispatcher: SharedCoroutineDispatcher, queue: SharedCoroutineQueue, scheduler: CoroutineScheduler) {
-        self.dispatcher = dispatcher
-        self.queue = queue
-        self.scheduler = scheduler
-    }
-    
     internal func reset() {
-        dispatcher = nil
-        scheduler = nil
+        configuration = nil
         state.value = .running
     }
     
     // MARK: - Actions
     
     internal func start() -> CompletionState {
-        performAsCurrent { perform(queue.context.start) }
+        performAsCurrent { perform(configuration.queue.context.start) }
     }
     
     internal func resume() -> CompletionState {
@@ -49,7 +46,7 @@ internal final class SharedCoroutine {
     }
     
     private func resumeContext() -> CompletionState {
-        perform { queue.context.resume(from: environment.pointee.env) }
+        perform { configuration.queue.context.resume(from: environment.pointee.env) }
     }
     
     private func perform(_ block: () -> Bool) -> CompletionState {
@@ -66,13 +63,13 @@ internal final class SharedCoroutine {
             environment = .allocate(capacity: 1)
             environment.initialize(to: .init())
         }
-        queue.context.suspend(to: environment)
+        configuration.queue.context.suspend(to: environment)
     }
     
     // MARK: - Stack
     
     internal func saveStack() {
-        let size = environment.pointee.sp.distance(to: queue.context.stackTop)
+        let size = environment.pointee.sp.distance(to: configuration.queue.context.stackTop)
         let stack = UnsafeMutableRawPointer.allocate(byteCount: size, alignment: 16)
         stack.copyMemory(from: environment.pointee.sp, byteCount: size)
         stackBuffer = .init(stack: stack, size: size)
@@ -100,7 +97,7 @@ extension SharedCoroutine: CoroutineProtocol {
             if result != nil { return }
             result = $0
             if self.state.update(.running) == .suspended {
-                self.queue.resume(coroutine: self)
+                self.configuration.queue.resume(coroutine: self)
             }
         }
         if state.value == .suspending { suspend() }
@@ -108,14 +105,14 @@ extension SharedCoroutine: CoroutineProtocol {
     }
     
     internal func await<T>(on scheduler: CoroutineScheduler, task: () throws -> T) rethrows -> T {
-        let currentScheduler = self.scheduler!
+        let currentScheduler = configuration.scheduler
         setScheduler(scheduler)
         defer { setScheduler(currentScheduler) }
         return try task()
     }
     
     private func setScheduler(_ scheduler: CoroutineScheduler) {
-        self.scheduler = scheduler
+        configuration.scheduler = scheduler
         state.value = .restarting
         suspend()
     }

@@ -17,7 +17,7 @@ internal final class SharedCoroutineQueue {
     }
     
     internal let context: CoroutineContext
-    private var coroutine: SharedCoroutine?
+    private var coroutine: SharedCoroutine
     
     private(set) var started = 0
     private var atomic = AtomicTuple()
@@ -25,6 +25,7 @@ internal final class SharedCoroutineQueue {
     
     internal init(stackSize size: Int) {
         context = CoroutineContext(stackSize: size)
+        coroutine = SharedCoroutine()
     }
     
     internal func occupy() -> Bool {
@@ -34,20 +35,14 @@ internal final class SharedCoroutineQueue {
     // MARK: - Actions
     
     internal func start(dispatcher: SharedCoroutineDispatcher, scheduler: CoroutineScheduler, task: @escaping () -> Void) {
-        let coroutine: SharedCoroutine
-        if let previous = self.coroutine, previous.dispatcher == nil {
-            coroutine = previous
-            coroutine.scheduler = scheduler
-            coroutine.dispatcher = dispatcher
-        } else {
-            self.coroutine?.saveStack()
-            coroutine = SharedCoroutine(dispatcher: dispatcher, queue: self,
-                                        scheduler: scheduler)
-            self.coroutine = coroutine
+        if coroutine.configuration != nil {
+            coroutine.saveStack()
+            coroutine = SharedCoroutine()
         }
+        coroutine.configuration = .init(dispatcher: dispatcher, queue: self, scheduler: scheduler)
         started += 1
         context.block = task
-        complete(coroutine: coroutine, state: coroutine.start())
+        complete(with: coroutine.start())
     }
     
     internal func resume(coroutine: SharedCoroutine) {
@@ -59,29 +54,29 @@ internal final class SharedCoroutineQueue {
     
     private func resumeOnQueue(_ coroutine: SharedCoroutine) {
         if self.coroutine !== coroutine {
-            if let coroutine = self.coroutine, coroutine.dispatcher != nil {
-                coroutine.saveStack()
+            if self.coroutine.configuration != nil {
+                self.coroutine.saveStack()
             }
             coroutine.restoreStack()
             self.coroutine = coroutine
         }
-        coroutine.scheduler.scheduleTask {
-            self.complete(coroutine: coroutine, state: coroutine.resume())
+        coroutine.configuration.scheduler.scheduleTask {
+            self.complete(with: coroutine.resume())
         }
     }
     
-    private func complete(coroutine: SharedCoroutine, state: CompletionState) {
+    private func complete(with state: CompletionState) {
         switch state {
         case .finished:
             started -= 1
-            let dispatcher = coroutine.dispatcher!
+            let dispatcher = coroutine.configuration.dispatcher
             coroutine.reset()
             performNext(for: dispatcher)
         case .suspended:
-            performNext(for: coroutine.dispatcher)
+            performNext(for: coroutine.configuration.dispatcher)
         case .restarting:
-            coroutine.scheduler.scheduleTask {
-                self.complete(coroutine: coroutine, state: coroutine.resume())
+            coroutine.configuration.scheduler.scheduleTask {
+                self.complete(with: self.coroutine.resume())
             }
         }
     }
