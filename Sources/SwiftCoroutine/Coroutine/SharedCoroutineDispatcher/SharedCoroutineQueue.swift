@@ -19,6 +19,7 @@ internal final class SharedCoroutineQueue {
     internal let context: CoroutineContext
     private var coroutine: SharedCoroutine
     
+    var inQueue = false
     private(set) var started = 0
     private var atomic = AtomicTuple()
     private var prepared = BlockingFifoQueue<SharedCoroutine>()
@@ -35,11 +36,13 @@ internal final class SharedCoroutineQueue {
     // MARK: - Actions
     
     internal func start(dispatcher: SharedCoroutineDispatcher, scheduler: CoroutineScheduler, task: @escaping () -> Void) {
-        if coroutine.configuration != nil {
+        if coroutine.dispatcher != nil {
             coroutine.saveStack()
             coroutine = SharedCoroutine()
         }
-        coroutine.configuration = .init(dispatcher: dispatcher, queue: self, scheduler: scheduler)
+        coroutine.dispatcher = dispatcher
+        coroutine.queue = self
+        coroutine.scheduler = scheduler
         started += 1
         context.block = task
         complete(with: coroutine.start())
@@ -54,13 +57,13 @@ internal final class SharedCoroutineQueue {
     
     private func resumeOnQueue(_ coroutine: SharedCoroutine) {
         if self.coroutine !== coroutine {
-            if self.coroutine.configuration != nil {
+            if self.coroutine.dispatcher != nil {
                 self.coroutine.saveStack()
             }
             coroutine.restoreStack()
             self.coroutine = coroutine
         }
-        coroutine.configuration.scheduler.scheduleTask {
+        coroutine.scheduler.scheduleTask {
             self.complete(with: coroutine.resume())
         }
     }
@@ -69,13 +72,13 @@ internal final class SharedCoroutineQueue {
         switch state {
         case .finished:
             started -= 1
-            let dispatcher = coroutine.configuration.dispatcher
+            let dispatcher = coroutine.dispatcher!
             coroutine.reset()
             performNext(for: dispatcher)
         case .suspended:
-            performNext(for: coroutine.configuration.dispatcher)
+            performNext(for: coroutine.dispatcher)
         case .restarting:
-            coroutine.configuration.scheduler.scheduleTask {
+            coroutine.scheduler.scheduleTask {
                 self.complete(with: self.coroutine.resume())
             }
         }

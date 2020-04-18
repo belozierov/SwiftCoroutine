@@ -117,6 +117,7 @@ class CoFutureAwaitTests: XCTestCase {
     
     func testSchedulerAwait() {
         let group = DispatchGroup()
+        let _ = CoroutineDispatcher.default
         measure {
             group.enter()
             var sum = 0

@@ -27,6 +27,7 @@ internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
     
     private func getFreeQueue() -> SharedCoroutineQueue {
         while let queue = queues.pop() {
+            queue.inQueue = false
             if queue.occupy() { return queue }
         }
         return SharedCoroutineQueue(stackSize: stackSize)
@@ -34,6 +35,8 @@ internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
     
     internal func push(_ queue: SharedCoroutineQueue) {
         if queue.started != 0 {
+            if queue.inQueue { return }
+            queue.inQueue = true
             queues.push(queue)
         } else if queues.count < capacity {
             queues.insertAtStart(queue)
