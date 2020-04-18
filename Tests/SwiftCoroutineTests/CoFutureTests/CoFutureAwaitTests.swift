@@ -107,6 +107,7 @@ class CoFutureAwaitTests: XCTestCase {
                 }
                 DispatchQueue.global().await {}
                 count += 1
+                print(count)
             }
             XCTAssertEqual(count, 100_000)
             exp.fulfill()
