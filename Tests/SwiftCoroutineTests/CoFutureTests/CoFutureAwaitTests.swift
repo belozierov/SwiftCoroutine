@@ -111,7 +111,7 @@ class CoFutureAwaitTests: XCTestCase {
             XCTAssertEqual(count, 100_000)
             exp.fulfill()
         }
-        wait(for: [exp], timeout: 3)
+        wait(for: [exp], timeout: 5)
     }
     
     func testSchedulerAwait() {
