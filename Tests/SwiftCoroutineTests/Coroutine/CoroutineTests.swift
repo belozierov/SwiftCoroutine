@@ -9,12 +9,12 @@
 import XCTest
 @testable import SwiftCoroutine
 
+struct ImmediateScheduler: CoroutineScheduler {
+    func scheduleTask(_ task: @escaping () -> Void) { task() }
+}
+
 class CoroutineTests: XCTestCase {
 
-    struct ImmediateScheduler: CoroutineScheduler {
-        func scheduleTask(_ task: @escaping () -> Void) { task() }
-    }
-    
     func testNested() {
         let exp = expectation(description: "testAwait")
         exp.expectedFulfillmentCount = 2

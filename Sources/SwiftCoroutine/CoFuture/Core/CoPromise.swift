@@ -19,8 +19,11 @@ extension CoPromise {
         self.init(mutex: .init(), result: nil)
     }
     
-    @inlinable public func complete(with result: Result<Value, Error>) {
-        setResult(result)
+    @inlinable public func complete<E: Error>(with result: Result<Value, E>) {
+        switch result {
+        case .success(let value): setResult(.success(value))
+        case .failure(let error): setResult(.failure(error))
+        }
     }
     
     @inlinable public func success(_ value: Value) {

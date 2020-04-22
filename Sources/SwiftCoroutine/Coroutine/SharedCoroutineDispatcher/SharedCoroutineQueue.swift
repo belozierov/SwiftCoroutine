@@ -50,7 +50,11 @@ internal final class SharedCoroutineQueue {
     
     internal func resume(coroutine: SharedCoroutine) {
         let wasFree = atomic.update { state, count in
-            (.running, state == .isFree ? count : count + 1)
+            if state == .isFree {
+                return (.running, count)
+            } else {
+                return (.running, count + 1)
+            }
         }.old.0 == .isFree
         wasFree ? resumeOnQueue(coroutine) : prepared.push(coroutine)
     }

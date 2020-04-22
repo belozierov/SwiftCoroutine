@@ -213,3 +213,31 @@ DispatchQueue.main.startCoroutine {
     let data = try future.await()
 }
 ```
+
+### Channels
+
+`CoFuture` provides a convenient way to transfer a single value between coroutines. `CoChannel` provides a way to transfer a stream of values. Conceptually, a channel is similar to a queue that allows to suspend a coroutine on receive if it is empty or on send if it is full.
+
+```swift
+//create a channel with a buffer which can store only one element
+let channel = CoChannel<Int>(maxBufferSize: 1)
+
+DispatchQueue.global().startCoroutine {
+    for i in 0..<10 {
+        //sends a value to the channel and suspends coroutine if its buffer is full
+        try channel.awaitSend(i)
+    }
+    
+    //close channel when all values are sent
+    channel.close()
+}
+
+DispatchQueue.global().startCoroutine {
+    //receives values until closed and suspends a coroutine if it's empty
+    for i in channel {
+        print("Receive", i)
+    }
+    
+    print("Done")
+}
+```

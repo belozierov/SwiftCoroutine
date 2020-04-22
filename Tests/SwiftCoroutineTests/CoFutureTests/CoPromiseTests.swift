@@ -32,6 +32,17 @@ class CoPromiseTests: XCTestCase {
     
     func testResult3() {
         let promise = CoPromise<Int>()
+        promise.complete(with: .failure(TestError()))
+        do {
+            _ = try promise.result?.get()
+            XCTFail()
+        } catch {
+            XCTAssertTrue(error is TestError)
+        }
+    }
+    
+    func testResult4() {
+        let promise = CoPromise<Int>()
         promise.success(1)
         XCTAssertEqual(promise.result, 1)
     }

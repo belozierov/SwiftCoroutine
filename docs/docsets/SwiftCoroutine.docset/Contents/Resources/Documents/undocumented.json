@@ -1,6 +1,34 @@
 {
   "warnings": [
     {
+      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoChannel/CoChannel.swift",
+      "line": 43,
+      "symbol": "CoChannel.init(maxBufferSize:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoChannel/CoChannelError.swift",
+      "line": 9,
+      "symbol": "CoChannelError",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoChannel/CoChannelError.swift",
+      "line": 10,
+      "symbol": "CoChannelError.canceled",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoChannel/CoChannelError.swift",
+      "line": 10,
+      "symbol": "CoChannelError.closed",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
       "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/CoFutureError.swift",
       "line": 9,
       "symbol": "CoFutureError",
@@ -30,21 +58,21 @@
     },
     {
       "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Core/CoPromise.swift",
-      "line": 26,
+      "line": 29,
       "symbol": "CoPromise.success(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Core/CoPromise.swift",
-      "line": 30,
+      "line": 33,
       "symbol": "CoPromise.fail(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Core/CoPromise.swift",
-      "line": 34,
+      "line": 37,
       "symbol": "CoPromise.complete(with:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"

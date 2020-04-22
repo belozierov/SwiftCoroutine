@@ -6,7 +6,7 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
-protocol _CoFutureCancellable: class {
+internal protocol _CoFutureCancellable: class {
 
     func cancel()
     

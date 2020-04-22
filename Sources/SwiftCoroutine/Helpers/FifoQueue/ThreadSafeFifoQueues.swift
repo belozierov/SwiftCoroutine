@@ -24,7 +24,11 @@ internal struct ThreadSafeFifoQueues<T> {
     
     internal mutating func insertAtStart(_ item: T) {
         let (_, index) = atomic.update { count, index in
-            (count + 1, index - 1 < 0 ? number - 1 : index - 1)
+            if index - 1 < 0 {
+                return (count + 1, number - 1)
+            } else {
+                return (count + 1, index - 1)
+            }
         }.new
         (queues + Int(index)).pointee.insertAtStart(item)
     }

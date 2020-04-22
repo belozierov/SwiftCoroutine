@@ -39,6 +39,12 @@ internal struct BlockingFifoQueue<T> {
         } while true
     }
     
+    internal func forEach(_ body: (T) -> Void) {
+        condition.lock()
+        queue.forEach(body)
+        condition.unlock()
+    }
+    
     internal func free() {
         condition.free()
     }

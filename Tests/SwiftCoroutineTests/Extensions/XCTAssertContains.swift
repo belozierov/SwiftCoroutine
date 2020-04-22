@@ -40,3 +40,13 @@ func XCTAssertFalse(_ expression: Bool?) {
         XCTFail()
     }
 }
+
+func XCTAssertThrowError<T, E: Error & Equatable>(_ error: E, _ expression: () throws -> T) {
+    do {
+        _ = try expression()
+    } catch let err as E {
+        XCTAssertEqual(err, error)
+    } catch {
+        XCTFail()
+    }
+}

@@ -8,11 +8,8 @@
 
 internal struct FifoQueue<T> {
     
-    private var input = [T](), output: [T]
-    
-    @inlinable internal init() {
-        output = []
-    }
+    private var input = [T]()
+    private var output = [T]()
     
     @inlinable internal mutating func insertAtStart(_ item: T) {
         output.append(item)
@@ -32,6 +29,10 @@ internal struct FifoQueue<T> {
             input.removeAll(keepingCapacity: true)
             return output.popLast()
         }
+    }
+    
+    internal func forEach(_ body: (T) -> Void) {
+        (output + input.reversed()).forEach(body)
     }
     
 }
