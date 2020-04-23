@@ -6,7 +6,7 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
-internal protocol _CoFutureCancellable: class {
+private protocol _CoFutureCancellable: class {
 
     func cancel()
     
@@ -48,7 +48,7 @@ internal protocol _CoFutureCancellable: class {
 ///     }
 /// }
 /// ```
-public class CoFuture<Value>: _CoFutureCancellable {
+public class CoFuture<Value> {
     
     internal let mutex: PsxLock?
     private var parent: UnownedCancellable?
@@ -67,7 +67,7 @@ public class CoFuture<Value>: _CoFutureCancellable {
     
 }
 
-extension CoFuture {
+extension CoFuture: _CoFutureCancellable {
 
     /// Starts a new coroutine and initializes future with its result.
     /// ```

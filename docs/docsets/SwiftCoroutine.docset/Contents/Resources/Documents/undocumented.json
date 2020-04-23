@@ -1,13 +1,6 @@
 {
   "warnings": [
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoChannel/CoChannel.swift",
-      "line": 43,
-      "symbol": "CoChannel.init(maxBufferSize:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
       "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoChannel/CoChannelError.swift",
       "line": 9,
       "symbol": "CoChannelError",
