@@ -62,6 +62,7 @@ public class CoFuture<Value> {
     }
     
     deinit {
+        callback?(.failure(CoFutureError.canceled))
         callbacks?.forEach { $0.callback(.failure(CoFutureError.canceled)) }
         mutex?.free()
     }
