@@ -11,6 +11,23 @@ import XCTest
 
 class CoFutureTests: XCTestCase {
     
+    func testMeasure() {
+        measure {
+            for _ in 0..<10_000 {
+                let promise = CoPromise<Int>()
+                let a = promise.map { $0 + 1 }
+                a.whenComplete { _ in }
+                a.whenComplete { _ in }
+                a.map { $0 + 1 }.whenComplete { _ in }
+                promise.success(0)
+                let b = promise.map { $0 + 1 }
+                b.whenComplete { _ in }
+                b.whenComplete { _ in }
+                b.map { $0 + 1 }.whenComplete { _ in }
+            }
+        }
+    }
+    
     func testResult1() {
         let promise = CoPromise<Bool>()
         XCTAssertNil(promise.result)

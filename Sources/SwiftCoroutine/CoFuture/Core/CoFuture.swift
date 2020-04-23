@@ -52,6 +52,7 @@ public class CoFuture<Value> {
     
     internal let mutex: PsxLock?
     private var parent: UnownedCancellable?
+    private var callback: Callback?
     private var callbacks: ContiguousArray<Child>?
     final private(set) var _result: Optional<Result<Value, Error>>
     
@@ -104,7 +105,9 @@ extension CoFuture: _CoFutureCancellable {
     private func lockedComplete(with result: Result<Value, Error>) {
         _result = result
         mutex?.unlock()
+        callback?(result)
         callbacks?.forEach { $0.callback(result) }
+        callback = nil
         callbacks = nil
         parent = nil
     }
@@ -115,7 +118,9 @@ extension CoFuture: _CoFutureCancellable {
     private struct Child { let callback: Callback }
     
     internal func append(callback: @escaping Callback) {
-        if callbacks == nil {
+        if self.callback == nil {
+            self.callback = callback
+        } else if callbacks == nil {
             callbacks = [.init(callback: callback)]
         } else {
             callbacks?.append(.init(callback: callback))
