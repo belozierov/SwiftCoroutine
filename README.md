@@ -40,10 +40,14 @@ URLSession.shared.dataTask(with: url) { data, _, error in
     }
     
     DispatchQueue.global().async {
-        let thumbnail = image.makeThumbnail() //some heavy task
-        
-        DispatchQueue.main.async {
-            self.imageView.image = thumbnail
+        do {
+            let thumbnail = try image.makeThumbnail() //some heavy task than throws
+            
+            DispatchQueue.main.async {
+                self.imageView.image = thumbnail
+            }
+        } catch {
+            . . . error handling . . . 
         }
     }
     
@@ -73,7 +77,7 @@ DispatchQueue.main.coroutineFuture {
     guard let image = UIImage(data: data) else { throw URLError(.cannotParseResponse) }
     
     //execute heavy task on global queue and await the result without blocking the thread
-    let thumbnail = DispatchQueue.global().await { image.makeThumbnail() }
+    let thumbnail = try DispatchQueue.global().await { try image.makeThumbnail() }
 
     //set image in UIImageView on the main thread
     self.imageView.image = thumbnail
