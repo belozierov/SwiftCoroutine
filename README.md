@@ -27,6 +27,7 @@ Another problem of asynchronous programming is **error handling**, because Swift
 Here is an expressly ugly example to show these promlems.
 
 ```swift
+//an async func that returns the URL in the callback
 fetchImageURL { imageURL in
 
     URLSession.shared.dataTask(with: imageURL) { data, _, error in
