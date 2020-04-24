@@ -40,7 +40,7 @@ URLSession.shared.dataTask(with: url) { data, _, error in
     }
     
     DispatchQueue.global().async {
-        let thumbnail = image.makeThumbnail()
+        let thumbnail = image.makeThumbnail() //some heavy task
         
         DispatchQueue.main.async {
             self.imageView.image = thumbnail
