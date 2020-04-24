@@ -53,9 +53,10 @@ fetchImageURL { imageURL in
                 . . . error handling . . . 
             }
         }
-    }
+        
+    }.resume()
     
-}.resume()
+}
 ```
 
 ### Async/await solution
