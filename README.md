@@ -27,27 +27,30 @@ Another problem of asynchronous programming is **error handling**, because Swift
 Here is an expressly ugly example to show these promlems.
 
 ```swift
-URLSession.shared.dataTask(with: url) { data, _, error in
+fetchImageURL { imageURL in
 
-    if let error = error {
-        . . . error handling . . . 
-        return
-    }
-    
-    guard let image = data.flatMap(UIImage.init) else {
-        . . . error handling . . . 
-        return
-    }
-    
-    DispatchQueue.global().async {
-        do {
-            let thumbnail = try image.makeThumbnail() //some heavy task than throws
-            
-            DispatchQueue.main.async {
-                self.imageView.image = thumbnail
-            }
-        } catch {
+    URLSession.shared.dataTask(with: imageURL) { data, _, error in
+
+        if let error = error {
             . . . error handling . . . 
+            return
+        }
+    
+        guard let image = data.flatMap(UIImage.init) else {
+            . . . error handling . . . 
+            return
+        }
+    
+        DispatchQueue.global().async {
+            do {
+                let thumbnail = try image.makeThumbnail() //some heavy task than throws
+            
+                DispatchQueue.main.async {
+                    self.imageView.image = thumbnail
+                }
+            } catch {
+                . . . error handling . . . 
+            }
         }
     }
     
@@ -66,7 +69,10 @@ Let’s have a look at the example with coroutines.
 ```swift
 //execute coroutine on the main thread
 DispatchQueue.main.coroutineFuture {
-
+    
+    //await an async callback without blocking the thread
+    let imageURL = Coroutine.await { fetchImageURL(callback: $0) } 
+    
     //extension that returns CoFuture<(data: Data, response: URLResponse)>
     let dataFuture = URLSession.shared.dataTaskFuture(for: imageURL)
     
