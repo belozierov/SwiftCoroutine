@@ -24,7 +24,7 @@ Asynchronous programming is usually associated with callbacks. It is quite conve
 
 Another problem of asynchronous programming is **error handling**, because Swift's natural error handling mechanism cannot be used.
 
-Here is an expressly ugly example to show these promlems.
+Here is an expressly ugly example to show these problems.
 
 ```swift
 fetchImageURL(with: id) { (result: Result<URL, Error>) in
