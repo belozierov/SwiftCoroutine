@@ -139,7 +139,7 @@ DispatchQueue.main.startCoroutine {
 }
 ```
 
-Here's how we can conform `NSManagedObjectContext` to `CoroutineScheduler`.
+Here's how we can conform `NSManagedObjectContext` to `CoroutineScheduler` for launching coroutines on it.
 
 ```swift
 extension NSManagedObjectContext: CoroutineScheduler {
