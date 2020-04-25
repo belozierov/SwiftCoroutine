@@ -69,13 +69,13 @@ Let’s have a look at the example with coroutines.
 //executes coroutine on the main thread and returns CoFuture<Void> that we will use for error handling
 DispatchQueue.main.coroutineFuture {
     
-    //await an async callback with Result<URL, Error> without blocking the thread
+    //wrap async func with callback to await its Result<URL, Error> without blocking the thread
     let imageURL = try Coroutine.await { fetchImageURL(with: id, callback: $0) }.get()
     
     //extension that returns CoFuture<(data: Data, response: URLResponse)>
     let dataFuture = URLSession.shared.dataTaskFuture(for: imageURL)
     
-    //await result that suspends coroutine and doesn't block the thread
+    //await CoFuture result that suspends coroutine and doesn't block the thread
     let data = try dataFuture.await().data
 
     //create UIImage from data or throw the error
