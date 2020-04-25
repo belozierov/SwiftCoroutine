@@ -66,7 +66,7 @@ Let’s have a look at the example with coroutines.
 
 
 ```swift
-//executes coroutine on the main thread and returns CoFuture<Void> for error handling
+//executes coroutine on the main thread and returns CoFuture<Void> that we will use for error handling
 DispatchQueue.main.coroutineFuture {
     
     //await an async callback with Result<URL, Error> without blocking the thread
