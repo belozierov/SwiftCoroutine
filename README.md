@@ -27,35 +27,32 @@ Another problem of asynchronous programming is **error handling**, because Swift
 Here is an expressly ugly example to show these promlems.
 
 ```swift
-//an async func that returns the URL in the callback
-fetchImageURL { imageURL in
-
-    URLSession.shared.dataTask(with: imageURL) { data, _, error in
-
-        if let error = error {
-            . . . error handling . . . 
-            return
-        }
-    
-        guard let image = data.flatMap(UIImage.init) else {
-            . . . error handling . . . 
-            return
-        }
-    
-        DispatchQueue.global().async {
-            do {
-                let thumbnail = try image.makeThumbnail() //some heavy task than throws
-            
-                DispatchQueue.main.async {
-                    self.imageView.image = thumbnail
-                }
-            } catch {
-                . . . error handling . . . 
+fetchImageURL(with: id) { (result: Result<URL, Error>) in
+    switch result {
+    case .success(let imageURL):
+        URLSession.shared.dataTask(with: imageURL) { data, _, error in
+            if let error = error {
+                . . . error handling . . .
+                return
             }
-        }
-        
-    }.resume()
-    
+            guard let image = data.flatMap(UIImage.init) else {
+                . . . error handling . . .
+                return
+            }
+            DispatchQueue.global().async {
+                do {
+                    let thumbnail = try image.makeThumbnail() //some heavy task that throws
+                    DispatchQueue.main.async {
+                        self.imageView.image = thumbnail
+                    }
+                } catch {
+                    . . . error handling . . .
+                }
+            }
+        }.resume()
+    case .failure(let error):
+        . . . error handling . . .
+    }
 }
 ```
 
@@ -72,8 +69,8 @@ Let’s have a look at the example with coroutines.
 //execute coroutine on the main thread
 DispatchQueue.main.coroutineFuture {
     
-    //await an async callback without blocking the thread
-    let imageURL = Coroutine.await { fetchImageURL(callback: $0) } 
+    //await an async callback with Result<URL, Error> without blocking the thread
+    let imageURL = try Coroutine.await { fetchImageURL(with: id, callback: $0) }.get()
     
     //extension that returns CoFuture<(data: Data, response: URLResponse)>
     let dataFuture = URLSession.shared.dataTaskFuture(for: imageURL)
