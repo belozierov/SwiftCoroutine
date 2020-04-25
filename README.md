@@ -198,6 +198,22 @@ DispatchQueue.main.startCoroutine {
 }
 ```
 
+Apple has introduced a new reactive programming framework `Combine` that makes writing asynchronous code easier and includes a lot of convenient and common functionality. We can use it with coroutines by making `CoFuture` a subscriber and await its result.
+
+```swift
+//create Combine publisher
+let publisher = URLSession.shared.dataTaskPublisher(for: url).map(\.data)
+
+//execute coroutine on the main thread
+DispatchQueue.main.startCoroutine {
+    //subscribe CoFuture to publisher
+    let future = publisher.subscribeCoFuture()
+    
+    //await data without blocking the thread
+    let data = try future.await()
+}
+```
+
 ### Channels
 
 Futures and promises provide a convenient way to transfer a single value between coroutines. Channels provide a way to transfer a stream of values. Conceptually, a channel is similar to a queue that allows to suspend a coroutine on receive if it is empty, or on send if it is full.
