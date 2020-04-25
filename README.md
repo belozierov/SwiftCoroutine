@@ -66,7 +66,7 @@ Let’s have a look at the example with coroutines.
 
 
 ```swift
-//execute coroutine on the main thread and return CoFuture<Void> for error handling
+//executes coroutine on the main thread and returns CoFuture<Void> for error handling
 DispatchQueue.main.coroutineFuture {
     
     //await an async callback with Result<URL, Error> without blocking the thread
@@ -174,15 +174,26 @@ The [futures and promises](https://en.wikipedia.org/wiki/Futures_and_promises) a
 
 #### Usage
 
-Futures and promises are represented by the corresponding `CoFuture` class and its `CoPromise` subclass. It allows to start multiple tasks in parallel and synchronize them later with `await()`.
+Futures and promises are represented by the corresponding `CoFuture` class and its `CoPromise` subclass. 
 
 ```swift
-//execute task on the global queue and returns CoFuture<Int> with future result
-let future1: CoFuture<Int> = DispatchQueue.global().coroutineFuture {
-    Coroutine.delay(.seconds(2)) //some work that takes 2 sec.
-    return 5
+//wraps some async func with CoFuture
+func makeIntFuture() -> CoFuture<Int> {
+    let promise = CoPromise<Int>()
+    someAsyncFunc { int in
+        promise.success(int)
+    }
+    return promise
 }
+```
 
+It allows to start multiple tasks in parallel and synchronize them later with `await()`.
+
+```swift
+//create CoFuture<Int> that takes 2 sec. from the example above 
+let future1 = makeIntFuture()
+
+//execute task on the global queue and returns CoFuture<Int> with future result
 let future2: CoFuture<Int> = DispatchQueue.global().coroutineFuture {
     Coroutine.delay(.seconds(3)) //some work that takes 3 sec.
     return 6
