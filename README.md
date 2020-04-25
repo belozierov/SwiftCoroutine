@@ -206,6 +206,17 @@ DispatchQueue.main.startCoroutine {
 }
 ```
 
+It's very easy to transform or compose `CoFuture`s into a new one.
+
+```swift
+let array: [CoFuture<Int>]
+
+//create new CoFuture<Int> with sum of future results
+let sum = CoFuture { 
+    try array.reduce(0) { try $0 + $1.await() }
+}
+```
+
 Apple has introduced a new reactive programming framework `Combine` that makes writing asynchronous code easier and includes a lot of convenient and common functionality. We can use it with coroutines by making `CoFuture` a subscriber and await its result.
 
 ```swift
