@@ -12,16 +12,14 @@ extension CoFuture {
     
     /// Adds an observer callback that is called when the `CoFuture` has any result.
     /// - Parameter callback: The callback that is called when the `CoFuture` is fulfilled.
-    public func whenComplete(_ callback: @escaping (Result<Value, Error>) -> Void) {
-        mutex?.lock()
-        if let result = _result {
-            mutex?.unlock()
-            callback(result)
-        } else {
-            append(callback: callback)
-            mutex?.unlock()
-        }
-    }
+//    public func whenComplete(_ callback: @escaping (Result<Value, Error>) -> Void) {
+//        append(callback: callback)
+////        if let result = result {
+////            callback(result)
+////        } else {
+////            append(callback: callback)
+////        }
+//    }
     
     /// Adds an observer callback that is called when the `CoFuture` has a success result.
     /// - Parameter callback: The callback that is called with the successful result of the `CoFuture`.

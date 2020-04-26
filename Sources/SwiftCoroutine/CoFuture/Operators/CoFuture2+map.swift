@@ -34,16 +34,13 @@ extension CoFuture {
     /// - Parameter transform: Function that will receive the result and return a new transformed result.
     /// - returns: A future that will receive the eventual result.
     public func mapResult<NewValue>(_ transform: @escaping (Result<Value, Error>) -> Result<NewValue, Error>) -> CoFuture<NewValue> {
-        mutex?.lock()
-        if let result = _result {
-            mutex?.unlock()
+        if let result = result {
             return CoFuture<NewValue>(result: transform(result))
         }
         let promise = CoPromise<NewValue>()
         addChild(future: promise) { result in
             promise.setResult(transform(result))
         }
-        mutex?.unlock()
         return promise
     }
     

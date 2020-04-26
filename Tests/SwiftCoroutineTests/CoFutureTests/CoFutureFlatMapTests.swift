@@ -42,7 +42,7 @@ class CoFutureFlatMapTests: XCTestCase {
             CoFuture(result: result.map { $0 + 2 })
         }
         promise.success(3)
-        XCTAssertEqual(flat._result, 5)
+        XCTAssertEqual(flat.result, 5)
     }
     
     func testNestedFlatMap() {

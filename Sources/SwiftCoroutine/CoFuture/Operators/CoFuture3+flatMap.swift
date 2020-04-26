@@ -47,16 +47,13 @@ extension CoFuture {
     /// - Parameter callback: Function that will receive the result and return a new `CoFuture`.
     /// - returns: A future that will receive the eventual value.
     public func flatMapResult<NewValue>(_ callback: @escaping (Result<Value, Error>) -> CoFuture<NewValue>) -> CoFuture<NewValue> {
-        mutex?.lock()
-        if let result = _result {
-            mutex?.unlock()
+        if let result = result {
             return callback(result)
         }
         let promise = CoPromise<NewValue>()
         addChild(future: promise) { result in
             callback(result).whenComplete(promise.setResult)
         }
-        mutex?.unlock()
         return promise
     }
     
