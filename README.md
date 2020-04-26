@@ -62,8 +62,7 @@ The [async/await](https://en.wikipedia.org/wiki/Async/await) pattern is an alter
 
 It is already well-established in other programming languages and is an evolution in asynchronous programming. The implementation of this pattern is possible thanks to coroutines.
 
-Let’s have a look at the example with coroutines.
-
+Let’s have a look at the example with coroutine inside of which `await()` suspends it and resumes when the result is available.
 
 ```swift
 //executes coroutine on the main thread and returns CoFuture<Void> that we will use for error handling
