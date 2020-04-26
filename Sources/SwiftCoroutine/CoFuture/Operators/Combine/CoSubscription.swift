@@ -18,7 +18,7 @@ internal final class CoSubscription<S: Subscriber, T>: Subscription where S.Inpu
     @inlinable internal init(subscriber: S, future: CoFuture<T>) {
         self.future = future
         self.subscriber = subscriber
-        future.whenComplete { result in
+        future.addCallback { result in
             guard let subscriber = self.subscriber else { return }
             switch result {
             case .success(let result):

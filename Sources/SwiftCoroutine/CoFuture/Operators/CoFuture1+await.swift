@@ -22,16 +22,8 @@ extension CoFuture {
     /// ```
     /// - Throws: The failed result of the `CoFuture`.
     /// - Returns: The value of the `CoFuture` when it is completed.
-    public func await() throws -> Value {
-        mutex?.lock()
-        if let result = _result {
-            mutex?.unlock()
-            return try result.get()
-        }
-        return try Coroutine.current.await { (callback: @escaping (Result<Value, Error>) -> Void) in
-            self.append(callback: callback)
-            self.mutex?.unlock()
-        }.get()
+    @inlinable public func await() throws -> Value {
+        try (result ?? Coroutine.current.await(addCallback)).get()
     }
     
 }

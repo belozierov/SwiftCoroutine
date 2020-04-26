@@ -10,74 +10,77 @@ import XCTest
 import Dispatch
 @testable import SwiftCoroutine
 
-//struct AtomicButter<T> {
-//    
-//    private struct Box {
-//        
-//        private enum State: Int {
-//            case hasValue, isFree, busy
-//        }
-//        
-//        private var value: T?
-//        private var hasValue = AtomicEnum(value: State.isFree)
-//        
-//        mutating func pop() -> T {
-//            while hasValue.update(.isFree) != .hasValue {
-////                Thread
-//            }
-//            return value!
-//        }
-//        
-//        mutating func push(_ item: T) {
-//            while hasValue.update(.hasValue) != .isFree {
-//            //                Thread
-//            }
-//            
-//        }
-//        
-//    }
-//    
-//    private let capacity: Int32
-//    private let buffer: UnsafeMutablePointer<T>
-//    private var atomic = AtomicInt()
-//    
-//    init(capacity: Int) {
-//        self.capacity = Int32(capacity)
-//        buffer = .allocate(capacity: capacity)
-//    }
-//    
-//    mutating func push(_ item: T) {
-//        var index: Int32!
-//        atomic.update {
-//            var value = $0
-//            withUnsafeMutableBytes(of: &value) {
-//                let pointer = $0.bindMemory(to: Int32.self)
-//                if pointer[0] == capacity { index = nil; return }
-//                index = pointer[0] + pointer[1]
-//                if index >= capacity { index -= capacity }
-//                pointer[0] += 1
-//            }
-//            return value
-//        }
-//        
-//    }
-//    
-//    mutating func pop() -> T? {
-//        
-//    }
-//    
-//}
+struct AtomicList<T> {
+    
+    private struct Node {
+        let value: T
+        var next = 0
+    }
+    
+    private var head = AtomicInt()
+    
+    mutating func push(_ value: T) {
+        let pointer = UnsafeMutablePointer<Node>.allocate(capacity: 1)
+        pointer.initialize(to: Node(value: value))
+        head.update {
+            pointer.pointee.next = $0
+            return Int(bitPattern: pointer)
+        }
+    }
+    
+    var count: Int {
+        var count = 0
+        for _ in self { count += 1 }
+        return count
+    }
+    
+}
+
+extension AtomicList: Sequence {
+    
+    func makeIterator() -> AnyIterator<T> {
+        var address = head.value
+        return AnyIterator {
+            guard address > 0, let pointer = UnsafePointer<Node>(bitPattern: address)
+                else { return nil }
+            address = pointer.pointee.next
+            return pointer.pointee.value
+        }
+    }
+    
+}
+
+struct ThreadSafeList<T> {
+    
+    private let mutex = PsxLock()
+    private var array = [T]()
+    
+    mutating func push(_ value: T) {
+        mutex.lock()
+        array.append(value)
+        mutex.unlock()
+    }
+    
+    var count: Int {
+        array.count
+    }
+    
+}
 
 class TestAtomic: XCTestCase {
     
-//    func testList() {
-//        var list = List<Int>()
-//        DispatchQueue.concurrentPerform(iterations: 100) { index in
-//            list.push(index)
-//            XCTAssertNotNil(list.pop())
-//        }
-//        XCTAssertNil(list.pop())
-//    }
+    func testAbc() {
+        var list = AtomicList<Int>()
+        measure {
+//            for i in 0..<100_000 {
+//                list.push(i)
+//            }
+            DispatchQueue.concurrentPerform(iterations: 100_000) {
+                list.push($0)
+            }
+        }
+        print(list.count)
+    }
     
     func testTuple() {
         var tuple = AtomicTuple()
@@ -96,24 +99,6 @@ class TestAtomic: XCTestCase {
                 if atomic.update(keyPath: \.0, with: 1) == 0 {
                     counter += 1
                     atomic.value.0 = 0
-                    break
-                }
-            }
-        }
-        XCTAssertEqual(counter, 100_000)
-    }
-    
-    enum State: Int {
-        case free, blocked
-    }
-    
-    func testEnumUpdate() {
-        var atomic = AtomicEnum(value: State.free), counter = 0
-        DispatchQueue.concurrentPerform(iterations: 100_000) { _ in
-            while true {
-                if atomic.update(.blocked) == .free {
-                    counter += 1
-                    atomic.value = .free
                     break
                 }
             }

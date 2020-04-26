@@ -13,13 +13,13 @@ class CoFutureTests: XCTestCase {
     
     func testMeasure() {
         measure {
-            for _ in 0..<10_000 {
+            DispatchQueue.concurrentPerform(iterations: 100_000) {
                 let promise = CoPromise<Int>()
                 let a = promise.map { $0 + 1 }
                 a.whenComplete { _ in }
                 a.whenComplete { _ in }
                 a.map { $0 + 1 }.whenComplete { _ in }
-                promise.success(0)
+                promise.success($0)
                 let b = promise.map { $0 + 1 }
                 b.whenComplete { _ in }
                 b.whenComplete { _ in }
