@@ -61,8 +61,6 @@
 		1A591D67244F1FC2007EBEC2 /* CoFuture3+flatMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A591D65244F1FC2007EBEC2 /* CoFuture3+flatMap.swift */; };
 		1A591D69244F200D007EBEC2 /* CoFutureFlatMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A591D68244F200D007EBEC2 /* CoFutureFlatMapTests.swift */; };
 		1A591D6A244F200D007EBEC2 /* CoFutureFlatMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A591D68244F200D007EBEC2 /* CoFutureFlatMapTests.swift */; };
-		1A591D6D244F6471007EBEC2 /* CoGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A591D6C244F6471007EBEC2 /* CoGenerator.swift */; };
-		1A591D6E244F6471007EBEC2 /* CoGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A591D6C244F6471007EBEC2 /* CoGenerator.swift */; };
 		1A595BF623E872D5009B62E7 /* CoroutineContextPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A595BF323E87298009B62E7 /* CoroutineContextPool.swift */; };
 		1A595BF723E872D5009B62E7 /* CoroutineContextPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A595BF323E87298009B62E7 /* CoroutineContextPool.swift */; };
 		1A595BFB23E8A31F009B62E7 /* CoPromise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A595BF823E8A2C7009B62E7 /* CoPromise.swift */; };
@@ -106,8 +104,6 @@
 		1AAC4882242C98E200AE9AA9 /* CoroutineScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAC4880242C98E200AE9AA9 /* CoroutineScheduler.swift */; };
 		1AAECA5623DD703400DED77D /* CoFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAECA5523DD703400DED77D /* CoFuture.swift */; };
 		1AAECA5723DD703400DED77D /* CoFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAECA5523DD703400DED77D /* CoFuture.swift */; };
-		1ABD0673242A368F00A22764 /* AtomicEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ABD0672242A368F00A22764 /* AtomicEnum.swift */; };
-		1ABD0674242A368F00A22764 /* AtomicEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ABD0672242A368F00A22764 /* AtomicEnum.swift */; };
 		1AC3578823E85A0100EC2A50 /* CoFutureCancelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC3578723E85A0100EC2A50 /* CoFutureCancelTests.swift */; };
 		1AC3578923E85A0100EC2A50 /* CoFutureCancelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC3578723E85A0100EC2A50 /* CoFutureCancelTests.swift */; };
 		1AC3578E23E85E7600EC2A50 /* CoPromiseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC3578D23E85E7600EC2A50 /* CoPromiseTests.swift */; };
@@ -181,7 +177,6 @@
 		1A57BE6423CC867600639FDD /* CoroutineContextTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoroutineContextTests.swift; sourceTree = "<group>"; };
 		1A591D65244F1FC2007EBEC2 /* CoFuture3+flatMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoFuture3+flatMap.swift"; sourceTree = "<group>"; };
 		1A591D68244F200D007EBEC2 /* CoFutureFlatMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoFutureFlatMapTests.swift; sourceTree = "<group>"; };
-		1A591D6C244F6471007EBEC2 /* CoGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoGenerator.swift; sourceTree = "<group>"; };
 		1A595BF323E87298009B62E7 /* CoroutineContextPool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoroutineContextPool.swift; sourceTree = "<group>"; };
 		1A595BF823E8A2C7009B62E7 /* CoPromise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoPromise.swift; sourceTree = "<group>"; };
 		1A64013D2433F0B900E4CECD /* AtomicInt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicInt.swift; sourceTree = "<group>"; };
@@ -202,7 +197,6 @@
 		1A9C14DD23BB824400E13203 /* CoFuture1+await.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoFuture1+await.swift"; sourceTree = "<group>"; };
 		1AAC4880242C98E200AE9AA9 /* CoroutineScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoroutineScheduler.swift; sourceTree = "<group>"; };
 		1AAECA5523DD703400DED77D /* CoFuture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoFuture.swift; sourceTree = "<group>"; };
-		1ABD0672242A368F00A22764 /* AtomicEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicEnum.swift; sourceTree = "<group>"; };
 		1AC3578723E85A0100EC2A50 /* CoFutureCancelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoFutureCancelTests.swift; sourceTree = "<group>"; };
 		1AC3578D23E85E7600EC2A50 /* CoPromiseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoPromiseTests.swift; sourceTree = "<group>"; };
 		1ACB4493241A7E34002DB73B /* TestFifoQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFifoQueue.swift; sourceTree = "<group>"; };
@@ -287,7 +281,6 @@
 			isa = PBXGroup;
 			children = (
 				1A64013D2433F0B900E4CECD /* AtomicInt.swift */,
-				1ABD0672242A368F00A22764 /* AtomicEnum.swift */,
 				1A14B1D4244A3BCA0046A239 /* AtomicTuple.swift */,
 			);
 			path = Atomic;
@@ -378,14 +371,6 @@
 				1A037A172440EA8A00816D23 /* CoroutineDispatcherTests.swift */,
 			);
 			path = Coroutine;
-			sourceTree = "<group>";
-		};
-		1A591D6B244F645C007EBEC2 /* CoGenerator */ = {
-			isa = PBXGroup;
-			children = (
-				1A591D6C244F6471007EBEC2 /* CoGenerator.swift */,
-			);
-			path = CoGenerator;
 			sourceTree = "<group>";
 		};
 		1A599E51241ACD7B007E744F /* CoroutineProtocol */ = {
@@ -522,7 +507,6 @@
 		F810EF031F8F2E4700025AD1 /* SwiftCoroutine */ = {
 			isa = PBXGroup;
 			children = (
-				1A591D6B244F645C007EBEC2 /* CoGenerator */,
 				1A153174244CA338004A23D8 /* CoChannel */,
 				1A03F81D23BB24C90072C843 /* Helpers */,
 				1A9C14D323BB4EF300E13203 /* CoFuture */,
@@ -820,10 +804,8 @@
 				1A790E8423E5D7A9007056EC /* Coroutine.swift in Sources */,
 				1A65BABB239CE05D004C1716 /* CoroutineContext.swift in Sources */,
 				1A9C14DE23BB824400E13203 /* CoFuture1+await.swift in Sources */,
-				1ABD0673242A368F00A22764 /* AtomicEnum.swift in Sources */,
 				1A363CBF2413D03B000CF996 /* CoroutineProtocol.swift in Sources */,
 				1A790E8823E6D167007056EC /* PsxLock.swift in Sources */,
-				1A591D6D244F6471007EBEC2 /* CoGenerator.swift in Sources */,
 				1A363CBC2413D004000CF996 /* StackfullCoroutine.swift in Sources */,
 				1A8129A82417D56700AE061C /* Constants.swift in Sources */,
 			);
@@ -894,10 +876,8 @@
 				1A790E8523E5D7A9007056EC /* Coroutine.swift in Sources */,
 				1A43084623C094EC001A89EA /* DispatchSourceTimer.swift in Sources */,
 				1A9C14DF23BB824400E13203 /* CoFuture1+await.swift in Sources */,
-				1ABD0674242A368F00A22764 /* AtomicEnum.swift in Sources */,
 				1A363CC02413D03B000CF996 /* CoroutineProtocol.swift in Sources */,
 				1A790E8923E6D167007056EC /* PsxLock.swift in Sources */,
-				1A591D6E244F6471007EBEC2 /* CoGenerator.swift in Sources */,
 				1A363CBD2413D004000CF996 /* StackfullCoroutine.swift in Sources */,
 				1A8129A92417D56700AE061C /* Constants.swift in Sources */,
 			);

@@ -106,24 +106,6 @@ class TestAtomic: XCTestCase {
         XCTAssertEqual(counter, 100_000)
     }
     
-    enum State: Int {
-        case free, blocked
-    }
-    
-    func testEnumUpdate() {
-        var atomic = AtomicEnum(value: State.free), counter = 0
-        DispatchQueue.concurrentPerform(iterations: 100_000) { _ in
-            while true {
-                if atomic.update(.blocked) == .free {
-                    counter += 1
-                    atomic.value = .free
-                    break
-                }
-            }
-        }
-        XCTAssertEqual(counter, 100_000)
-    }
-    
     func testIntUpdate() {
         var atomic = AtomicInt(value: 0)
         DispatchQueue.concurrentPerform(iterations: 100_000) { _ in
