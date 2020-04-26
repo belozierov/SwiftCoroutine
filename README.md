@@ -27,7 +27,7 @@ Another problem of asynchronous programming is **error handling**, because Swift
 Here is an expressly ugly example to show these problems.
 
 ```swift
-fetchImageURL(with: id) { (result: Result<URL, Error>) in
+asyncFetchImageURL(with: id) { (result: Result<URL, Error>) in
     switch result {
     case .success(let imageURL):
         URLSession.shared.dataTask(with: imageURL) { data, _, error in
@@ -70,7 +70,7 @@ Let’s have a look at the example with coroutines.
 DispatchQueue.main.coroutineFuture {
     
     //await CoFuture<URL> result that suspends coroutine and doesn't block the thread
-    let url: URL = try fetchImageURL(with: id).await()
+    let url: URL = try asyncFetchImageURL(with: id).await()
     
     //await CoFuture<(data: Data, response: URLResponse)> result without blocking the thread
     let data: Data = try URLSession.shared.dataTaskFuture(for: url).await().data
@@ -153,7 +153,7 @@ DispatchQueue.main.startCoroutine {
     let context: NSManagedObjectContext //context with privateQueueConcurrencyType
     let request: NSFetchRequest<Entity> //some complex request
 
-    //execute request without blocking the main thread
+    //execute request on the context without blocking the main thread
     let result = try context.await { try context.fetch(request) }
 }
 ```
