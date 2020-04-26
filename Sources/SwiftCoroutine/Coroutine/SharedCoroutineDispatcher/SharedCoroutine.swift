@@ -10,10 +10,6 @@ internal final class SharedCoroutine {
     
     internal typealias CompletionState = SharedCoroutineQueue.CompletionState
     
-    private enum State: Int {
-        case running, suspending, suspended, restarting
-    }
-    
     private struct StackBuffer {
         let stack: UnsafeMutableRawPointer, size: Int
     }
@@ -22,7 +18,7 @@ internal final class SharedCoroutine {
     internal var queue: SharedCoroutineQueue!
     internal var scheduler: CoroutineScheduler!
     
-    private var state = AtomicEnum(value: State.running)
+    private var state = AtomicInt()
     private var environment: UnsafeMutablePointer<CoroutineContext.SuspendData>!
     private var stackBuffer: StackBuffer!
     
@@ -114,5 +110,14 @@ extension SharedCoroutine: CoroutineProtocol {
         state.value = .restarting
         suspend()
     }
+    
+}
+
+extension Int {
+    
+    fileprivate static let running = 0
+    fileprivate static let suspending = 1
+    fileprivate static let suspended = 2
+    fileprivate static let restarting = 3
     
 }

@@ -35,7 +35,7 @@ extension CoPromise {
     }
     
     @inlinable public func complete(with future: CoFuture<Value>) {
-        future.whenComplete(setResult)
+        future.addCallback(setResult)
     }
     
 }

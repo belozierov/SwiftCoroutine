@@ -52,7 +52,7 @@ extension CoFuture {
         }
         let promise = CoPromise<NewValue>()
         addChild(future: promise) { result in
-            callback(result).whenComplete(promise.setResult)
+            callback(result).addCallback(promise.setResult)
         }
         return promise
     }
