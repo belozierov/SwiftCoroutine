@@ -199,7 +199,7 @@ let future2: CoFuture<Int> = DispatchQueue.global().coroutineFuture {
 
 //execute coroutine on the main thread
 DispatchQueue.main.startCoroutine {
-    let sum = try future1.await() + future2.await() //will await for 3 sec.
+    let sum: Int = try future1.await() + future2.await() //will await for 3 sec.
     self.label.text = "Sum is \(sum)"
 }
 ```
@@ -225,7 +225,7 @@ DispatchQueue.main.startCoroutine {
     let future = publisher.subscribeCoFuture()
     
     //await data without blocking the thread
-    let data = try future.await()
+    let data: Data = try future.await()
 }
 ```
 
