@@ -69,25 +69,23 @@ Let’s have a look at the example with coroutines.
 //executes coroutine on the main thread and returns CoFuture<Void> that we will use for error handling
 DispatchQueue.main.coroutineFuture {
     
-    //await CoFuture<URL> result without blocking the thread
-    let imageURL = try fetchImageURL(with: id).await()
+    //await CoFuture<URL> result that suspends coroutine and doesn't block the thread
+    let url: URL = try fetchImageURL(with: id).await()
     
-    //extension that returns CoFuture<(data: Data, response: URLResponse)>
-    let dataFuture = URLSession.shared.dataTaskFuture(for: imageURL)
-    
-    //await CoFuture result that suspends coroutine and doesn't block the thread
-    let data = try dataFuture.await().data
+    //await CoFuture<(data: Data, response: URLResponse)> result without blocking the thread
+    let data: Data = try URLSession.shared.dataTaskFuture(for: url).await().data
 
     //create UIImage from data or throw the error
     guard let image = UIImage(data: data) else { throw URLError(.cannotParseResponse) }
     
     //execute heavy task on global queue and await the result without blocking the thread
-    let thumbnail = try DispatchQueue.global().await { try image.makeThumbnail() }
+    let thumbnail: UIImage = try DispatchQueue.global().await { try image.makeThumbnail() }
 
     //set image in UIImageView on the main thread
     self.imageView.image = thumbnail
     
 }.whenFailure { error in
+
     . . . error handling . . . 
 }
 ```
