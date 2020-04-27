@@ -55,7 +55,10 @@ func postItem(item: Item) {
         }
 }
 
-func preparePostAsync() -> Promise<Token>
+func preparePostAsync() -> Promise<Token> {
+    // makes request an returns a promise that is completed later
+    return promise 
+}
 ```
 
 ### Async/await
@@ -69,15 +72,18 @@ Let’s have a look at the example with coroutine inside of which `await()` susp
 ```swift
 func postItem(item: Item) {
     Coroutine.start {
-        let token = try preparePostAsync().await()
-        let post = try postAsync(token, item).await()
+        let token = awaitPreparePostAsync()
+        let post = awaitPostAsync(token, item)
         processPost(post)
     }
 }
 
-func preparePostAsync() -> CoFuture<Token>
+func awaitPreparePostAsync() -> Token {
+    //makes a request and suspends the coroutine
+    return Coroutine.await { /* ... */ }
+}
 ```
-Here is the other example.
+Here is the other example using `CoFuture`.
 
 ```swift
 //executes coroutine on the main thread
