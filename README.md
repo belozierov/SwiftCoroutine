@@ -181,7 +181,7 @@ DispatchQueue.main.startCoroutine {
 For error handling you can use standart `do-catch` statement or use `CoFuture` as an alternative.
 
 ```swift
-//execute coroutine and returns CoFuture<Void> that we will use for error handling
+//execute coroutine and return CoFuture<Void> that we will use for error handling
 DispatchQueue.main.coroutineFuture {
     let result = try makeSomeFuture().await()
     
