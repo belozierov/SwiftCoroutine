@@ -6,12 +6,6 @@
 //  Copyright © 2019 Alex Belozierov. All rights reserved.
 //
 
-#if os(Linux)
-import Glibc
-#else
-import Darwin
-#endif
-
 extension Coroutine {
     
     @usableFromInline internal struct StackSize {

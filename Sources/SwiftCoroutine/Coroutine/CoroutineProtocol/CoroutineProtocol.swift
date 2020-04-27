@@ -39,18 +39,20 @@ extension Coroutine {
     }
     
     @inlinable internal static var current: CoroutineProtocol {
-        guard let pointer = currentPointer else {
-            precondition(false,
-                         """
-            Await must be called inside a coroutine.
-            
-            To launch the coroutine, use `startCoroutine()`, e.g. `DispatchQueue.main.startCoroutine()`.
-            OR
-            To check if inside the coroutine, use `Coroutine.isInsideCoroutine`.
-            """)
-            return PseudoCoroutine.shared
+        if let pointer = currentPointer,
+            let coroutine = Unmanaged<AnyObject>.fromOpaque(pointer)
+                .takeUnretainedValue() as? CoroutineProtocol {
+            return coroutine
         }
-        return Unmanaged<AnyObject>.fromOpaque(pointer).takeUnretainedValue() as! CoroutineProtocol
+        precondition(false,
+                     """
+        Await must be called inside a coroutine.
+        
+        To launch the coroutine, use `startCoroutine()`, e.g. `DispatchQueue.main.startCoroutine()`.
+        OR
+        To check if inside the coroutine, use `Coroutine.isInsideCoroutine`.
+        """)
+        return PseudoCoroutine.shared
     }
     
 }

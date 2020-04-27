@@ -10,32 +10,12 @@ import Foundation
 
 extension DispatchQueue: CoroutineScheduler {
     
-    fileprivate enum Executor {
-        case main((@escaping () -> Void) -> Void), notMain
-    }
-    
-    public func scheduleTask(_ task: @escaping () -> Void) {
-        switch getSpecific(key: .executorKey) {
-        case .main(let scheduler): return scheduler(task)
-        case .notMain: return async(execute: task)
-        default: break
-        }
+    @inlinable public func scheduleTask(_ task: @escaping () -> Void) {
         if self === DispatchQueue.main {
-            let scheduler = { (block: @escaping () -> Void) in
-                Thread.isMainThread ? block() : self.async(execute: block)
-            }
-            setSpecific(key: .executorKey, value: .main(scheduler))
-            scheduler(task)
+            Thread.isMainThread ? task() : async(execute: task)
         } else {
-            setSpecific(key: .executorKey, value: .notMain)
             async(execute: task)
         }
     }
-    
-}
-
-extension DispatchSpecificKey where T == DispatchQueue.Executor {
-    
-    fileprivate static let executorKey = DispatchSpecificKey()
     
 }

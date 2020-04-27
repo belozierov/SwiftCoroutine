@@ -113,9 +113,10 @@ public struct Coroutine {
     /// ```
     /// - Parameter time: The time interval for which a coroutine will be suspended.
     @inlinable public static func delay(_ time: DispatchTimeInterval) {
-        var timer: DispatchSourceTimer!
+        let timer = DispatchSource.makeTimerSource()
+        timer.schedule(deadline: .now() + time)
         await {
-            timer = DispatchSource.createTimer(timeout: .now() + time, handler: $0)
+            timer.setEventHandler(handler: $0)
             if #available(OSX 10.12, iOS 10.0, *) {
                 timer.activate()
             } else {
