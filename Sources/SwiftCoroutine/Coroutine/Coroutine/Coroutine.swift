@@ -38,7 +38,9 @@ public struct Coroutine {
         currentPointer != nil
     }
     
-    @inlinable internal static func start(_ task: @escaping () -> Void) {
+    /// Starts a new coroutine.
+    /// - Parameter task: The closure that will be executed inside coroutine.
+    @inlinable public static func start(_ task: @escaping () -> Void) {
         ImmediateScheduler().startCoroutine(task)
     }
     

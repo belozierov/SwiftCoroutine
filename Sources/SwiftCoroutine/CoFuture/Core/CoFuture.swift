@@ -88,14 +88,14 @@ extension CoFuture: _CoFutureCancellable {
     /// }
     /// ```
     /// - Parameter task: The closure that will be executed inside the coroutine.
-    public convenience init(task: @escaping () throws -> Value) {
+    @inlinable public convenience init(task: @escaping () throws -> Value) {
         self.init(_result: nil)
         Coroutine.start { self.setResult(Result(catching: task)) }
     }
     
     /// Initializes a future with result.
     /// - Parameter result: The result provided by this future.
-    public convenience init(result: Result<Value, Error>) {
+    @inlinable public convenience init(result: Result<Value, Error>) {
         self.init(_result: result)
     }
     
@@ -125,10 +125,9 @@ extension CoFuture: _CoFutureCancellable {
     
     // MARK: - Callback
     
-    internal typealias Callback = (Result<Value, Error>) -> Void
+    @usableFromInline internal typealias Callback = (Result<Value, Error>) -> Void
     
-    @usableFromInline
-    internal func addCallback(_ callback: @escaping (Result<Value, Error>) -> Void) {
+    @usableFromInline internal func addCallback(_ callback: @escaping Callback) {
         var pointer: UnsafeMutablePointer<Node>!
         let new = nodeList.update {
             if $0 < 0 { return $0 }

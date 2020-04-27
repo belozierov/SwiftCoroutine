@@ -8,8 +8,8 @@
 
 internal struct FifoQueue<T> {
     
-    private var input = [T]()
-    private var output = [T]()
+    private var input = ContiguousArray<T>()
+    private var output = ContiguousArray<T>()
     
     @inlinable internal mutating func insertAtStart(_ item: T) {
         output.append(item)
@@ -23,15 +23,15 @@ internal struct FifoQueue<T> {
         if let item = output.popLast() { return item }
         switch input.count {
         case 0: return nil
-        case 1: return input.popLast()
+        case 1: return input.removeLast()
         default:
-            output = input.reversed()
+            output = ContiguousArray(input.reversed())
             input.removeAll(keepingCapacity: true)
-            return output.popLast()
+            return output.removeLast()
         }
     }
     
-    internal func forEach(_ body: (T) -> Void) {
+    @inlinable internal func forEach(_ body: (T) -> Void) {
         (output + input.reversed()).forEach(body)
     }
     

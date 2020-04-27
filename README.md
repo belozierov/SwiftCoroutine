@@ -28,15 +28,7 @@ Another problem of asynchronous programming is **error handling**, because Swift
 ```swift
 func postItem(item: Item) {
     preparePostAsync { token in
-        guard let token = token else { 
-            . . . error handling . . . 
-            return 
-        }
         submitPostAsync(token, item) { post in
-            guard let post = post else { 
-                . . . error handling . . . 
-                return 
-            }
             processPost(post)
         }
     }
@@ -73,6 +65,19 @@ The [async/await](https://en.wikipedia.org/wiki/Async/await) pattern is an alter
 It is already well-established in other programming languages and is an evolution in asynchronous programming. The implementation of this pattern is possible thanks to coroutines.
 
 Let’s have a look at the example with coroutine inside of which `await()` suspends it and resumes when the result is available.
+
+```swift
+func postItem(item: Item) {
+    Coroutine.start {
+        let token = try preparePostAsync().await()
+        let post = try postAsync(token, item).await()
+        processPost(post)
+    }
+}
+
+func preparePostAsync() -> CoFuture<Token>
+```
+Here is the other example.
 
 ```swift
 //executes coroutine on the main thread
