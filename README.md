@@ -25,39 +25,48 @@ Asynchronous programming is usually associated with callbacks. It is quite conve
 
 Another problem of asynchronous programming is **error handling**, because Swift's natural error handling mechanism cannot be used.
 
-Here is an expressly ugly example to show these problems.
-
 ```swift
-asyncFetchImageURL(with: id) { (result: Result<URL, Error>) in
-    switch result {
-    case .success(let imageURL):
-        URLSession.shared.dataTask(with: imageURL) { data, _, error in
-            if let error = error {
-                . . . error handling . . .
-                return
+func postItem(item: Item) {
+    preparePostAsync { token in
+        guard let token = token else { 
+            . . . error handling . . . 
+            return 
+        }
+        submitPostAsync(token, item) { post in
+            guard let post = post else { 
+                . . . error handling . . . 
+                return 
             }
-            guard let image = data.flatMap(UIImage.init) else {
-                . . . error handling . . .
-                return
-            }
-            DispatchQueue.global().async {
-                do {
-                    let thumbnail = try image.makeThumbnail() //some heavy task that throws
-                    DispatchQueue.main.async {
-                        self.imageView.image = thumbnail
-                    }
-                } catch {
-                    . . . error handling . . .
-                }
-            }
-        }.resume()
-    case .failure(let error):
-        . . . error handling . . .
+            processPost(post)
+        }
     }
 }
 ```
 
-### Async/await solution
+#### What about Rx and other such frameworks?
+
+There are many other frameworks that make it easy to use asynchronous code, such as Combine, RxSwift, PromiseKit and so on. They use other approaches that have some drawbacks:
+
+- Similar to callbacks, you also need to create chained calls, that’s why you can’t normally use loops, exception handling, etc.
+- Usually you need to learn a complex new API with hundreds of methods.
+- Instead of working with the actual data, you need to operate with some wrappers all the time.
+- Chaining of errors can be really complicated to handle.
+
+```swift
+func postItem(item: Item) {
+    preparePostAsync() 
+        .thenCompose { token in 
+            submitPostAsync(token, item)
+        }
+        .thenAccept { post in 
+            processPost(post)
+        }
+}
+
+func preparePostAsync() -> Promise<Token>
+```
+
+### Async/await
 
 The [async/await](https://en.wikipedia.org/wiki/Async/await) pattern is an alternative that allows an asynchronous, non-blocking function to be structured in a way similar to an ordinary synchronous function. 
 
@@ -66,14 +75,14 @@ It is already well-established in other programming languages and is an evolutio
 Let’s have a look at the example with coroutine inside of which `await()` suspends it and resumes when the result is available.
 
 ```swift
-//executes coroutine on the main thread and returns CoFuture<Void> that we will use for error handling
-DispatchQueue.main.coroutineFuture {
+//executes coroutine on the main thread
+DispatchQueue.main.startCoroutine {
     
-    //await CoFuture<URL> result that suspends coroutine and doesn't block the thread
-    let url: URL = try asyncFetchImageURL(with: id).await()
+    //extension that returns CoFuture<(data: Data, response: URLResponse)>
+    let dataFuture = URLSession.shared.dataTaskFuture(for: imageURL)
     
-    //await CoFuture<(data: Data, response: URLResponse)> result without blocking the thread
-    let data: Data = try URLSession.shared.dataTaskFuture(for: url).await().data
+    //await CoFuture result that suspends coroutine and doesn't block the thread
+    let data: Data = try dataFuture.await().data
 
     //create UIImage from data or throw the error
     guard let image = UIImage(data: data) else { throw URLError(.cannotParseResponse) }
@@ -84,9 +93,6 @@ DispatchQueue.main.coroutineFuture {
     //set image in UIImageView on the main thread
     self.imageView.image = thumbnail
     
-}.whenFailure { error in
-
-    . . . error handling . . . 
 }
 ```
 
