@@ -84,7 +84,7 @@ DispatchQueue.main.startCoroutine {
 
 A [coroutines](https://en.wikipedia.org/wiki/Coroutine) is a computation that can be suspended and resumed at a later time without blocking a thread. Coroutines build upon regular functions and makes them more flexible.
 
-Coroutines can be executed on any scheduler and switched between schedulers during execution.
+Coroutines can be executed on any scheduler and switched between them during execution.
 
 #### Key benefits
 
@@ -103,8 +103,8 @@ The following example shows the usage of  `await()` inside a coroutine to wrap a
 DispatchQueue.main.startCoroutine {
     
     //await URLSessionDataTask response without blocking the thread
-    let (data, response, error) = Coroutine.await {
-        URLSession.shared.dataTask(with: url, completionHandler: $0).resume()
+    let (data, response, error) = Coroutine.await { callback in
+        URLSession.shared.dataTask(with: url, completionHandler: callback).resume()
     }
     
     . . . use response on the main thread . . . 
