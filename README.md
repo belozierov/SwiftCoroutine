@@ -178,7 +178,7 @@ DispatchQueue.main.startCoroutine {
 }
 ```
 
-For error handling you can use standart `do-catch` statement or use `CoFuture` as alternative.
+For error handling you can use standart `do-catch` statement or use `CoFuture` as an alternative.
 
 ```swift
 //returns CoFuture<Void> that we will use for error handling
