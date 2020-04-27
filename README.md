@@ -99,7 +99,7 @@ DispatchQueue.main.startCoroutine {
     guard let image = UIImage(data: data) else { throw URLError(.cannotParseResponse) }
     
     //execute heavy task on global queue and await the result without blocking the thread
-    let thumbnail: UIImage = try DispatchQueue.global().await { try image.makeThumbnail() }
+    let thumbnail: UIImage = DispatchQueue.global().await { image.makeThumbnail() }
 
     //set image in UIImageView on the main thread
     self.imageView.image = thumbnail
