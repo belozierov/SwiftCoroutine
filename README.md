@@ -125,10 +125,10 @@ extension NSManagedObjectContext: CoroutineScheduler {
 //execute coroutine on the main thread
 DispatchQueue.main.startCoroutine {
     let context: NSManagedObjectContext //context with privateQueueConcurrencyType
-    let request: NSFetchRequest<Entity> //some complex request
+    let request: NSFetchRequest<NSDictionary> //some complex request
 
     //execute request on the context without blocking the main thread
-    let result = try context.await { try context.fetch(request) }
+    let result: [NSDictionary] = try context.await { try context.fetch(request) }
 }
 ```
 
