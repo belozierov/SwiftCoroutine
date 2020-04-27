@@ -25,16 +25,6 @@ Asynchronous programming is usually associated with callbacks. It is quite conve
 
 Another problem of asynchronous programming is **error handling**, because Swift's natural error handling mechanism cannot be used.
 
-```swift
-func postItem(item: Item) {
-    preparePostAsync { token in
-        submitPostAsync(token, item) { post in
-            processPost(post)
-        }
-    }
-}
-```
-
 #### What about Rx and other such frameworks?
 
 There are many other frameworks that make it easy to use asynchronous code, such as Combine, RxSwift, PromiseKit and so on. They use other approaches that have some drawbacks:
@@ -44,23 +34,6 @@ There are many other frameworks that make it easy to use asynchronous code, such
 - Instead of working with the actual data, you need to operate with some wrappers all the time.
 - Chaining of errors can be really complicated to handle.
 
-```swift
-func postItem(item: Item) {
-    preparePostAsync() 
-        .thenCompose { token in 
-            submitPostAsync(token, item)
-        }
-        .thenAccept { post in 
-            processPost(post)
-        }
-}
-
-func preparePostAsync() -> Promise<Token> {
-    // makes request an returns a promise that is completed later
-    return promise 
-}
-```
-
 ### Async/await
 
 The [async/await](https://en.wikipedia.org/wiki/Async/await) pattern is an alternative that allows an asynchronous, non-blocking function to be structured in a way similar to an ordinary synchronous function. 
@@ -68,22 +41,6 @@ The [async/await](https://en.wikipedia.org/wiki/Async/await) pattern is an alter
 It is already well-established in other programming languages and is an evolution in asynchronous programming. The implementation of this pattern is possible thanks to coroutines.
 
 Let’s have a look at the example with coroutine inside of which `await()` suspends it and resumes when the result is available without blocking the thread.
-
-```swift
-func postItem(item: Item) {
-    Coroutine.start {
-        let token = awaitPreparePostAsync()
-        let post = awaitPostAsync(token, item)
-        processPost(post)
-    }
-}
-
-func awaitPreparePostAsync() -> Token {
-    //makes a request and suspends the coroutine
-    return Coroutine.await { /* ... */ }
-}
-```
-Here is another example of using `CoFuture` inside a coroutine where you can `await()` its result without blocking the thread.
 
 ```swift
 //executes coroutine on the main thread
