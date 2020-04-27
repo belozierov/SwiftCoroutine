@@ -83,7 +83,7 @@ func awaitPreparePostAsync() -> Token {
     return Coroutine.await { /* ... */ }
 }
 ```
-Here is another example of using `CoFuture` inside a coroutine where you can await its result without blocking the thread.
+Here is another example of using `CoFuture` inside a coroutine where you can `await()` its result without blocking the thread.
 
 ```swift
 //executes coroutine on the main thread
