@@ -69,8 +69,8 @@ Let’s have a look at the example with coroutine inside of which `await()` susp
 ```swift
 func postItem(item: Item) {
     Coroutine.start {
-        let token = try preparePostAsync().await()
-        let post = try postAsync(token, item).await()
+        let token: Token = try preparePostAsync().await()
+        let post: Post = try postAsync(token, item).await()
         processPost(post)
     }
 }
