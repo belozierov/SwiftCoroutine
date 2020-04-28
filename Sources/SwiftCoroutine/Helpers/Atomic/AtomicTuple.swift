@@ -9,16 +9,16 @@
 internal struct AtomicTuple {
     
     internal typealias Tuple = (Int32, Int32)
-    private var atomic = AtomicInt()
+    private var rawValue = 0
     
     internal var value: Tuple {
-        get { unsafeBitCast(atomic.value, to: Tuple.self) }
-        set { atomic.value = unsafeBitCast(newValue, to: Int.self) }
+        get { unsafeBitCast(rawValue, to: Tuple.self) }
+        set { atomicStore(&rawValue, value: unsafeBitCast(newValue, to: Int.self)) }
     }
     
     @discardableResult
     internal mutating func update(_ transform: (Tuple) -> Tuple) -> (old: Tuple, new: Tuple) {
-        let (old, new) = atomic.update {
+        let (old, new) = atomicUpdate(&rawValue) {
             let tuple = unsafeBitCast($0, to: Tuple.self)
             return unsafeBitCast(transform(tuple), to: Int.self)
         }

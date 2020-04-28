@@ -10,44 +10,23 @@
 import CCoroutine
 #endif
 
-internal struct AtomicInt {
-    
-    private var _value: Int
-    
-    @inlinable init(value: Int = 0) {
-        _value = value
-    }
-    
-    @inlinable var value: Int {
-        get { _value }
-        set {
-            withUnsafeMutablePointer(to: &_value) {
-                __atomicStore(OpaquePointer($0), newValue)
-            }
-        }
-    }
-    
-    @discardableResult @inlinable
-    mutating func add(_ value: Int) -> Int {
-        withUnsafeMutablePointer(to: &_value) {
-            __atomicFetchAdd(OpaquePointer($0), value)
-        }
-    }
-    
-    @discardableResult @inlinable
-    mutating func update(_ transform: (Int) -> Int) -> (old: Int, new: Int) {
-        withUnsafeMutablePointer(to: &_value) {
-            var oldValue = $0.pointee, newValue: Int
-            repeat { newValue = transform(oldValue) }
-                while __atomicCompareExchange(OpaquePointer($0), &oldValue, newValue) == 0
-            return (oldValue, newValue)
-        }
-    }
-    
-    @inlinable mutating func update(_ newValue: Int) -> Int {
-        withUnsafeMutablePointer(to: &_value) {
-            __atomicExchange(OpaquePointer($0), newValue)
-        }
-    }
-    
+@inlinable internal func atomicStore(_ pointer: UnsafeMutablePointer<Int>, value: Int) {
+    __atomicStore(OpaquePointer(pointer), value)
+}
+
+@inlinable @discardableResult
+internal func atomicAdd(_ pointer: UnsafeMutablePointer<Int>, value: Int) -> Int {
+    __atomicFetchAdd(OpaquePointer(pointer), value)
+}
+
+@inlinable internal func atomicExchange(_ pointer: UnsafeMutablePointer<Int>, with value: Int) -> Int {
+    __atomicExchange(OpaquePointer(pointer), value)
+}
+
+@discardableResult @inlinable internal
+func atomicUpdate(_ pointer: UnsafeMutablePointer<Int>, transform: (Int) -> Int) -> (old: Int, new: Int) {
+    var oldValue = pointer.pointee, newValue: Int
+    repeat { newValue = transform(oldValue) }
+        while __atomicCompareExchange(OpaquePointer(pointer), &oldValue, newValue) == 0
+    return (oldValue, newValue)
 }

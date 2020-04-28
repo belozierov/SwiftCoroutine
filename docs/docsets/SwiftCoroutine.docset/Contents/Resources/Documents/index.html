@@ -13,7 +13,7 @@
     <a title="SwiftCoroutine  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">SwiftCoroutine Docs</a> (83% documented)</p>
+        <p><a href="index.html">SwiftCoroutine Docs</a> (82% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -110,14 +110,6 @@ This feature is not yet supported in Swift, but this can be improved by a framew
 <p>Asynchronous programming is usually associated with callbacks. It is quite convenient until there are too many of them and they start nesting. Then it&rsquo;s called a <strong>pyramid of doom</strong> or even <strong>callback hell</strong>.</p>
 
 <p>Another problem of asynchronous programming is <strong>error handling</strong>, because Swift&rsquo;s natural error handling mechanism cannot be used.</p>
-<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">postItem</span><span class="p">(</span><span class="nv">item</span><span class="p">:</span> <span class="kt">Item</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">preparePostAsync</span> <span class="p">{</span> <span class="n">token</span> <span class="k">in</span>
-        <span class="nf">submitPostAsync</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span> <span class="p">{</span> <span class="n">post</span> <span class="k">in</span>
-            <span class="nf">processPost</span><span class="p">(</span><span class="n">post</span><span class="p">)</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</code></pre>
 <h4 id='what-about-rx-and-other-such-frameworks' class='heading'>What about Rx and other such frameworks?</h4>
 
 <p>There are many other frameworks that make it easy to use asynchronous code, such as Combine, RxSwift, PromiseKit and so on. They use other approaches that have some drawbacks:</p>
@@ -128,37 +120,13 @@ This feature is not yet supported in Swift, but this can be improved by a framew
 <li>Instead of working with the actual data, you need to operate with some wrappers all the time.</li>
 <li>Chaining of errors can be really complicated to handle.</li>
 </ul>
-<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">postItem</span><span class="p">(</span><span class="nv">item</span><span class="p">:</span> <span class="kt">Item</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nf">preparePostAsync</span><span class="p">()</span> 
-        <span class="o">.</span><span class="n">thenCompose</span> <span class="p">{</span> <span class="n">token</span> <span class="k">in</span> 
-            <span class="nf">submitPostAsync</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
-        <span class="p">}</span>
-        <span class="o">.</span><span class="n">thenAccept</span> <span class="p">{</span> <span class="n">post</span> <span class="k">in</span> 
-            <span class="nf">processPost</span><span class="p">(</span><span class="n">post</span><span class="p">)</span>
-        <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="kd">func</span> <span class="nf">preparePostAsync</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Promise</span><span class="o">&lt;</span><span class="kt">Token</span><span class="o">&gt;</span>
-</code></pre>
 <h3 id='async-await' class='heading'>Async/await</h3>
 
 <p>The <a href="https://en.wikipedia.org/wiki/Async/await">async/await</a> pattern is an alternative that allows an asynchronous, non-blocking function to be structured in a way similar to an ordinary synchronous function. </p>
 
 <p>It is already well-established in other programming languages and is an evolution in asynchronous programming. The implementation of this pattern is possible thanks to coroutines.</p>
 
-<p>Let’s have a look at the example with coroutine inside of which <code>await()</code> suspends it and resumes when the result is available.</p>
-<pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">postItem</span><span class="p">(</span><span class="nv">item</span><span class="p">:</span> <span class="kt">Item</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kt">Coroutine</span><span class="o">.</span><span class="n">start</span> <span class="p">{</span>
-        <span class="k">let</span> <span class="nv">token</span> <span class="o">=</span> <span class="k">try</span> <span class="nf">preparePostAsync</span><span class="p">()</span><span class="o">.</span><span class="nf">await</span><span class="p">()</span>
-        <span class="k">let</span> <span class="nv">post</span> <span class="o">=</span> <span class="k">try</span> <span class="nf">postAsync</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span><span class="o">.</span><span class="nf">await</span><span class="p">()</span>
-        <span class="nf">processPost</span><span class="p">(</span><span class="n">post</span><span class="p">)</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="kd">func</span> <span class="nf">preparePostAsync</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">CoFuture</span><span class="o">&lt;</span><span class="kt">Token</span><span class="o">&gt;</span>
-</code></pre>
-
-<p>Here is the other example.</p>
+<p>Let’s have a look at the example with coroutine inside of which <code>await()</code> suspends it and resumes when the result is available without blocking the thread.</p>
 <pre class="highlight swift"><code><span class="c1">//executes coroutine on the main thread</span>
 <span class="kt">DispatchQueue</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">startCoroutine</span> <span class="p">{</span>
 
@@ -172,7 +140,7 @@ This feature is not yet supported in Swift, but this can be improved by a framew
     <span class="k">guard</span> <span class="k">let</span> <span class="nv">image</span> <span class="o">=</span> <span class="kt">UIImage</span><span class="p">(</span><span class="nv">data</span><span class="p">:</span> <span class="n">data</span><span class="p">)</span> <span class="k">else</span> <span class="p">{</span> <span class="k">throw</span> <span class="kt">URLError</span><span class="p">(</span><span class="o">.</span><span class="n">cannotParseResponse</span><span class="p">)</span> <span class="p">}</span>
 
     <span class="c1">//execute heavy task on global queue and await the result without blocking the thread</span>
-    <span class="k">let</span> <span class="nv">thumbnail</span><span class="p">:</span> <span class="kt">UIImage</span> <span class="o">=</span> <span class="k">try</span> <span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">global</span><span class="p">()</span><span class="o">.</span><span class="n">await</span> <span class="p">{</span> <span class="k">try</span> <span class="n">image</span><span class="o">.</span><span class="nf">makeThumbnail</span><span class="p">()</span> <span class="p">}</span>
+    <span class="k">let</span> <span class="nv">thumbnail</span><span class="p">:</span> <span class="kt">UIImage</span> <span class="o">=</span> <span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">global</span><span class="p">()</span><span class="o">.</span><span class="n">await</span> <span class="p">{</span> <span class="n">image</span><span class="o">.</span><span class="nf">makeThumbnail</span><span class="p">()</span> <span class="p">}</span>
 
     <span class="c1">//set image in UIImageView on the main thread</span>
     <span class="k">self</span><span class="o">.</span><span class="n">imageView</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">thumbnail</span>
@@ -197,7 +165,7 @@ This feature is not yet supported in Swift, but this can be improved by a framew
 
 <p>A <a href="https://en.wikipedia.org/wiki/Coroutine">coroutines</a> is a computation that can be suspended and resumed at a later time without blocking a thread. Coroutines build upon regular functions and makes them more flexible.</p>
 
-<p>Coroutines can be executed on any scheduler and switched between schedulers during execution.</p>
+<p>Coroutines can be executed on any scheduler and switched between them during execution.</p>
 <h4 id='key-benefits' class='heading'>Key benefits</h4>
 
 <ul>
@@ -214,8 +182,8 @@ This feature is not yet supported in Swift, but this can be improved by a framew
 <span class="kt">DispatchQueue</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">startCoroutine</span> <span class="p">{</span>
 
     <span class="c1">//await URLSessionDataTask response without blocking the thread</span>
-    <span class="k">let</span> <span class="p">(</span><span class="nv">data</span><span class="p">,</span> <span class="nv">response</span><span class="p">,</span> <span class="nv">error</span><span class="p">)</span> <span class="o">=</span> <span class="kt">Coroutine</span><span class="o">.</span><span class="n">await</span> <span class="p">{</span>
-        <span class="kt">URLSession</span><span class="o">.</span><span class="n">shared</span><span class="o">.</span><span class="nf">dataTask</span><span class="p">(</span><span class="nv">with</span><span class="p">:</span> <span class="n">url</span><span class="p">,</span> <span class="nv">completionHandler</span><span class="p">:</span> <span class="nv">$0</span><span class="p">)</span><span class="o">.</span><span class="nf">resume</span><span class="p">()</span>
+    <span class="k">let</span> <span class="p">(</span><span class="nv">data</span><span class="p">,</span> <span class="nv">response</span><span class="p">,</span> <span class="nv">error</span><span class="p">)</span> <span class="o">=</span> <span class="kt">Coroutine</span><span class="o">.</span><span class="n">await</span> <span class="p">{</span> <span class="n">callback</span> <span class="k">in</span>
+        <span class="kt">URLSession</span><span class="o">.</span><span class="n">shared</span><span class="o">.</span><span class="nf">dataTask</span><span class="p">(</span><span class="nv">with</span><span class="p">:</span> <span class="n">url</span><span class="p">,</span> <span class="nv">completionHandler</span><span class="p">:</span> <span class="n">callback</span><span class="p">)</span><span class="o">.</span><span class="nf">resume</span><span class="p">()</span>
     <span class="p">}</span>
 
     <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> <span class="n">use</span> <span class="n">response</span> <span class="n">on</span> <span class="n">the</span> <span class="n">main</span> <span class="n">thread</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> 
@@ -234,10 +202,10 @@ This feature is not yet supported in Swift, but this can be improved by a framew
 <span class="c1">//execute coroutine on the main thread</span>
 <span class="kt">DispatchQueue</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">startCoroutine</span> <span class="p">{</span>
     <span class="k">let</span> <span class="nv">context</span><span class="p">:</span> <span class="kt">NSManagedObjectContext</span> <span class="c1">//context with privateQueueConcurrencyType</span>
-    <span class="k">let</span> <span class="nv">request</span><span class="p">:</span> <span class="kt">NSFetchRequest</span><span class="o">&lt;</span><span class="kt">Entity</span><span class="o">&gt;</span> <span class="c1">//some complex request</span>
+    <span class="k">let</span> <span class="nv">request</span><span class="p">:</span> <span class="kt">NSFetchRequest</span><span class="o">&lt;</span><span class="kt">NSDictionary</span><span class="o">&gt;</span> <span class="c1">//some complex request</span>
 
     <span class="c1">//execute request on the context without blocking the main thread</span>
-    <span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="k">try</span> <span class="n">context</span><span class="o">.</span><span class="n">await</span> <span class="p">{</span> <span class="k">try</span> <span class="n">context</span><span class="o">.</span><span class="nf">fetch</span><span class="p">(</span><span class="n">request</span><span class="p">)</span> <span class="p">}</span>
+    <span class="k">let</span> <span class="nv">result</span><span class="p">:</span> <span class="p">[</span><span class="kt">NSDictionary</span><span class="p">]</span> <span class="o">=</span> <span class="k">try</span> <span class="n">context</span><span class="o">.</span><span class="n">await</span> <span class="p">{</span> <span class="k">try</span> <span class="n">context</span><span class="o">.</span><span class="nf">fetch</span><span class="p">(</span><span class="n">request</span><span class="p">)</span> <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
 <h3 id='futures-and-promises' class='heading'>Futures and Promises</h3>
@@ -279,6 +247,18 @@ This feature is not yet supported in Swift, but this can be improved by a framew
 <span class="kt">DispatchQueue</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">startCoroutine</span> <span class="p">{</span>
     <span class="k">let</span> <span class="nv">sum</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="k">try</span> <span class="n">future1</span><span class="o">.</span><span class="nf">await</span><span class="p">()</span> <span class="o">+</span> <span class="n">future2</span><span class="o">.</span><span class="nf">await</span><span class="p">()</span> <span class="c1">//will await for 3 sec.</span>
     <span class="k">self</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">"Sum is </span><span class="se">\(</span><span class="n">sum</span><span class="se">)</span><span class="s">"</span>
+<span class="p">}</span>
+</code></pre>
+
+<p>For error handling you can use standart <code>do-catch</code> statement or use <code><a href="Classes/CoFuture.html">CoFuture</a></code> as an alternative.</p>
+<pre class="highlight swift"><code><span class="c1">//execute coroutine and return CoFuture&lt;Void&gt; that we will use for error handling</span>
+<span class="kt">DispatchQueue</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">coroutineFuture</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="k">try</span> <span class="nf">makeSomeFuture</span><span class="p">()</span><span class="o">.</span><span class="nf">await</span><span class="p">()</span>
+
+    <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> <span class="n">use</span> <span class="n">result</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span>
+<span class="p">}</span><span class="o">.</span><span class="n">whenFailure</span> <span class="p">{</span> <span class="n">error</span> <span class="k">in</span>
+
+    <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> <span class="n">handle</span> <span class="n">error</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span>
 <span class="p">}</span>
 </code></pre>
 
@@ -338,7 +318,7 @@ This feature is not yet supported in Swift, but this can be improved by a framew
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-04-27)</p>
+          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-04-28)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

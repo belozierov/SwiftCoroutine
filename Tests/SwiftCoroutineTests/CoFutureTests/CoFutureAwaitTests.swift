@@ -151,5 +151,46 @@ class CoFutureAwaitTests: XCTestCase {
         }
         wait(for: [exp], timeout: 5)
     }
+    
+    func testTimout() {
+        let exp = expectation(description: "testTimout")
+        let promise = CoPromise<Int>()
+        let date = Date()
+        Coroutine.start {
+            do {
+                _ = try promise.await(timeout: .seconds(1))
+                XCTFail()
+            } catch let error as CoFutureError {
+                XCTAssertEqual(error, .timeout)
+                XCTAssertDuration(from: date, in: 1..<2)
+                exp.fulfill()
+            } catch {
+                XCTFail()
+            }
+        }
+        wait(for: [exp], timeout: 3)
+    }
+    
+    func testTimoutNegative() {
+        let exp = expectation(description: "testTimoutNegative")
+        let promise = CoPromise<Int>()
+        Coroutine.start {
+            do {
+                _ = try promise.await(timeout: .microseconds(-100))
+                XCTFail()
+            } catch let error as CoFutureError {
+                XCTAssertEqual(error, .timeout)
+                exp.fulfill()
+            } catch {
+                XCTFail()
+            }
+        }
+        wait(for: [exp], timeout: 1)
+    }
+    
+    func testTimeoutFulfilled() {
+        let future = CoFuture(result: .success(0))
+        XCTAssertEqual(try? future.await(timeout: .microseconds(0)), 0)
+    }
 
 }

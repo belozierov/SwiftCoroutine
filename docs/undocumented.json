@@ -36,6 +36,13 @@
       "warning": "undocumented"
     },
     {
+      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/CoFutureError.swift",
+      "line": 10,
+      "symbol": "CoFutureError.timeout",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
       "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Core/CoPromise.swift",
       "line": 18,
       "symbol": "CoPromise.init()",

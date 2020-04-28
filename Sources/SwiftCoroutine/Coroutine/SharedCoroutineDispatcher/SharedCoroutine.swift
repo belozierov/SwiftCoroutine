@@ -18,7 +18,7 @@ internal final class SharedCoroutine {
     internal var queue: SharedCoroutineQueue!
     internal var scheduler: CoroutineScheduler!
     
-    private var state = AtomicInt()
+    private var state: Int = .running
     private var environment: UnsafeMutablePointer<CoroutineContext.SuspendData>!
     private var stackBuffer: StackBuffer!
     
@@ -26,7 +26,7 @@ internal final class SharedCoroutine {
         dispatcher = nil
         queue = nil
         scheduler = nil
-        state.value = .running
+        state = .running
     }
     
     // MARK: - Actions
@@ -45,7 +45,7 @@ internal final class SharedCoroutine {
     
     private func perform(_ block: () -> Bool) -> CompletionState {
         if block() { return .finished }
-        switch state.update(.suspended) {
+        switch atomicExchange(&state, with: .suspended) {
         case .running: return resumeContext()
         case .restarting: return .restarting
         default: return .suspended
@@ -85,16 +85,17 @@ internal final class SharedCoroutine {
 extension SharedCoroutine: CoroutineProtocol {
     
     internal func await<T>(_ callback: (@escaping (T) -> Void) -> Void) -> T {
-        state.value = .suspending
+        state = .suspending
+        var resultState = 0
         var result: T!
-        callback {
-            if result != nil { return }
-            result = $0
-            if self.state.update(.running) == .suspended {
+        callback { value in
+            if atomicExchange(&resultState, with: 1) == 1 { return }
+            result = value
+            if atomicExchange(&self.state, with: .running) == .suspended {
                 self.queue.resume(coroutine: self)
             }
         }
-        if state.value == .suspending { suspend() }
+        if state == .suspending { suspend() }
         return result
     }
     
@@ -107,7 +108,7 @@ extension SharedCoroutine: CoroutineProtocol {
     
     private func setScheduler(_ scheduler: CoroutineScheduler) {
         self.scheduler = scheduler
-        state.value = .restarting
+        state = .restarting
         suspend()
     }
     

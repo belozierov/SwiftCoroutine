@@ -55,24 +55,24 @@ public class CoFuture<Value> {
         var next = 0
     }
     
-    private var nodeList, resultState: AtomicInt
+    private var nodeList, resultState: Int
     private var _result: Optional<Result<Value, Error>>
     private var parent: UnownedCancellable?
     
     @usableFromInline internal init(_result: Result<Value, Error>?) {
         if let result = _result {
             self._result = result
-            resultState = AtomicInt(value: 1)
-            nodeList = AtomicInt(value: -1)
+            resultState = 1
+            nodeList = -1
         } else {
             self._result = nil
-            resultState = AtomicInt()
-            nodeList = AtomicInt()
+            resultState = 0
+            nodeList = 0
         }
     }
     
     deinit {
-        if nodeList.value > 0 {
+        if nodeList > 0 {
             completeCallbacks(with: .failure(CoFutureError.canceled))
         }
     }
@@ -103,20 +103,20 @@ extension CoFuture: _CoFutureCancellable {
     
     /// Returns completed result or nil if this future has not been completed yet.
     public var result: Result<Value, Error>? {
-        nodeList.value < 0 ? _result : nil
+        nodeList < 0 ? _result : nil
     }
     
     @usableFromInline internal func setResult(_ result: Result<Value, Error>) {
-        guard resultState.update(1) == 0 else { return }
+        guard atomicExchange(&resultState, with: 1) == 0 else { return }
         _result = result
         parent = nil
         completeCallbacks(with: result)
     }
     
     private func completeCallbacks(with result: Result<Value, Error>) {
-        var nodeAddress = nodeList.update(-1)
-        while nodeAddress > 0, let pointer = UnsafeMutablePointer<Node>(bitPattern: nodeAddress) {
-            nodeAddress = pointer.pointee.next
+        var address = atomicExchange(&nodeList, with: -1)
+        while address > 0, let pointer = UnsafeMutablePointer<Node>(bitPattern: address) {
+            address = pointer.pointee.next
             pointer.pointee.callback(result)
             pointer.deinitialize(count: 1)
             pointer.deallocate()
@@ -129,7 +129,7 @@ extension CoFuture: _CoFutureCancellable {
     
     @usableFromInline internal func addCallback(_ callback: @escaping Callback) {
         var pointer: UnsafeMutablePointer<Node>!
-        let new = nodeList.update {
+        let new = atomicUpdate(&nodeList) {
             if $0 < 0 { return $0 }
             if pointer == nil {
                 pointer = .allocate(capacity: 1)

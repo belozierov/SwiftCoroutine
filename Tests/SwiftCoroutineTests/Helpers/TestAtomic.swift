@@ -37,19 +37,19 @@ class TestAtomic: XCTestCase {
     }
     
     func testIntUpdate() {
-        var atomic = AtomicInt(value: 0)
+        var atomic = 0
         DispatchQueue.concurrentPerform(iterations: 100_000) { _ in
-            atomic.update { $0 + 1 }
+            atomicUpdate(&atomic) { $0 + 1 }
         }
-        XCTAssertEqual(atomic.value, 100_000)
+        XCTAssertEqual(atomic, 100_000)
     }
     
     func testIntIncrease() {
-        var atomic = AtomicInt(value: 0)
+        var atomic = 0
         DispatchQueue.concurrentPerform(iterations: 100_000) { _ in
-            atomic.add(1)
+            atomicAdd(&atomic, value: 1)
         }
-        XCTAssertEqual(atomic.value, 100_000)
+        XCTAssertEqual(atomic, 100_000)
     }
     
 }

@@ -10,8 +10,8 @@ internal struct BlockingFifoQueues<T> {
     
     private let number: Int
     private let queues: UnsafeMutablePointer<BlockingFifoQueue<T>>
-    private var pushIndex = AtomicInt()
-    private var popIndex = AtomicInt()
+    private var pushIndex = 0
+    private var popIndex = 0
     
     internal init(number: Int = .processorsNumber) {
         self.number = number
@@ -20,12 +20,12 @@ internal struct BlockingFifoQueues<T> {
     }
     
     internal mutating func push(_ item: T) {
-        let index = pushIndex.update { $0 + 1 < number ? $0 + 1 : 0 }.old
+        let index = atomicUpdate(&pushIndex) { $0 + 1 < number ? $0 + 1 : 0 }.old
         (queues + index).pointee.push(item)
     }
     
     internal mutating func pop() -> T {
-        let index = popIndex.update { $0 + 1 < number ? $0 + 1 : 0 }.old
+        let index = atomicUpdate(&popIndex) { $0 + 1 < number ? $0 + 1 : 0 }.old
         return (queues + index).pointee.pop()
     }
     

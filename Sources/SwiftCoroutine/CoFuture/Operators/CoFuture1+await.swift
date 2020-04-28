@@ -6,6 +6,8 @@
 //  Copyright © 2019 Alex Belozierov. All rights reserved.
 //
 
+import Dispatch
+
 extension CoFuture {
     
     // MARK: - await
@@ -24,6 +26,27 @@ extension CoFuture {
     /// - Returns: The value of the `CoFuture` when it is completed.
     @inlinable public func await() throws -> Value {
         try (result ?? Coroutine.current.await(addCallback)).get()
+    }
+    
+    /// Await for the result of this `CoFuture` without blocking the current thread. Must be called inside a coroutine.
+    /// - Parameter timeout: The time interval to await for a result.
+    /// - Throws: The failed result of the `CoFuture`.
+    /// - Returns: The value of the `CoFuture` when it is completed.
+    public func await(timeout: DispatchTimeInterval) throws -> Value {
+        if let result = result { return try result.get() }
+        let timer = DispatchSource.makeTimerSource()
+        timer.schedule(deadline: .now() + timeout)
+        defer { timer.cancel() }
+        let result: Result<Value, Error> = Coroutine.current.await { callback in
+            self.addCallback(callback)
+            timer.setEventHandler { callback(.failure(CoFutureError.timeout)) }
+            if #available(OSX 10.12, iOS 10.0, *) {
+                timer.activate()
+            } else {
+                timer.resume()
+            }
+        }
+        return try result.get()
     }
     
 }
