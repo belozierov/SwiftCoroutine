@@ -25,10 +25,12 @@ struct BlockingFifoQueue<T> {
     
     @inlinable mutating func push(_ item: T) {
         push(item, to: &input)
+        if waiting > 0 { lockedSignal() }
     }
     
     @inlinable mutating func insertAtStart(_ item: T) {
         push(item, to: &output)
+        if waiting > 0 { lockedSignal() }
     }
     
     private func push(_ item: T, to address: UnsafeMutablePointer<Int>) {
@@ -38,11 +40,12 @@ struct BlockingFifoQueue<T> {
             pointer.pointee.next = $0
             return Int(bitPattern: pointer)
         }
-        if waiting > 0 {
-            condition.lock()
-            condition.signal()
-            condition.unlock()
-        }
+    }
+    
+    private func lockedSignal() {
+        condition.lock()
+        condition.signal()
+        condition.unlock()
     }
     
     // MARK: - Pop
@@ -77,15 +80,22 @@ struct BlockingFifoQueue<T> {
     private mutating func removeFirstNode() -> UnsafeMutablePointer<Node> {
         if let item = popOutput() { return item }
         condition.lock()
-        atomicAdd(&waiting, value: 1)
         while true {
             if let item = popOutput() ?? reverseAndPop() {
-                atomicAdd(&waiting, value: -1)
+                if waiting > 0 {
+                    condition.signal()
+                }
                 condition.unlock()
                 return item
             }
-            condition.wait()
+            atomicAdd(&waiting, value: 1)
+            if input == 0 { condition.wait() }
+            atomicAdd(&waiting, value: -1)
         }
+    }
+    
+    private mutating func removeWaiting() -> Bool {
+        atomicUpdate(&waiting, transform: { max(0, $0 - 1) }).old > 0
     }
     
     // MARK: - ForEach
