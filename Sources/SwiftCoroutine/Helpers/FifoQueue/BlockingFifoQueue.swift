@@ -25,12 +25,10 @@ struct BlockingFifoQueue<T> {
     
     @inlinable mutating func push(_ item: T) {
         push(item, to: &input)
-        signalIfNeeded()
     }
     
     @inlinable mutating func insertAtStart(_ item: T) {
         push(item, to: &output)
-        signalIfNeeded()
     }
     
     private func push(_ item: T, to address: UnsafeMutablePointer<Int>) {
@@ -40,10 +38,7 @@ struct BlockingFifoQueue<T> {
             pointer.pointee.next = $0
             return Int(bitPattern: pointer)
         }
-    }
-    
-    private mutating func signalIfNeeded() {
-        if atomicUpdate(&waiting, transform: { max(0, $0 - 1) }).old > 0 {
+        if waiting > 0 {
             condition.lock()
             condition.signal()
             condition.unlock()
@@ -82,13 +77,14 @@ struct BlockingFifoQueue<T> {
     private mutating func removeFirstNode() -> UnsafeMutablePointer<Node> {
         if let item = popOutput() { return item }
         condition.lock()
+        atomicStore(&waiting, value: 1)
         while true {
             if let item = popOutput() ?? reverseAndPop() {
+                atomicAdd(&waiting, value: -1)
                 condition.unlock()
                 return item
-            } else if waiting > 0 {
-                condition.wait()
             }
+            condition.wait()
         }
     }
     
@@ -124,10 +120,10 @@ struct BlockingFifoQueue<T> {
     }
     
     private mutating func reverseAndPop() -> UnsafeMutablePointer<Node>? {
-        atomicAdd(&waiting, value: 1)
+//        atomicAdd(&waiting, value: 1)
         let old = atomicExchange(&input, with: 0)
         guard var node = UnsafeMutablePointer<Node>(bitPattern: old) else { return nil }
-        atomicUpdate(&waiting) { max(0, $0 - 1) }
+//        atomicUpdate(&waiting) { max(0, $0 - 1) }
         var nextAddress = node.pointee.next
         node.pointee.next = 0
         while let next = UnsafeMutablePointer<Node>(bitPattern: nextAddress) {
