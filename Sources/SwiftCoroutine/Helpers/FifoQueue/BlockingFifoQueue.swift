@@ -85,7 +85,7 @@ struct BlockingFifoQueue<T> {
         condition.lock()
         while true {
             if let item = popOutput() ?? reverseAndPop() {
-                if output != 0 { condition.signal() }
+                condition.signal()
                 condition.unlock()
                 return item
             }
