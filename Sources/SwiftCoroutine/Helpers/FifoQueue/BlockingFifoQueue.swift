@@ -77,7 +77,7 @@ struct BlockingFifoQueue<T> {
     private mutating func removeFirstNode() -> UnsafeMutablePointer<Node> {
         if let item = popOutput() { return item }
         condition.lock()
-        atomicStore(&waiting, value: 1)
+        atomicAdd(&waiting, value: 1)
         while true {
             if let item = popOutput() ?? reverseAndPop() {
                 atomicAdd(&waiting, value: -1)
