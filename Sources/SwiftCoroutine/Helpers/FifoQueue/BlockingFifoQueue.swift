@@ -16,7 +16,6 @@ struct BlockingFifoQueue<T> {
     
     private let condition = PsxCondition()
     private var waiting = 0
-    private var counter = 0
     
     private var input = 0
     private var output = 0
