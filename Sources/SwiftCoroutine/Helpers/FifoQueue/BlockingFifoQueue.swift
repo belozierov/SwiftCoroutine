@@ -26,12 +26,12 @@ struct BlockingFifoQueue<T> {
     
     @inlinable mutating func push(_ item: T) {
         push(item, to: &input)
-        if atomicExchange(&waiting, with: 0) == 1 { lockedSignal() }
+        signalIfNeeded()
     }
     
     @inlinable mutating func insertAtStart(_ item: T) {
         push(item, to: &output)
-        if atomicExchange(&waiting, with: 0) == 1 { lockedSignal() }
+        signalIfNeeded()
     }
     
     private func push(_ item: T, to address: UnsafeMutablePointer<Int>) {
@@ -43,10 +43,12 @@ struct BlockingFifoQueue<T> {
         }
     }
     
-    private func lockedSignal() {
-        condition.lock()
-        condition.signal()
-        condition.unlock()
+    private mutating func signalIfNeeded() {
+        if atomicExchange(&waiting, with: -1) == 1 {
+            condition.lock()
+            condition.signal()
+            condition.unlock()
+        }
     }
     
     // MARK: - Pop
@@ -87,10 +89,8 @@ struct BlockingFifoQueue<T> {
                 condition.unlock()
                 return item
             }
-            if atomicExchange(&waiting, with: 1) == 0 {
-                condition.wait()
-                atomicStore(&waiting, value: 0)
-            }
+            if atomicExchange(&waiting, with: 1) != -1 { condition.wait() }
+            atomicStore(&waiting, value: 0)
         }
     }
     
