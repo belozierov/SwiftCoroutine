@@ -82,7 +82,7 @@ DispatchQueue.main.startCoroutine {
 
 ### Coroutines
 
-A [Coroutine](https://en.wikipedia.org/wiki/Coroutine) is a computation that can be suspended and resumed at a later time without blocking a thread. Coroutines build upon regular functions and can be executed on any scheduler with a possibility to switch among them during execution.
+A [coroutine](https://en.wikipedia.org/wiki/Coroutine) is a computation that can be suspended and resumed at a later time without blocking a thread. Coroutines build upon regular functions and can be executed on any scheduler with a possibility to switch among them during execution.
 
 #### Key benefits
 
