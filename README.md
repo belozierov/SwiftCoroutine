@@ -140,7 +140,7 @@ The [futures and promises](https://en.wikipedia.org/wiki/Futures_and_promises) a
 
 #### Main features
 
-- **Performance**. It is much faster than most of other futures and promises implementations.
+- **Performance**. It is much faster than most of other futures and promises implementations. It's lock-free.
 - **Awaitable**. You can await the result inside the coroutine.
 - **Cancellable**. You can cancel the whole chain as well as handle it and complete the related actions.
 

@@ -36,8 +36,8 @@ public final class CoChannel<Element> {
     
     /// The maximum number of elements that can be stored in a channel.
     public let maxBufferSize: Int
-    private var receiveCallbacks = BlockingFifoQueues<ReceiveCallback>()
-    private var sendBlocks = BlockingFifoQueues<SendBlock>()
+    private var receiveCallbacks = BlockingFifoQueue<ReceiveCallback>()
+    private var sendBlocks = BlockingFifoQueue<SendBlock>()
     private var atomic = AtomicTuple()
     
     /// Initializes a channel.

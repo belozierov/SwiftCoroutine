@@ -38,11 +38,11 @@ class CoChannelTests: XCTestCase {
                 set.insert(value)
             }
             XCTAssertNil(try? channel.awaitReceive())
-            XCTAssertEqual(set.count, 10_000)
+            XCTAssertEqual(set.count, 100_000)
             exp.fulfill()
         }
         DispatchQueue.global().startCoroutine {
-            for index in (0..<10_000) {
+            for index in (0..<100_000) {
                 try channel.awaitSend(index)
             }
             channel.close()
