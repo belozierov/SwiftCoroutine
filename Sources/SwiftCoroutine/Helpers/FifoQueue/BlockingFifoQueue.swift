@@ -16,6 +16,7 @@ struct BlockingFifoQueue<T> {
     
     private let condition = PsxCondition()
     private var waiting = 0
+    private var counter = 0
     
     private var input = 0
     private var output = 0
@@ -26,13 +27,11 @@ struct BlockingFifoQueue<T> {
     @inlinable mutating func push(_ item: T) {
         push(item, to: &input)
         if atomicExchange(&waiting, with: 0) == 1 { lockedSignal() }
-//        if waiting > 0 { lockedSignal() }
     }
     
     @inlinable mutating func insertAtStart(_ item: T) {
         push(item, to: &output)
         if atomicExchange(&waiting, with: 0) == 1 { lockedSignal() }
-//        if waiting > 0 { lockedSignal() }
     }
     
     private func push(_ item: T, to address: UnsafeMutablePointer<Int>) {
@@ -84,21 +83,15 @@ struct BlockingFifoQueue<T> {
         condition.lock()
         while true {
             if let item = popOutput() ?? reverseAndPop() {
-                if atomicExchange(&waiting, with: 0) == 1 { condition.signal() }
-//                if waiting > 0 {
-//                    condition.signal()
-//                }
+                if output != 0 { condition.signal() }
                 condition.unlock()
                 return item
             }
-            atomicStore(&waiting, value: 1)
-            if input == 0 { condition.wait() }
-//            atomicAdd(&waiting, value: -1)
+            if atomicExchange(&waiting, with: 1) == 0 {
+                condition.wait()
+                atomicStore(&waiting, value: 0)
+            }
         }
-    }
-    
-    private mutating func removeWaiting() -> Bool {
-        atomicUpdate(&waiting, transform: { max(0, $0 - 1) }).old > 0
     }
     
     // MARK: - ForEach
@@ -133,10 +126,8 @@ struct BlockingFifoQueue<T> {
     }
     
     private mutating func reverseAndPop() -> UnsafeMutablePointer<Node>? {
-//        atomicAdd(&waiting, value: 1)
         let old = atomicExchange(&input, with: 0)
         guard var node = UnsafeMutablePointer<Node>(bitPattern: old) else { return nil }
-//        atomicUpdate(&waiting) { max(0, $0 - 1) }
         var nextAddress = node.pointee.next
         node.pointee.next = 0
         while let next = UnsafeMutablePointer<Node>(bitPattern: nextAddress) {
