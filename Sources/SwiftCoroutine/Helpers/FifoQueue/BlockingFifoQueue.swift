@@ -6,7 +6,7 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
-struct BlockingFifoQueue<T> {
+internal struct BlockingFifoQueue<T> {
     
     private struct Node {
         let item: T
@@ -23,12 +23,12 @@ struct BlockingFifoQueue<T> {
     private var toFree = 0
     private var popAccessCount = 0
     
-    @inlinable mutating func push(_ item: T) {
+    @inlinable internal mutating func push(_ item: T) {
         push(item, to: &input)
         signalIfNeeded()
     }
     
-    @inlinable mutating func insertAtStart(_ item: T) {
+    @inlinable internal mutating func insertAtStart(_ item: T) {
         push(item, to: &output)
         signalIfNeeded()
     }
@@ -52,26 +52,6 @@ struct BlockingFifoQueue<T> {
     
     // MARK: - Pop
     
-//    internal mutating func pop2() -> T? {
-//        atomicAdd(&popAccessCount, value: 1)
-//        let node = popNode()
-//        defer { finishPop(with: node) }
-//        return node?.pointee.item
-//    }
-//    
-//    private mutating func popNode() -> UnsafeMutablePointer<Node>? {
-//        if let item = popOutput() { return item }
-//        condition.lock()
-//        if let item = popOutput() ?? reverseAndPop() {
-//            condition.unlock()
-//            return item
-//        }
-//        condition.unlock()
-//        return popOutput()
-//    }
-    
-    // MARK: - Remove first
-    
     internal mutating func pop() -> T {
         atomicAdd(&popAccessCount, value: 1)
         let node = removeFirstNode()
@@ -91,25 +71,6 @@ struct BlockingFifoQueue<T> {
                 condition.wait()
                 atomicStore(&waiting, value: 0)
             }
-        }
-    }
-    
-    // MARK: - ForEach
-    
-    internal mutating func forEach(_ body: (T) -> Void) {
-        atomicAdd(&popAccessCount, value: 1)
-        condition.lock()
-        forEach(input, nextPath: \.next) { body($0.pointee.item) }
-        forEach(output, nextPath: \.next) { body($0.pointee.item) }
-        condition.unlock()
-        finishPop(with: nil)
-    }
-    
-    private func forEach(_ address: Int, nextPath: KeyPath<Node, Int>, body: (UnsafeMutablePointer<Node>) -> Void) {
-        var address = address
-        while let pointer = UnsafeMutablePointer<Node>(bitPattern: address) {
-            address = pointer.pointee[keyPath: nextPath]
-            body(pointer)
         }
     }
     
@@ -155,6 +116,25 @@ struct BlockingFifoQueue<T> {
         }
     }
     
+    // MARK: - ForEach
+    
+    internal mutating func forEach(_ body: (T) -> Void) {
+        atomicAdd(&popAccessCount, value: 1)
+        condition.lock()
+        forEach(input, nextPath: \.next) { body($0.pointee.item) }
+        forEach(output, nextPath: \.next) { body($0.pointee.item) }
+        condition.unlock()
+        finishPop(with: nil)
+    }
+    
+    private func forEach(_ address: Int, nextPath: KeyPath<Node, Int>, body: (UnsafeMutablePointer<Node>) -> Void) {
+        var address = address
+        while let pointer = UnsafeMutablePointer<Node>(bitPattern: address) {
+            address = pointer.pointee[keyPath: nextPath]
+            body(pointer)
+        }
+    }
+    
     // MARK: - Free
     
     internal mutating func free() {
@@ -168,14 +148,5 @@ struct BlockingFifoQueue<T> {
             $0.deinitialize(count: 1).deallocate()
         }
     }
-    
-}
-
-extension Int {
-    
-    fileprivate static let free = 0
-    fileprivate static let reversing = 1
-    fileprivate static let waiting = 2
-    
     
 }

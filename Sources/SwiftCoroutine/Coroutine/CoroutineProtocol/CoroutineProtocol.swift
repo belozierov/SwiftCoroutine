@@ -12,7 +12,7 @@ import Glibc
 import Darwin
 #endif
 
-@usableFromInline protocol CoroutineProtocol: class {
+@usableFromInline internal protocol CoroutineProtocol: class {
     
     typealias StackSize = Coroutine.StackSize
     

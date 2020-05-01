@@ -6,7 +6,7 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
-@usableFromInline protocol CoroutineTaskExecutor: class {
+@usableFromInline internal protocol CoroutineTaskExecutor: class {
     
     func execute(on scheduler: CoroutineScheduler, task: @escaping () -> Void)
     
