@@ -87,9 +87,10 @@ struct BlockingFifoQueue<T> {
                 condition.signal()
                 condition.unlock()
                 return item
+            } else if atomicUpdate(&waiting, transform: { $0 == -1 ? 0 : 1 }).new == 1 {
+                condition.wait()
+                atomicStore(&waiting, value: 0)
             }
-            if atomicExchange(&waiting, with: 1) != -1 { condition.wait() }
-            atomicStore(&waiting, value: 0)
         }
     }
     
@@ -128,13 +129,17 @@ struct BlockingFifoQueue<T> {
         let old = atomicExchange(&input, with: 0)
         guard var node = UnsafeMutablePointer<Node>(bitPattern: old) else { return nil }
         var nextAddress = node.pointee.next
-        node.pointee.next = 0
+        if nextAddress == 0 { return node }
+        let lastNode = node
         while let next = UnsafeMutablePointer<Node>(bitPattern: nextAddress) {
             nextAddress = next.pointee.next
             next.pointee.next = Int(bitPattern: node)
             node = next
         }
-        atomicStore(&output, value: node.pointee.next)
+        atomicUpdate(&output) {
+            lastNode.pointee.next = $0
+            return node.pointee.next
+        }
         return node
     }
     
@@ -163,5 +168,14 @@ struct BlockingFifoQueue<T> {
             $0.deinitialize(count: 1).deallocate()
         }
     }
+    
+}
+
+extension Int {
+    
+    fileprivate static let free = 0
+    fileprivate static let reversing = 1
+    fileprivate static let waiting = 2
+    
     
 }
