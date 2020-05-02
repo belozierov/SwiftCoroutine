@@ -89,7 +89,8 @@ extension SharedCoroutine: CoroutineProtocol {
         var resultState = 0
         var result: T!
         callback { value in
-            if atomicExchange(&resultState, with: 1) == 1 { return }
+            if result != nil { return }
+//            if atomicExchange(&resultState, with: 1) == 1 { return }
             result = value
             if atomicExchange(&self.state, with: .running) == .suspended {
                 self.queue.resume(coroutine: self)
