@@ -36,8 +36,8 @@ public final class CoChannel<Element> {
     
     /// The maximum number of elements that can be stored in a channel.
     public let maxBufferSize: Int
-    private var receiveCallbacks = BlockingFifoQueue<ReceiveCallback>()
-    private var sendBlocks = BlockingFifoQueue<SendBlock>()
+    private var receiveCallbacks = FifoQueue<ReceiveCallback>()
+    private var sendBlocks = FifoQueue<SendBlock>()
     private var atomic = AtomicTuple()
     
     /// Initializes a channel.
@@ -61,7 +61,7 @@ public final class CoChannel<Element> {
         case (_, 2):
             throw CoChannelError.canceled
         case (let count, _) where count < 0:
-            receiveCallbacks.pop()(.success(element))
+            receiveCallbacks.blockingPop()(.success(element))
         case (let count, _) where count < maxBufferSize:
             sendBlocks.push(.init(element: element, resumeBlock: nil))
         default:
@@ -82,7 +82,7 @@ public final class CoChannel<Element> {
             }.old
             guard state == 0 else { return }
             count < 0
-                ? self.receiveCallbacks.pop()(.success($0))
+                ? self.receiveCallbacks.blockingPop()(.success($0))
                 : self.sendBlocks.push(.init(element: $0, resumeBlock: nil))
         }
     }
@@ -97,7 +97,7 @@ public final class CoChannel<Element> {
         }.old
         if state != 0 { return false }
         if count < 0 {
-            receiveCallbacks.pop()(.success(element))
+            receiveCallbacks.blockingPop()(.success(element))
             return true
         } else if count < maxBufferSize {
             sendBlocks.push(.init(element: element, resumeBlock: nil))
@@ -172,7 +172,7 @@ public final class CoChannel<Element> {
     }
     
     private func getValue() -> Element {
-        let block = sendBlocks.pop()
+        let block = sendBlocks.blockingPop()
         block.resumeBlock?(nil)
         return block.element
     }
@@ -188,7 +188,7 @@ public final class CoChannel<Element> {
         guard state == 0 else { return false }
         if count < 0 {
             for _ in 0..<count.magnitude {
-                receiveCallbacks.pop()(.failure(.closed))
+                receiveCallbacks.blockingPop()(.failure(.closed))
             }
         } else if count > 0 {
             sendBlocks.forEach { $0.resumeBlock?(.closed) }
@@ -208,11 +208,11 @@ public final class CoChannel<Element> {
         let count = atomic.update { _ in (0, 2) }.old.0
         if count < 0 {
             for _ in 0..<count.magnitude {
-                receiveCallbacks.pop()(.failure(.canceled))
+                receiveCallbacks.blockingPop()(.failure(.canceled))
             }
         } else if count > 0 {
             for _ in 0..<count {
-                sendBlocks.pop().resumeBlock?(.canceled)
+                sendBlocks.blockingPop().resumeBlock?(.canceled)
             }
         }
     }

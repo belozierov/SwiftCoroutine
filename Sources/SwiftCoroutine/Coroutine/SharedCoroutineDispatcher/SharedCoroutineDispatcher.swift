@@ -10,12 +10,12 @@
 internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
     
     private let stackSize, capacity: Int
-    private var queues: ThreadSafeFifoQueues<SharedCoroutineQueue>
+    private var queues = FifoQueue<SharedCoroutineQueue>()
+    private var queuesCount = 0
     
     internal init(capacity: Int, stackSize: Coroutine.StackSize) {
         self.stackSize = stackSize.size
         self.capacity = capacity
-        queues = .init(number: capacity)
     }
     
     @usableFromInline
@@ -27,6 +27,7 @@ internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
     
     private func getFreeQueue() -> SharedCoroutineQueue {
         while let queue = queues.pop() {
+            atomicAdd(&queuesCount, value: -1)
             queue.inQueue = false
             if queue.occupy() { return queue }
         }
@@ -38,7 +39,8 @@ internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
             if queue.inQueue { return }
             queue.inQueue = true
             queues.push(queue)
-        } else if queues.count < capacity {
+            atomicAdd(&queuesCount, value: 1)
+        } else if queuesCount < capacity {
             queues.insertAtStart(queue)
         }
     }
