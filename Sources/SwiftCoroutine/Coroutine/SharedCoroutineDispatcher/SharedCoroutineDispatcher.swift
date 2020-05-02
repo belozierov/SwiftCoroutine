@@ -42,6 +42,7 @@ internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
             atomicAdd(&queuesCount, value: 1)
         } else if queuesCount < capacity {
             queues.insertAtStart(queue)
+            atomicAdd(&queuesCount, value: 1)
         }
     }
     
