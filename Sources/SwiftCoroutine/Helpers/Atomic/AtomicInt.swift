@@ -23,6 +23,12 @@ internal func atomicAdd(_ pointer: UnsafeMutablePointer<Int>, value: Int) -> Int
     __atomicExchange(OpaquePointer(pointer), value)
 }
 
+@discardableResult @inlinable
+internal func atomicCAS(_ pointer: UnsafeMutablePointer<Int>, expected: Int, desired: Int) -> Bool {
+    var expected = expected
+    return __atomicCompareExchange(OpaquePointer(pointer), &expected, desired) != 0
+}
+
 @discardableResult @inlinable internal
 func atomicUpdate(_ pointer: UnsafeMutablePointer<Int>, transform: (Int) -> Int) -> (old: Int, new: Int) {
     var oldValue = pointer.pointee, newValue: Int

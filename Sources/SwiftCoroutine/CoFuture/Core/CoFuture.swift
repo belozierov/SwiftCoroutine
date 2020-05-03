@@ -118,8 +118,7 @@ extension CoFuture: _CoFutureCancellable {
         while address > 0, let pointer = UnsafeMutablePointer<Node>(bitPattern: address) {
             address = pointer.pointee.next
             pointer.pointee.callback(result)
-            pointer.deinitialize(count: 1)
-            pointer.deallocate()
+            pointer.deinitialize(count: 1).deallocate()
         }
     }
     
@@ -139,8 +138,7 @@ extension CoFuture: _CoFutureCancellable {
             return Int(bitPattern: pointer)
         }.new
         if new < 0 {
-            pointer?.deinitialize(count: 1)
-            pointer?.deallocate()
+            pointer?.deinitialize(count: 1).deallocate()
             _result.map(callback)
         }
     }

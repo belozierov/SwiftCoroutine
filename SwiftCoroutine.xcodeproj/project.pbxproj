@@ -59,12 +59,10 @@
 		1A65BAC2239CEFED004C1716 /* CoroutineContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A65BABA239CE05C004C1716 /* CoroutineContext.swift */; };
 		1A68B4EC243A6DC500482247 /* URLSession+CoFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A109B66241D5E400024C32C /* URLSession+CoFuture.swift */; };
 		1A68B4ED243A6DC600482247 /* URLSession+CoFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A109B66241D5E400024C32C /* URLSession+CoFuture.swift */; };
-		1A68B4EF243B35C200482247 /* ThreadSafeFifoQueues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A68B4EE243B35C200482247 /* ThreadSafeFifoQueues.swift */; };
-		1A68B4F0243B35C200482247 /* ThreadSafeFifoQueues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A68B4EE243B35C200482247 /* ThreadSafeFifoQueues.swift */; };
 		1A6910C32421612400C546ED /* CoFutureCombineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6910C22421612400C546ED /* CoFutureCombineTests.swift */; };
 		1A6910C42421612400C546ED /* CoFutureCombineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A6910C22421612400C546ED /* CoFutureCombineTests.swift */; };
-		1A7004082459C58F0093D8CD /* BlockingFifoQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7004072459C58E0093D8CD /* BlockingFifoQueue.swift */; };
-		1A7004092459C58F0093D8CD /* BlockingFifoQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7004072459C58E0093D8CD /* BlockingFifoQueue.swift */; };
+		1A7004082459C58F0093D8CD /* FifoQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7004072459C58E0093D8CD /* FifoQueue.swift */; };
+		1A7004092459C58F0093D8CD /* FifoQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7004072459C58E0093D8CD /* FifoQueue.swift */; };
 		1A71364D24215BBB00DC78FD /* CoFutureAwaitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A71364C24215BBB00DC78FD /* CoFutureAwaitTests.swift */; };
 		1A71364E24215BBB00DC78FD /* CoFutureAwaitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A71364C24215BBB00DC78FD /* CoFutureAwaitTests.swift */; };
 		1A739AD023B1555A00165280 /* Coroutine+StackSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A739ACF23B1555A00165280 /* Coroutine+StackSize.swift */; };
@@ -165,9 +163,8 @@
 		1A595BF823E8A2C7009B62E7 /* CoPromise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoPromise.swift; sourceTree = "<group>"; };
 		1A64013D2433F0B900E4CECD /* AtomicInt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicInt.swift; sourceTree = "<group>"; };
 		1A65BABA239CE05C004C1716 /* CoroutineContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoroutineContext.swift; sourceTree = "<group>"; };
-		1A68B4EE243B35C200482247 /* ThreadSafeFifoQueues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadSafeFifoQueues.swift; sourceTree = "<group>"; };
 		1A6910C22421612400C546ED /* CoFutureCombineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoFutureCombineTests.swift; sourceTree = "<group>"; };
-		1A7004072459C58E0093D8CD /* BlockingFifoQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockingFifoQueue.swift; sourceTree = "<group>"; };
+		1A7004072459C58E0093D8CD /* FifoQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FifoQueue.swift; sourceTree = "<group>"; };
 		1A71364C24215BBB00DC78FD /* CoFutureAwaitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoFutureAwaitTests.swift; sourceTree = "<group>"; };
 		1A739ACF23B1555A00165280 /* Coroutine+StackSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coroutine+StackSize.swift"; sourceTree = "<group>"; };
 		1A790E8323E5D7A9007056EC /* Coroutine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coroutine.swift; sourceTree = "<group>"; };
@@ -273,8 +270,7 @@
 		1A14B1D8244A3C100046A239 /* FifoQueue */ = {
 			isa = PBXGroup;
 			children = (
-				1A68B4EE243B35C200482247 /* ThreadSafeFifoQueues.swift */,
-				1A7004072459C58E0093D8CD /* BlockingFifoQueue.swift */,
+				1A7004072459C58E0093D8CD /* FifoQueue.swift */,
 			);
 			path = FifoQueue;
 			sourceTree = "<group>";
@@ -751,7 +747,6 @@
 				1A595BFB23E8A31F009B62E7 /* CoPromise.swift in Sources */,
 				1A993208242022D100B3BF32 /* CoFuture5+hashable.swift in Sources */,
 				1A64013E2433F0B900E4CECD /* AtomicInt.swift in Sources */,
-				1A68B4EF243B35C200482247 /* ThreadSafeFifoQueues.swift in Sources */,
 				1A2F0F582440BD7D00B5C9F1 /* CoFuture2+map.swift in Sources */,
 				1A153179244CA363004A23D8 /* CoChannel.swift in Sources */,
 				1A68B4EC243A6DC500482247 /* URLSession+CoFuture.swift in Sources */,
@@ -760,7 +755,7 @@
 				1A2D8D82241EBD5700ECC849 /* CoFuturePublisher.swift in Sources */,
 				1A2598222437661B00AFA1E2 /* SharedCoroutineQueue.swift in Sources */,
 				1A3583FF23DD796A0086A6E6 /* CoFuture4+whenComplete.swift in Sources */,
-				1A7004082459C58F0093D8CD /* BlockingFifoQueue.swift in Sources */,
+				1A7004082459C58F0093D8CD /* FifoQueue.swift in Sources */,
 				1AAECA5623DD703400DED77D /* CoFuture.swift in Sources */,
 				1A2D8D7F241EBD3A00ECC849 /* CoSubscription.swift in Sources */,
 				1A25981F2437627F00AFA1E2 /* SharedCoroutineDispatcher.swift in Sources */,
@@ -818,7 +813,6 @@
 				1A595BFC23E8A320009B62E7 /* CoPromise.swift in Sources */,
 				1A993209242022D100B3BF32 /* CoFuture5+hashable.swift in Sources */,
 				1A64013F2433F0B900E4CECD /* AtomicInt.swift in Sources */,
-				1A68B4F0243B35C200482247 /* ThreadSafeFifoQueues.swift in Sources */,
 				1A2F0F592440BD7D00B5C9F1 /* CoFuture2+map.swift in Sources */,
 				1A15317A244CA363004A23D8 /* CoChannel.swift in Sources */,
 				1A68B4ED243A6DC600482247 /* URLSession+CoFuture.swift in Sources */,
@@ -827,7 +821,7 @@
 				1A2D8D83241EBD5700ECC849 /* CoFuturePublisher.swift in Sources */,
 				1A2598232437661B00AFA1E2 /* SharedCoroutineQueue.swift in Sources */,
 				1A35840023DD796A0086A6E6 /* CoFuture4+whenComplete.swift in Sources */,
-				1A7004092459C58F0093D8CD /* BlockingFifoQueue.swift in Sources */,
+				1A7004092459C58F0093D8CD /* FifoQueue.swift in Sources */,
 				1AAECA5723DD703400DED77D /* CoFuture.swift in Sources */,
 				1A2D8D80241EBD3A00ECC849 /* CoSubscription.swift in Sources */,
 				1A2598202437627F00AFA1E2 /* SharedCoroutineDispatcher.swift in Sources */,

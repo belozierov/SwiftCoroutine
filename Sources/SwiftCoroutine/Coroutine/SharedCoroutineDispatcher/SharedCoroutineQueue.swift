@@ -19,10 +19,10 @@ internal final class SharedCoroutineQueue {
     internal let context: CoroutineContext
     private var coroutine: SharedCoroutine
     
-    var inQueue = false
+    internal var inQueue = false
     private(set) var started = 0
     private var atomic = AtomicTuple()
-    private var prepared = BlockingFifoQueue<SharedCoroutine>()
+    private var prepared = FifoQueue<SharedCoroutine>()
     
     internal init(stackSize size: Int) {
         context = CoroutineContext(stackSize: size)
@@ -92,7 +92,7 @@ internal final class SharedCoroutineQueue {
         let isFinished = atomic.update { _, count in
             count > 0 ? (.running, count - 1) : (.isFree, 0)
         }.new.0 == .isFree
-        isFinished ? dispatcher.push(self) : resumeOnQueue(prepared.pop())
+        isFinished ? dispatcher.push(self) : resumeOnQueue(prepared.blockingPop())
     }
     
     deinit {
@@ -101,9 +101,9 @@ internal final class SharedCoroutineQueue {
     
 }
 
-extension Int32 {
+fileprivate extension Int32 {
     
-    fileprivate static let running: Int32 = 0
-    fileprivate static let isFree: Int32 = 1
+    static let running: Int32 = 0
+    static let isFree: Int32 = 1
     
 }
