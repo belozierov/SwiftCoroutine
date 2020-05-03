@@ -226,7 +226,7 @@ DispatchQueue.main.startCoroutine {
 
 ### Channels
 
-Futures and promises provide a convenient way to transfer a single value between coroutines. Channels provide a way to transfer a stream of values. Conceptually, a channel is similar to a queue that allows to suspend a coroutine on receive if it is empty, or on send if it is full.
+Futures and promises provide a convenient way to transfer a single value between coroutines. [Channels](https://en.wikipedia.org/wiki/Channel_(programming)) provide a way to transfer a stream of values. Conceptually, a channel is similar to a queue that allows to suspend a coroutine on receive if it is empty, or on send if it is full.
 
 This non-blocking primitive is widely used in such languages as Go and Kotlin, and it is another instrument that improves working with coroutines.
 
