@@ -84,6 +84,10 @@
 		1A934FC4239031C000155B71 /* XCTAssertContains.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A934FC3239031C000155B71 /* XCTAssertContains.swift */; };
 		1A934FC5239031C000155B71 /* XCTAssertContains.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A934FC3239031C000155B71 /* XCTAssertContains.swift */; };
 		1A94E5C223A3E6A300812AFD /* SwiftCoroutineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F810EF0C1F8F302700025AD1 /* SwiftCoroutineTests.swift */; };
+		1A9679F2245F6354001B01B3 /* LifoQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A9679F1245F6354001B01B3 /* LifoQueue.swift */; };
+		1A9679F3245F6354001B01B3 /* LifoQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A9679F1245F6354001B01B3 /* LifoQueue.swift */; };
+		1A9679F5245F6440001B01B3 /* QueueNodeEraser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A9679F4245F6440001B01B3 /* QueueNodeEraser.swift */; };
+		1A9679F6245F6440001B01B3 /* QueueNodeEraser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A9679F4245F6440001B01B3 /* QueueNodeEraser.swift */; };
 		1A993208242022D100B3BF32 /* CoFuture5+hashable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A993207242022D100B3BF32 /* CoFuture5+hashable.swift */; };
 		1A993209242022D100B3BF32 /* CoFuture5+hashable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A993207242022D100B3BF32 /* CoFuture5+hashable.swift */; };
 		1A9C14DE23BB824400E13203 /* CoFuture1+await.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A9C14DD23BB824400E13203 /* CoFuture1+await.swift */; };
@@ -175,6 +179,8 @@
 		1A8FF4922431E932004077E8 /* CoroutineSchedulerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoroutineSchedulerTests.swift; sourceTree = "<group>"; };
 		1A934FBA23902A5300155B71 /* URL+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+Extensions.swift"; sourceTree = "<group>"; };
 		1A934FC3239031C000155B71 /* XCTAssertContains.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCTAssertContains.swift; sourceTree = "<group>"; };
+		1A9679F1245F6354001B01B3 /* LifoQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LifoQueue.swift; sourceTree = "<group>"; };
+		1A9679F4245F6440001B01B3 /* QueueNodeEraser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueueNodeEraser.swift; sourceTree = "<group>"; };
 		1A993207242022D100B3BF32 /* CoFuture5+hashable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoFuture5+hashable.swift"; sourceTree = "<group>"; };
 		1A9C14DD23BB824400E13203 /* CoFuture1+await.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoFuture1+await.swift"; sourceTree = "<group>"; };
 		1AAC4880242C98E200AE9AA9 /* CoroutineScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoroutineScheduler.swift; sourceTree = "<group>"; };
@@ -243,7 +249,7 @@
 			isa = PBXGroup;
 			children = (
 				1A14B1D9244A3C1D0046A239 /* Posix */,
-				1A14B1D8244A3C100046A239 /* FifoQueue */,
+				1A14B1D8244A3C100046A239 /* Queues */,
 				1A14B1D7244A3BF90046A239 /* Atomic */,
 				1A8129A72417D56700AE061C /* Constants.swift */,
 			);
@@ -267,12 +273,14 @@
 			path = Atomic;
 			sourceTree = "<group>";
 		};
-		1A14B1D8244A3C100046A239 /* FifoQueue */ = {
+		1A14B1D8244A3C100046A239 /* Queues */ = {
 			isa = PBXGroup;
 			children = (
 				1A7004072459C58E0093D8CD /* FifoQueue.swift */,
+				1A9679F1245F6354001B01B3 /* LifoQueue.swift */,
+				1A9679F4245F6440001B01B3 /* QueueNodeEraser.swift */,
 			);
-			path = FifoQueue;
+			path = Queues;
 			sourceTree = "<group>";
 		};
 		1A14B1D9244A3C1D0046A239 /* Posix */ = {
@@ -747,6 +755,7 @@
 				1A595BFB23E8A31F009B62E7 /* CoPromise.swift in Sources */,
 				1A993208242022D100B3BF32 /* CoFuture5+hashable.swift in Sources */,
 				1A64013E2433F0B900E4CECD /* AtomicInt.swift in Sources */,
+				1A9679F5245F6440001B01B3 /* QueueNodeEraser.swift in Sources */,
 				1A2F0F582440BD7D00B5C9F1 /* CoFuture2+map.swift in Sources */,
 				1A153179244CA363004A23D8 /* CoChannel.swift in Sources */,
 				1A68B4EC243A6DC500482247 /* URLSession+CoFuture.swift in Sources */,
@@ -761,6 +770,7 @@
 				1A25981F2437627F00AFA1E2 /* SharedCoroutineDispatcher.swift in Sources */,
 				1AEB6183242F391C00A6C2AB /* CoroutineScheduler+DispatchQueue.swift in Sources */,
 				1AFFF6ED23C8BDEA0079FF73 /* CoFutureError.swift in Sources */,
+				1A9679F2245F6354001B01B3 /* LifoQueue.swift in Sources */,
 				1A8129A52417D49900AE061C /* CoroutineDispatcher.swift in Sources */,
 				1A39C9542439E12E00BEE57B /* PsxCondition.swift in Sources */,
 				F8CD25E92019A01600952299 /* CCoroutine.c in Sources */,
@@ -813,6 +823,7 @@
 				1A595BFC23E8A320009B62E7 /* CoPromise.swift in Sources */,
 				1A993209242022D100B3BF32 /* CoFuture5+hashable.swift in Sources */,
 				1A64013F2433F0B900E4CECD /* AtomicInt.swift in Sources */,
+				1A9679F6245F6440001B01B3 /* QueueNodeEraser.swift in Sources */,
 				1A2F0F592440BD7D00B5C9F1 /* CoFuture2+map.swift in Sources */,
 				1A15317A244CA363004A23D8 /* CoChannel.swift in Sources */,
 				1A68B4ED243A6DC600482247 /* URLSession+CoFuture.swift in Sources */,
@@ -827,6 +838,7 @@
 				1A2598202437627F00AFA1E2 /* SharedCoroutineDispatcher.swift in Sources */,
 				1AEB6184242F391C00A6C2AB /* CoroutineScheduler+DispatchQueue.swift in Sources */,
 				1AFFF6EE23C8BDEA0079FF73 /* CoFutureError.swift in Sources */,
+				1A9679F3245F6354001B01B3 /* LifoQueue.swift in Sources */,
 				1A65BAC2239CEFED004C1716 /* CoroutineContext.swift in Sources */,
 				1A39C9552439E12E00BEE57B /* PsxCondition.swift in Sources */,
 				1A8129A62417D49900AE061C /* CoroutineDispatcher.swift in Sources */,

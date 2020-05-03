@@ -22,16 +22,12 @@ class TestFifoQueue: XCTestCase {
         queue.free()
     }
     
-    func testThreadSafeFifoQueues() {
+    func testFifoQueue() {
         let lock = PsxLock()
         var set = Set<Int>()
         var queue = FifoQueue<Int>()
-        DispatchQueue.concurrentPerform(iterations: 1_000_000) { index in
-            if index % 3 == 0 {
-                queue.insertAtStart(index)
-            } else {
-                queue.push(index)
-            }
+        DispatchQueue.concurrentPerform(iterations: 100_000) { index in
+            queue.push(index)
             var hasValue = false
             queue.forEach { _ in hasValue = true }
             XCTAssertTrue(hasValue)
@@ -43,26 +39,30 @@ class TestFifoQueue: XCTestCase {
                 XCTFail()
             }
         }
-        XCTAssertEqual(set.count, 1_000_000)
+        XCTAssertEqual(set.count, 100_000)
         XCTAssertNil(queue.pop())
         queue.free()
         lock.free()
     }
     
-    func testThreadSafeFifoQueues2() {
-        var queue = FifoQueue<Int>()
-        queue.push(0)
-        queue.push(3)
-        XCTAssertEqual(queue.pop(), 0)
-        queue.insertAtStart(2)
-        queue.insertAtStart(1)
-        queue.push(4)
-        queue.push(5)
-        queue.insertAtStart(0)
-        for i in 0..<6 {
-            XCTAssertEqual(queue.pop(), i)
+    func testLifoQueue() {
+        let lock = PsxLock()
+        var set = Set<Int>()
+        var queue = LifoQueue<Int>()
+        DispatchQueue.concurrentPerform(iterations: 100_000) { index in
+            queue.push(index)
+            if let value = queue.pop() {
+                lock.lock()
+                set.insert(value)
+                lock.unlock()
+            } else {
+                XCTFail()
+            }
         }
+        XCTAssertEqual(set.count, 100_000)
+        XCTAssertNil(queue.pop())
         queue.free()
+        lock.free()
     }
     
     func testQueue() {

@@ -9,9 +9,12 @@
 @usableFromInline
 internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
     
+    // MARK: - Push
+    
     private let stackSize, capacity: Int
-    private var queues = FifoQueue<SharedCoroutineQueue>()
-    private var queuesCount = 0
+    private var lifo = LifoQueue<SharedCoroutineQueue>()
+    private var fifo = FifoQueue<SharedCoroutineQueue>()
+    private var counter = 0
     
     internal init(capacity: Int, stackSize: Coroutine.StackSize) {
         self.stackSize = stackSize.size
@@ -26,8 +29,7 @@ internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
     }
     
     private func getFreeQueue() -> SharedCoroutineQueue {
-        while let queue = queues.pop() {
-            atomicAdd(&queuesCount, value: -1)
+        while let queue = popQueue() {
             queue.inQueue = false
             if queue.occupy() { return queue }
         }
@@ -36,18 +38,29 @@ internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
     
     internal func push(_ queue: SharedCoroutineQueue) {
         if queue.started != 0 {
-            if queue.inQueue { return }
+            if queue.inQueue || !increaseCounter() { return }
             queue.inQueue = true
-            queues.push(queue)
-            atomicAdd(&queuesCount, value: 1)
-        } else if queuesCount < capacity {
-            queues.insertAtStart(queue)
-            atomicAdd(&queuesCount, value: 1)
+            fifo.push(queue)
+        } else if increaseCounter() {
+            lifo.push(queue)
         }
     }
     
+    // MARK: - Queue
+    
+    private func popQueue() -> SharedCoroutineQueue? {
+        let old = atomicUpdate(&counter) { max(0, $0 - 1) }.old
+        if old == 0 { return nil }
+        return lifo.pop() ?? fifo.pop()
+    }
+    
+    private func increaseCounter() -> Bool {
+        atomicUpdate(&counter) { min(capacity, $0 + 1) }.old < capacity
+    }
+    
     deinit {
-        queues.free()
+        lifo.free()
+        fifo.free()
     }
     
 }
