@@ -87,7 +87,7 @@ DispatchQueue.main.startCoroutine {
 
 A [coroutine](https://en.wikipedia.org/wiki/Coroutine) is a computation that can be suspended and resumed at a later time without blocking a thread. Coroutines build upon regular functions and can be executed on any scheduler with a possibility to switch among them during execution.
 
-#### Coroutines key benefits
+#### Key benefits
 
 - **Suspend instead of block**. The main advantage of coroutines is the ability to suspend their execution at some point without blocking a thread and resuming later on.
 - **Fast context switching**. Switching between coroutines is much faster than switching between threads as it does not require the involvement of operating system.
