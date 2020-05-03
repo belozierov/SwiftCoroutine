@@ -12,7 +12,7 @@
 ![macOS](https://github.com/belozierov/SwiftCoroutine/workflows/macOS/badge.svg?branch=master)
 ![Ubuntu](https://github.com/belozierov/SwiftCoroutine/workflows/Ubuntu/badge.svg?branch=master)
 [![codecov](https://codecov.io/gh/belozierov/SwiftCoroutine/branch/master/graph/badge.svg)](https://codecov.io/gh/belozierov/SwiftCoroutine)
-[![codebeat badge](https://codebeat.co/badges/4d86a744-7db9-4485-84d5-53390e1ae586)](https://codebeat.co/projects/github-com-belozierov-swiftcoroutine-master)
+[![codebeat badge](https://codebeat.co/badges/748d64a5-efbc-436f-9aa6-2a8433de18aa)](https://codebeat.co/projects/github-com-belozierov-swiftcoroutine-master)
 
 Many languages, such as Kotlin, JavaScript, Go, Rust, C++, and others, already have [coroutines](https://en.wikipedia.org/wiki/Coroutine) support that makes the use of asynchronous code easier. 
 This feature is not yet supported in Swift, but this can be improved by a framework without the need to change the language.
