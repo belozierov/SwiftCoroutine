@@ -14,10 +14,13 @@
 [![codecov](https://codecov.io/gh/belozierov/SwiftCoroutine/branch/master/graph/badge.svg)](https://codecov.io/gh/belozierov/SwiftCoroutine)
 [![codebeat badge](https://codebeat.co/badges/748d64a5-efbc-436f-9aa6-2a8433de18aa)](https://codebeat.co/projects/github-com-belozierov-swiftcoroutine-master)
 
-Many languages, such as Kotlin, Go, JavaScript, Python, Rust, C++, and others, already have [coroutines](https://en.wikipedia.org/wiki/Coroutine) support that makes the use of asynchronous code easier. 
-This feature is not yet supported in Swift, but this can be improved by a framework without the need to change the language.
+Many languages, such as Kotlin, Go, JavaScript, Python, Rust, C++ and others, already have [coroutines](https://en.wikipedia.org/wiki/Coroutine) support that makes the [async/await](https://en.wikipedia.org/wiki/Async/await) pattern implementation possible. This feature is not yet supported in Swift, but this can be improved by a framework without the need to change the language.
 
-This is the first implementation of [coroutines](https://en.wikipedia.org/wiki/Coroutine) for Swift with iOS, macOS and Linux support. They make the [async/await](https://en.wikipedia.org/wiki/Async/await) pattern implementation possible. In addition, the framework includes [futures](https://en.wikipedia.org/wiki/Futures_and_promises) and channels for more flexibility and ease of use. All this allows to do things that were not possible in Swift before.
+#### Main features
+
+- It is the first implementation of [coroutines](https://en.wikipedia.org/wiki/Coroutine) for Swift with iOS, macOS and Linux support. 
+- It includes [futures](https://en.wikipedia.org/wiki/Futures_and_promises) and [channels](https://en.wikipedia.org/wiki/Channel_(programming)) that supplement coroutines for more flexibility.
+- It is completely [lock-free](https://en.wikipedia.org/wiki/Non-blocking_algorithm) and uses only [atomic](https://en.wikipedia.org/wiki/Compare-and-swap) primitives for synchronizations.
 
 ### Motivation
 
@@ -138,7 +141,7 @@ The [futures and promises](https://en.wikipedia.org/wiki/Futures_and_promises) a
 
 #### Main features
 
-- **Performance**. It is much faster than most of other futures and promises implementations. It's lock-free.
+- **Performance**. It is much faster than most of other futures and promises implementations.
 - **Awaitable**. You can await the result inside the coroutine.
 - **Cancellable**. You can cancel the whole chain as well as handle it and complete the related actions.
 
