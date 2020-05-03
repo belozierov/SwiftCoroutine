@@ -6,15 +6,25 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
-struct FifoQueue<T> {
+internal struct FifoQueue<T> {
     
     private typealias Pointer = UnsafeMutablePointer<Node>
     
     private struct Node {
-        var item: T?
-        var state = 0
+        
+        private(set) var item: T?
+        private(set) var using = 0
         var next = 0
         var nextToFree = 0
+        
+        @inlinable mutating func startUsing() -> Bool {
+            atomicUpdate(&using) { $0 > 0 ? $0 + 1 : 0 }.new > 0
+        }
+        
+        @inlinable mutating func endUsing() {
+            if atomicAdd(&using, value: -1) == 1 { item = nil }
+        }
+        
     }
     
     private var head: Int
@@ -23,18 +33,18 @@ struct FifoQueue<T> {
     private var toFree = 0
     private var accessCount = 0
     
-    init() {
+    internal init() {
         let empty = Pointer.allocate(capacity: 1)
-        empty.initialize(to: Node(state: .deleted))
+        empty.initialize(to: Node())
         head = Int(bitPattern: empty)
         tail = Int(bitPattern: empty)
     }
     
     // MARK: - Push
     
-    mutating func push(_ item: T) {
+    internal mutating func push(_ item: T) {
         let new = Pointer.allocate(capacity: 1)
-        new.initialize(to: Node(item: item))
+        new.initialize(to: Node(item: item, using: 1))
         atomicAdd(&accessCount, value: 1)
         defer { decreaseAccessCount() }
         while true {
@@ -45,9 +55,9 @@ struct FifoQueue<T> {
         }
     }
     
-    mutating func insertAtStart(_ item: T) {
+    internal mutating func insertAtStart(_ item: T) {
         let new = Pointer.allocate(capacity: 1)
-        new.initialize(to: Node(item: item))
+        new.initialize(to: Node(item: item, using: 1))
         var empty: Pointer?
         atomicAdd(&accessCount, value: 1)
         while true {
@@ -64,9 +74,10 @@ struct FifoQueue<T> {
             } else {
                 if empty == nil {
                     empty = .allocate(capacity: 1)
-                    empty?.initialize(to: Node(state: .deleted, next: Int(bitPattern: new)))
+                    empty?.initialize(to: Node(next: Int(bitPattern: new)))
                 }
                 if atomicCAS(&head, expected: headAddress, desired: Int(bitPattern: empty)) {
+                    headNode.pointee.next = Int(bitPattern: new)
                     return decreaseAccessCount(node: headNode)
                 }
             }
@@ -75,11 +86,11 @@ struct FifoQueue<T> {
     
     // MARK: - Pop
     
-    @inlinable mutating func blockingPop() -> T {
+    @inlinable internal mutating func blockingPop() -> T {
         while true { if let item = pop() { return item } }
     }
     
-    mutating func pop() -> T? {
+    internal mutating func pop() -> T? {
         atomicAdd(&accessCount, value: 1)
         while true {
             let headAddress = head
@@ -87,12 +98,8 @@ struct FifoQueue<T> {
             let nextAddress = headNode.pointee.next
             if let nextNode = Pointer(bitPattern: nextAddress) {
                 if tail != headAddress, atomicCAS(&head, expected: headAddress, desired: nextAddress) {
-                    defer {
-                        if atomicExchange(&nextNode.pointee.state, with: .deleted) == 0 {
-                            nextNode.pointee.item = nil
-                        }
-                        decreaseAccessCount(node: headNode)
-                    }
+                    defer { decreaseAccessCount(node: headNode) }
+                    defer { nextNode.pointee.endUsing() }
                     return nextNode.pointee.item
                 }
             } else {
@@ -106,32 +113,19 @@ struct FifoQueue<T> {
     
     internal mutating func forEach(_ body: (T) -> Void) {
         atomicAdd(&accessCount, value: 1)
-        forEach(head, nextPath: \.next) { node in
-            if atomicUpdate(&node.pointee.state, transform: {
-                $0 == .deleted ? .deleted : .reading
-            }).new == .reading {
-                node.pointee.item.map(body)
-                if atomicUpdate(&node.pointee.state, transform: {
-                    $0 == .deleted ? .deleted : 0
-                }).new == .deleted {
-                    node.pointee.item = nil
-                }
-            }
+        var address = head
+        while let node = Pointer(bitPattern: address) {
+            defer { address = node.pointee.next }
+            guard node.pointee.startUsing() else { continue }
+            node.pointee.item.map(body)
+            node.pointee.endUsing()
         }
         decreaseAccessCount()
     }
     
-    private func forEach(_ address: Int, nextPath: KeyPath<Node, Int>, body: (Pointer) -> Void) {
-        var address = address
-        while let pointer = UnsafeMutablePointer<Node>(bitPattern: address) {
-            address = pointer.pointee[keyPath: nextPath]
-            body(pointer)
-        }
-    }
-    
     // MARK: - Free
     
-    mutating func free() {
+    internal mutating func free() {
         freeNodes(head, nextPath: \.next)
         freeNodes(toFree, nextPath: \.nextToFree)
     }
@@ -152,14 +146,11 @@ struct FifoQueue<T> {
     }
     
     private func freeNodes(_ address: Int, nextPath: KeyPath<Node, Int>) {
-        forEach(address, nextPath: nextPath) { $0.deinitialize(count: 1).deallocate() }
+        var address = address
+        while let node = Pointer(bitPattern: address) {
+            address = node.pointee[keyPath: nextPath]
+            node.deinitialize(count: 1).deallocate()
+        }
     }
-    
-}
-
-fileprivate extension Int {
-    
-    static let deleted = 2
-    static let reading = 1
     
 }

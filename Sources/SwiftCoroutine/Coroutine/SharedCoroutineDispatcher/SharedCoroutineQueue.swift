@@ -19,7 +19,7 @@ internal final class SharedCoroutineQueue {
     internal let context: CoroutineContext
     private var coroutine: SharedCoroutine
     
-    var inQueue = false
+    internal var inQueue = false
     private(set) var started = 0
     private var atomic = AtomicTuple()
     private var prepared = FifoQueue<SharedCoroutine>()
@@ -101,9 +101,9 @@ internal final class SharedCoroutineQueue {
     
 }
 
-extension Int32 {
+fileprivate extension Int32 {
     
-    fileprivate static let running: Int32 = 0
-    fileprivate static let isFree: Int32 = 1
+    static let running: Int32 = 0
+    static let isFree: Int32 = 1
     
 }

@@ -9,79 +9,44 @@
 import XCTest
 @testable import SwiftCoroutine
 
-class Aa<T> {
-    
-    private let queue = DispatchQueue(label: "asdasd", attributes: .concurrent)
-    private var value = [T]()
-    
-    func push(_ item: T) {
-        queue.async(flags: .barrier) {
-            self.value.append(item)
-        }
-    }
-    
-    func pop() -> T? {
-        queue.sync {
-            if self.value.isEmpty { return nil }
-            return self.value.removeFirst()
-        }
-    }
-    
-}
-
 class TestFifoQueue: XCTestCase {
     
-    func testAbc3() {
+    func testPerformance() {
         var queue = FifoQueue<Int>()
         measure {
             DispatchQueue.concurrentPerform(iterations: 100_000) { index in
-//                if index % 2 == 0 {
-//                    queue.push(index)
-//                } else {
-//                    queue.insertAtStart(index)
-//                }
-                queue.push(index)
-                XCTAssertNotNil(queue.pop())
-            }
-            XCTAssertNil(queue.pop())
-        }
-    }
-    
-    func testAbc() {
-        var queue = FifoQueue<Int>()
-        measure {
-            DispatchQueue.concurrentPerform(iterations: 100_000) { index in
-//                queue.insertAtStart(index)
                 queue.push(index)
                 _ = queue.pop()
             }
         }
+        queue.free()
     }
     
-//    func testAbc2() {
-//        var queue = BlockingFifoQueue<Int>()
-//        measure {
-//            DispatchQueue.concurrentPerform(iterations: 100_000) { index in
-//                queue.push(index)
-//                _ = queue.pop()
-//            }
-//        }
-//    }
-    
     func testThreadSafeFifoQueues() {
-        let exp = expectation(description: "testThreadSafeFifoQueues")
-        exp.expectedFulfillmentCount = 10
+        let lock = PsxLock()
+        var set = Set<Int>()
         var queue = FifoQueue<Int>()
-        measure {
-            DispatchQueue.concurrentPerform(iterations: 100_000) { index in
+        DispatchQueue.concurrentPerform(iterations: 1_000_000) { index in
+            if index % 3 == 0 {
+                queue.insertAtStart(index)
+            } else {
                 queue.push(index)
-                XCTAssertNotNil(queue.pop())
             }
-            XCTAssertNil(queue.pop())
-            exp.fulfill()
+            var hasValue = false
+            queue.forEach { _ in hasValue = true }
+            XCTAssertTrue(hasValue)
+            if let value = queue.pop() {
+                lock.lock()
+                set.insert(value)
+                lock.unlock()
+            } else {
+                XCTFail()
+            }
         }
+        XCTAssertEqual(set.count, 1_000_000)
+        XCTAssertNil(queue.pop())
         queue.free()
-        wait(for: [exp], timeout: 10)
+        lock.free()
     }
     
     func testThreadSafeFifoQueues2() {
@@ -97,6 +62,7 @@ class TestFifoQueue: XCTestCase {
         for i in 0..<6 {
             XCTAssertEqual(queue.pop(), i)
         }
+        queue.free()
     }
     
     func testQueue() {
