@@ -93,6 +93,12 @@ A [coroutine](https://en.wikipedia.org/wiki/Coroutine) is a computation that can
 - **Fast context switching**. Switching between coroutines is much faster than switching between threads as it does not require the involvement of operating system.
 - **Asynchronous code in synchronous manner**. The use of coroutines allows an asynchronous, non-blocking function to be structured in a manner similar to an ordinary synchronous function. And even though coroutines can run in multiple threads, your code will still look consistent and therefore easy to understand.
 
+#### Main features
+
+- **Any scheduler**. You can use any scheduler to execute coroutines, including standard `DispatchQueue` or even `NSManagedObjectContext` and NIO's `EventLoop`.
+- **Await instead of resume/suspend**. For convenience and safety, coroutines' resume/suspend has been replaced by await, which suspends it and resumes on callback.
+- **Memory efficiency**. Contains a mechanism that allows to reuse stacks and, if necessary, effectively store their contents with minimal memory usage.
+
 #### Usage
 
 The coroutines API design is as minimalistic as possible. It consists of the `CoroutineScheduler` protocol that describes how to schedule coroutines (`DispatchQueue` already conforms it), and the `Coroutine` structure with utility methods. This API is enough to do amazing things.
