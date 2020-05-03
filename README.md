@@ -95,7 +95,7 @@ A [coroutine](https://en.wikipedia.org/wiki/Coroutine) is a computation that can
 
 #### Main features
 
-- **Any scheduler**. You can use any scheduler to execute coroutines, including standard `DispatchQueue` or even `NSManagedObjectContext` and NIO's `EventLoop`.
+- **Any scheduler**. You can use any scheduler to execute coroutines, including standard `DispatchQueue` or even CoreData `NSManagedObjectContext` and NIO `EventLoop`.
 - **Await instead of resume/suspend**. For convenience and safety, coroutines' resume/suspend has been replaced by await, which suspends it and resumes on callback.
 - **Memory efficiency**. Contains a mechanism that allows to reuse stacks and, if necessary, effectively store their contents with minimal memory usage.
 
