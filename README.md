@@ -239,7 +239,7 @@ To create channels, use the `CoChannel` class.
 let channel = CoChannel<Int>(maxBufferSize: 1)
 
 DispatchQueue.global().startCoroutine {
-    for i in 0..<10 {
+    for i in 0..<100 {
         //imitate some work
         Coroutine.delay(.seconds(1))
         //sends a value to the channel and suspends coroutine if its buffer is full
