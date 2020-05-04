@@ -183,7 +183,7 @@ public final class CoChannel<Element> {
     /// - Returns: `true` if closed successfully or `false` if channel is already closed or canceled.
     @discardableResult public func close() -> Bool {
         let (count, state) = atomic.update { count, state in
-            state == 0 ? (count, 1) : (count, state)
+            state == 0 ? (Swift.max(0, count), 1) : (count, state)
         }.old
         guard state == 0 else { return false }
         if count < 0 {

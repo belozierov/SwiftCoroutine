@@ -109,15 +109,17 @@ internal struct FifoQueue<T> {
     // MARK: - ForEach
     
     internal mutating func forEach(_ body: (T) -> Void) {
+        var items = [T]()
         eraser.startAccess()
         var address = head
         while let node = Pointer(bitPattern: address) {
             defer { address = node.pointee.next }
             guard node.pointee.startUsing() else { continue }
-            node.pointee.item.map(body)
+            node.pointee.item.map { items.append($0) }
             node.pointee.endUsing()
         }
         eraser.endAccess()
+        items.forEach(body)
     }
     
     // MARK: - Free
