@@ -1,20 +1,10 @@
-//
-//  SharedCoroutineDispatcher.swift
-//  SwiftCoroutine
-//
-//  Created by Alex Belozierov on 03.04.2020.
-//  Copyright © 2020 Alex Belozierov. All rights reserved.
-//
-
 @usableFromInline
 internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
-    
-    // MARK: - Push
     
     private let stackSize, capacity: Int
     private var lifo = LifoQueue<SharedCoroutineQueue>()
     private var fifo = FifoQueue<SharedCoroutineQueue>()
-    private var counter = 0
+    private var queuesCount = 0
     
     internal init(capacity: Int, stackSize: Coroutine.StackSize) {
         self.stackSize = stackSize.size
@@ -29,7 +19,8 @@ internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
     }
     
     private func getFreeQueue() -> SharedCoroutineQueue {
-        while let queue = popQueue() {
+        while let queue = lifo.pop() ?? fifo.pop() {
+            atomicAdd(&queuesCount, value: -1)
             queue.inQueue = false
             if queue.occupy() { return queue }
         }
@@ -38,24 +29,14 @@ internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
     
     internal func push(_ queue: SharedCoroutineQueue) {
         if queue.started != 0 {
-            if queue.inQueue || !increaseCounter() { return }
+            if queue.inQueue { return }
             queue.inQueue = true
             fifo.push(queue)
-        } else if increaseCounter() {
+            atomicAdd(&queuesCount, value: 1)
+        } else if queuesCount < capacity {
             lifo.push(queue)
+            atomicAdd(&queuesCount, value: 1)
         }
-    }
-    
-    // MARK: - Queue
-    
-    private func popQueue() -> SharedCoroutineQueue? {
-        let old = atomicUpdate(&counter) { max(0, $0 - 1) }.old
-        if old == 0 { return nil }
-        return lifo.pop() ?? fifo.pop()
-    }
-    
-    private func increaseCounter() -> Bool {
-        atomicUpdate(&counter) { min(capacity, $0 + 1) }.old < capacity
     }
     
     deinit {
