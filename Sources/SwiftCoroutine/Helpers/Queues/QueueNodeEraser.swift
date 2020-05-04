@@ -29,10 +29,14 @@ internal struct QueueNodeEraser<T: QueueNode> {
             }
             node?.deinitialize(count: 1).deallocate()
         } else if let node = node {
-            atomicUpdate(&toFree) {
-                node.pointee.nextToFree = $0
-                return Int(bitPattern: node)
-            }
+            add(node)
+        }
+    }
+    
+    @inlinable internal mutating func add(_ node: UnsafeMutablePointer<T>) {
+        atomicUpdate(&toFree) {
+            node.pointee.nextToFree = $0
+            return Int(bitPattern: node)
         }
     }
     
