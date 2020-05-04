@@ -15,7 +15,7 @@ internal protocol QueueNode {
 internal struct QueueNodeEraser<T: QueueNode> {
     
     private(set) var accessCount = 0
-    private var toFree = 0
+    private(set) var toFree = 0
     var isFinished = 0
     
     @inlinable internal mutating func startAccess() {
@@ -41,6 +41,10 @@ internal struct QueueNodeEraser<T: QueueNode> {
             node.pointee.nextToFree = $0
             return Int(bitPattern: node)
         }
+    }
+    
+    internal func free() {
+        if toFree != 0 { freeNodes(toFree) }
     }
     
     private func freeNodes(_ address: Int) {
