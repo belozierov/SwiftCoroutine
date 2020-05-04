@@ -14,7 +14,7 @@ internal protocol QueueNode {
 
 internal struct QueueNodeEraser<T: QueueNode> {
     
-    private var accessCount = 0
+    private(set) var accessCount = 0
     private var toFree = 0
     
     @inlinable internal mutating func startAccess() {
