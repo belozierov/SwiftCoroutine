@@ -27,30 +27,14 @@ class TestFifoQueue: XCTestCase {
         var set = Set<Int>()
         var queue = FifoQueue<Int>()
         DispatchQueue.concurrentPerform(iterations: 100_000) { index in
-            queue.push(index)
+            if index % 3 == 0 {
+                queue.insertAtStart(index)
+            } else {
+                queue.push(index)
+            }
             var hasValue = false
             queue.forEach { _ in hasValue = true }
             XCTAssertTrue(hasValue)
-            if let value = queue.pop() {
-                lock.lock()
-                set.insert(value)
-                lock.unlock()
-            } else {
-                XCTFail()
-            }
-        }
-        XCTAssertEqual(set.count, 100_000)
-        XCTAssertNil(queue.pop())
-        queue.free()
-        lock.free()
-    }
-    
-    func testLifoQueue() {
-        let lock = PsxLock()
-        var set = Set<Int>()
-        var queue = LifoQueue<Int>()
-        DispatchQueue.concurrentPerform(iterations: 100_000) { index in
-            queue.push(index)
             if let value = queue.pop() {
                 lock.lock()
                 set.insert(value)
