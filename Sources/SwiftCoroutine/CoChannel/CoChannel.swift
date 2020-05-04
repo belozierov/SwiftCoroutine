@@ -223,6 +223,12 @@ public final class CoChannel<Element> {
     }
 
     deinit {
+        while let callback = receiveCallbacks.pop() {
+            callback(.failure(.canceled))
+        }
+        while let block = sendBlocks.pop() {
+            block.resumeBlock?(.canceled)
+        }
         receiveCallbacks.free()
         sendBlocks.free()
     }
