@@ -14,12 +14,10 @@ internal protocol QueueNode {
 
 internal struct QueueNodeEraser<T: QueueNode> {
     
-    private(set) var accessCount = 0
-    private(set) var toFree = 0
-    var isFinished = 0
+    private var accessCount = 0
+    private var toFree = 0
     
     @inlinable internal mutating func startAccess() {
-        if isFinished != 0 { print("startAccess error") }
         atomicAdd(&accessCount, value: 1)
     }
     
@@ -33,7 +31,6 @@ internal struct QueueNodeEraser<T: QueueNode> {
         } else if let node = node {
             add(node)
         }
-        if isFinished != 0 { print("endAccess error") }
     }
     
     @inlinable internal mutating func add(_ node: UnsafeMutablePointer<T>) {
@@ -43,7 +40,7 @@ internal struct QueueNodeEraser<T: QueueNode> {
         }
     }
     
-    internal func free() {
+    @inlinable internal func free() {
         if toFree != 0 { freeNodes(toFree) }
     }
     
