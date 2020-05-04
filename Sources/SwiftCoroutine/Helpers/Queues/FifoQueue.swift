@@ -125,16 +125,14 @@ internal struct FifoQueue<T> {
     // MARK: - Free
     
     internal mutating func free() {
-        if eraser.accessCount > 0 {
-            print("free access error")
-        }
-        eraser.startAccess()
+        atomicStore(&eraser.isFinished, value: 1)
+//        eraser.startAccess()
         var address = head
         while let node = Pointer(bitPattern: address) {
             address = node.pointee.next
             node.deinitialize(count: 1).deallocate()
         }
-        eraser.endAccess()
+//        eraser.endAccess()
     }
     
 }
