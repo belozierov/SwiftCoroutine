@@ -129,7 +129,8 @@ internal struct FifoQueue<T> {
         var address = head
         while let node = Pointer(bitPattern: address) {
             address = node.pointee.next
-            eraser.add(node)
+            node.deinitialize(count: 1).deallocate()
+//            eraser.add(node)
         }
         eraser.endAccess()
     }
