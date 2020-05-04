@@ -2,8 +2,7 @@
 internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
     
     private let stackSize, capacity: Int
-    private var lifo = LifoQueue<SharedCoroutineQueue>()
-    private var fifo = FifoQueue<SharedCoroutineQueue>()
+    private var queues = FifoQueue<SharedCoroutineQueue>()
     private var queuesCount = 0
     
     internal init(capacity: Int, stackSize: Coroutine.StackSize) {
@@ -19,7 +18,7 @@ internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
     }
     
     private func getFreeQueue() -> SharedCoroutineQueue {
-        while let queue = lifo.pop() ?? fifo.pop() {
+        while let queue = queues.pop() {
             atomicAdd(&queuesCount, value: -1)
             queue.inQueue = false
             if queue.occupy() { return queue }
@@ -31,17 +30,16 @@ internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
         if queue.started != 0 {
             if queue.inQueue { return }
             queue.inQueue = true
-            fifo.push(queue)
+            queues.push(queue)
             atomicAdd(&queuesCount, value: 1)
         } else if queuesCount < capacity {
-            lifo.push(queue)
+            queues.insertAtStart(queue)
             atomicAdd(&queuesCount, value: 1)
         }
     }
     
     deinit {
-        lifo.free()
-        fifo.free()
+        queues.free()
     }
     
 }

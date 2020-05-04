@@ -52,6 +52,35 @@ internal struct FifoQueue<T> {
         }
     }
     
+    internal mutating func insertAtStart(_ item: T) {
+        let new = Pointer.allocate(capacity: 1)
+        new.initialize(to: Node(item: item, using: 1))
+        var empty: Pointer?
+        eraser.startAccess()
+        while true {
+            let headAddress = head
+            let headNode = Pointer(bitPattern: headAddress)!
+            let nextAddress = headNode.pointee.next
+            new.pointee.next = nextAddress
+            if nextAddress == 0 {
+                if atomicCAS(&headNode.pointee.next, expected: 0, desired: Int(bitPattern: new)) {
+                    defer { empty?.deinitialize(count: 1).deallocate() }
+                    defer { eraser.endAccess() }
+                    return tail = Int(bitPattern: new)
+                }
+            } else {
+                if empty == nil {
+                    empty = .allocate(capacity: 1)
+                    empty?.initialize(to: Node(next: Int(bitPattern: new)))
+                }
+                if atomicCAS(&head, expected: headAddress, desired: Int(bitPattern: empty)) {
+                    headNode.pointee.next = Int(bitPattern: new)
+                    return eraser.endAccess(headNode)
+                }
+            }
+        }
+    }
+    
     // MARK: - Pop
     
     @inlinable internal mutating func blockingPop() -> T {
