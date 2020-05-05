@@ -12,6 +12,89 @@ import Dispatch
 
 class TestAtomic: XCTestCase {
     
+    func testAaa3() {
+        var atomic = 0
+        measure {
+            for _ in 0..<1_000_000 {
+                atomicStore(&atomic, value: atomic + 1)
+            }
+        }
+    }
+    
+    func testAaa() {
+        var atomic = 0
+        measure {
+            for _ in 0..<1_000_000 {
+                _ = atomicExchange(&atomic, with: atomic + 1)
+            }
+        }
+    }
+    
+    func testAaa2() {
+        var atomic = 0
+        measure {
+            for _ in 0..<1_000_000 {
+                while true {
+                    let a = atomic
+                    if atomicCAS(&atomic, expected: a, desired: a + 1) {
+                        break
+                    }
+                }
+            }
+        }
+    }
+    
+    func testAbc3() {
+        var atomic = 0
+        measure {
+            DispatchQueue.concurrentPerform(iterations: 100_000) { _ in
+                atomicAdd(&atomic, value: 1)
+            }
+        }
+        XCTAssertEqual(atomic, 1_000_000)
+    }
+    
+    func testAbc4() {
+        var atomic = 0
+        measure {
+            DispatchQueue.concurrentPerform(iterations: 100_000) { _ in
+                while true {
+                    var value = atomic
+                    let result = withUnsafeMutablePointer(to: &atomic) {
+                        __atomicCompareExchange(OpaquePointer($0), &value, value + 1)
+                    }
+                    if result != 0 { return }
+                }
+            }
+        }
+        XCTAssertEqual(atomic, 1_000_000)
+    }
+    
+    func testAbc2() {
+        var atomic = 0
+        measure {
+            DispatchQueue.concurrentPerform(iterations: 100_000) { _ in
+                while true {
+                    let value = atomic
+                    if atomicCAS(&atomic, expected: value, desired: value + 1) {
+                        return
+                    }
+                }
+            }
+        }
+        XCTAssertEqual(atomic, 1_000_000)
+    }
+    
+    func testAbc1() {
+        var atomic = 0
+        measure {
+            DispatchQueue.concurrentPerform(iterations: 100_000) { _ in
+                atomicUpdate(&atomic) { $0 + 1 }
+            }
+        }
+        XCTAssertEqual(atomic, 1_000_000)
+    }
+    
     func testTuple() {
         var tuple = AtomicTuple()
         DispatchQueue.concurrentPerform(iterations: 100_000) { _ in

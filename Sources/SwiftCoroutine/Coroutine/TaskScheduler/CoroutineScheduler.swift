@@ -48,7 +48,7 @@ public protocol CoroutineScheduler {
 extension CoroutineScheduler {
     
     @inlinable internal func startCoroutine(_ task: @escaping () -> Void) {
-        CoroutineDispatcher.default.execute(on: self, task: task)
+        SharedCoroutineDispatcher.default.execute(on: self, task: task)
     }
     
     /// Start a new coroutine on the current scheduler.
@@ -81,8 +81,8 @@ extension CoroutineScheduler {
     /// - Parameter task: The closure that will be executed inside coroutine.
     /// - Throws: Rethrows an error from the task.
     /// - Returns: Returns the result of the task.
-    @inlinable public func await<T>(_ task: () throws -> T) rethrows -> T {
-        try Coroutine.current.await(on: self, task: task)
+    @inlinable public func await<T>(_ task: () throws -> T) throws -> T {
+        try Coroutine.current().await(on: self, task: task)
     }
     
     /// Starts a new coroutine and returns its future result.
@@ -101,7 +101,12 @@ extension CoroutineScheduler {
     /// - Returns: Returns `CoFuture` with the future result of the task.
     @inlinable public func coroutineFuture<T>(_ task: @escaping () throws -> T) -> CoFuture<T> {
         let promise = CoPromise<T>()
-        startCoroutine { promise.complete(with: Result(catching: task)) }
+        startCoroutine {
+            let current = try? Coroutine.current()
+            promise.whenCanceled { current?.cancel() }
+            if promise.isCanceled { return }
+            promise.complete(with: Result(catching: task))
+        }
         return promise
     }
     

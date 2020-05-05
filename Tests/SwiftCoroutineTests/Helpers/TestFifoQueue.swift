@@ -23,7 +23,7 @@ class TestFifoQueue: XCTestCase {
     }
     
     func testFifoQueue() {
-        let lock = PsxLock()
+        let lock = NSLock()
         var set = Set<Int>()
         var queue = FifoQueue<Int>()
         DispatchQueue.concurrentPerform(iterations: 100_000) { index in
@@ -46,7 +46,6 @@ class TestFifoQueue: XCTestCase {
         XCTAssertEqual(set.count, 100_000)
         XCTAssertNil(queue.pop())
         queue.free()
-        lock.free()
     }
     
     func testQueue() {

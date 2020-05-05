@@ -58,5 +58,5 @@ long __atomicFetchAdd(_Atomic long* value, long operand) {
 }
 
 int __atomicCompareExchange(_Atomic long* value, long* expected, long desired) {
-    return atomic_compare_exchange_weak(value, expected, desired);
+    return atomic_compare_exchange_strong(value, expected, desired);
 }
