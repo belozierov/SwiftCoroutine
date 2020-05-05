@@ -116,13 +116,22 @@ public struct Coroutine {
         let timer = DispatchSource.makeTimerSource()
         timer.schedule(deadline: .now() + time)
         defer { timer.cancel() }
-        try await {
-            timer.setEventHandler(handler: $0)
+        do {
+            try await {
+                timer.setEventHandler(handler: $0)
+                if #available(OSX 10.12, iOS 10.0, *) {
+                    timer.activate()
+                } else {
+                    timer.resume()
+                }
+            }
+        } catch {
             if #available(OSX 10.12, iOS 10.0, *) {
                 timer.activate()
             } else {
                 timer.resume()
             }
+            throw error
         }
     }
     

@@ -48,11 +48,7 @@ internal final class SharedCoroutine {
         while true {
             switch state {
             case .suspending:
-                if isCanceled == 1 {
-                    if atomicCAS(&state, expected: .suspending, desired: .running) {
-                        return resumeContext()
-                    }
-                } else if atomicCAS(&state, expected: .suspending, desired: .suspended) {
+                if atomicCAS(&state, expected: .suspending, desired: .suspended) {
                     return .suspended
                 }
             case .running:
@@ -102,10 +98,7 @@ extension SharedCoroutine: CoroutineProtocol {
         state = .suspending
         var result: T!, resultState = 0
         callback { value in
-            while true {
-                if atomicCAS(&resultState, expected: 0, desired: 1) { break }
-                if resultState == 1 { return }
-            }
+            if atomicExchange(&resultState, with: 1) == 1 { return }
             result = value
             self.resumeIfSuspended()
         }
@@ -136,16 +129,8 @@ extension SharedCoroutine: CoroutineProtocol {
     }
     
     private func resumeIfSuspended() {
-        while true {
-            switch state {
-            case .suspended:
-                if atomicCAS(&state, expected: .suspended, desired: .running) {
-                    return queue.resume(coroutine: self)
-                }
-            case .suspending:
-                if atomicCAS(&state, expected: .suspending, desired: .running) { return }
-            default: return
-            }
+        if atomicExchange(&state, with: .running) == .suspended {
+            queue.resume(coroutine: self)
         }
     }
     

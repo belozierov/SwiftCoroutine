@@ -95,6 +95,8 @@
 		1ACB4498241A8377002DB73B /* TestAtomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACB4496241A8377002DB73B /* TestAtomic.swift */; };
 		1AE451D42461B7BE00ECBC44 /* CoroutineError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE451D32461B7BE00ECBC44 /* CoroutineError.swift */; };
 		1AE451D52461B7BE00ECBC44 /* CoroutineError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE451D32461B7BE00ECBC44 /* CoroutineError.swift */; };
+		1AE451D72461C2A000ECBC44 /* CoroutineCancelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE451D62461C2A000ECBC44 /* CoroutineCancelTests.swift */; };
+		1AE451D82461C2A000ECBC44 /* CoroutineCancelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE451D62461C2A000ECBC44 /* CoroutineCancelTests.swift */; };
 		1AEB6183242F391C00A6C2AB /* CoroutineScheduler+DispatchQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEB6182242F391C00A6C2AB /* CoroutineScheduler+DispatchQueue.swift */; };
 		1AEB6184242F391C00A6C2AB /* CoroutineScheduler+DispatchQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEB6182242F391C00A6C2AB /* CoroutineScheduler+DispatchQueue.swift */; };
 		1AEC382323CA02C90000101A /* XCTOrderedExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEC382223CA02C90000101A /* XCTOrderedExpectation.swift */; };
@@ -173,6 +175,7 @@
 		1ACB4493241A7E34002DB73B /* TestFifoQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFifoQueue.swift; sourceTree = "<group>"; };
 		1ACB4496241A8377002DB73B /* TestAtomic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestAtomic.swift; sourceTree = "<group>"; };
 		1AE451D32461B7BE00ECBC44 /* CoroutineError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoroutineError.swift; sourceTree = "<group>"; };
+		1AE451D62461C2A000ECBC44 /* CoroutineCancelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoroutineCancelTests.swift; sourceTree = "<group>"; };
 		1AEB617E242E4B3400A6C2AB /* SwiftCoroutine macOS.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = "SwiftCoroutine macOS.xctestplan"; path = "Tests/SwiftCoroutine macOS.xctestplan"; sourceTree = "<group>"; };
 		1AEB6182242F391C00A6C2AB /* CoroutineScheduler+DispatchQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoroutineScheduler+DispatchQueue.swift"; sourceTree = "<group>"; };
 		1AEC382223CA02C90000101A /* XCTOrderedExpectation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCTOrderedExpectation.swift; sourceTree = "<group>"; };
@@ -318,6 +321,7 @@
 				1A47C24F23D73D3F004CC7B1 /* CoroutineTests.swift */,
 				1A8FF4922431E932004077E8 /* CoroutineSchedulerTests.swift */,
 				1A037A172440EA8A00816D23 /* CoroutineDispatcherTests.swift */,
+				1AE451D62461C2A000ECBC44 /* CoroutineCancelTests.swift */,
 			);
 			path = Coroutine;
 			sourceTree = "<group>";
@@ -760,6 +764,7 @@
 				1A71364D24215BBB00DC78FD /* CoFutureAwaitTests.swift in Sources */,
 				1A037A182440EA8A00816D23 /* CoroutineDispatcherTests.swift in Sources */,
 				1A8FF4932431E932004077E8 /* CoroutineSchedulerTests.swift in Sources */,
+				1AE451D72461C2A000ECBC44 /* CoroutineCancelTests.swift in Sources */,
 				1AC3578E23E85E7600EC2A50 /* CoPromiseTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -822,6 +827,7 @@
 				1A71364E24215BBB00DC78FD /* CoFutureAwaitTests.swift in Sources */,
 				1A037A192440EA8A00816D23 /* CoroutineDispatcherTests.swift in Sources */,
 				1A8FF4942431E932004077E8 /* CoroutineSchedulerTests.swift in Sources */,
+				1AE451D82461C2A000ECBC44 /* CoroutineCancelTests.swift in Sources */,
 				1AC3578F23E85E7600EC2A50 /* CoPromiseTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
