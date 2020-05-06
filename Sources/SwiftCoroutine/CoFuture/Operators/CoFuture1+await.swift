@@ -40,11 +40,7 @@ extension CoFuture {
         let result: Result<Value, Error> = try Coroutine.current().await { callback in
             self.addCallback(callback)
             timer.setEventHandler { callback(.failure(CoFutureError.timeout)) }
-            if #available(OSX 10.12, iOS 10.0, *) {
-                timer.activate()
-            } else {
-                timer.resume()
-            }
+            timer.start()
         }
         return try result.get()
     }

@@ -59,7 +59,7 @@ DispatchQueue.main.startCoroutine {
     guard let image = UIImage(data: data) else { throw URLError(.cannotParseResponse) }
     
     //execute heavy task on global queue and await the result without blocking the thread
-    let thumbnail: UIImage = DispatchQueue.global().await { image.makeThumbnail() }
+    let thumbnail: UIImage = try DispatchQueue.global().await { image.makeThumbnail() }
 
     //set image in UIImageView on the main thread
     self.imageView.image = thumbnail
@@ -110,7 +110,7 @@ The following example shows the usage of  `await()` inside a coroutine to wrap a
 DispatchQueue.main.startCoroutine {
     
     //await URLSessionDataTask response without blocking the thread
-    let (data, response, error) = Coroutine.await { callback in
+    let (data, response, error) = try Coroutine.await { callback in
         URLSession.shared.dataTask(with: url, completionHandler: callback).resume()
     }
     
@@ -174,7 +174,7 @@ let future1: CoFuture<Int> = makeIntFuture()
 
 //execute task on the global queue and returns CoFuture<Int> with future result
 let future2: CoFuture<Int> = DispatchQueue.global().coroutineFuture {
-    Coroutine.delay(.seconds(3)) //some work that takes 3 sec.
+    try Coroutine.delay(.seconds(3)) //some work that takes 3 sec.
     return 6
 }
 
@@ -241,7 +241,7 @@ let channel = CoChannel<Int>(maxBufferSize: 1)
 DispatchQueue.global().startCoroutine {
     for i in 0..<100 {
         //imitate some work
-        Coroutine.delay(.seconds(1))
+        try Coroutine.delay(.seconds(1))
         //sends a value to the channel and suspends coroutine if its buffer is full
         try channel.awaitSend(i)
     }
