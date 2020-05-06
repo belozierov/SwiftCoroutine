@@ -97,6 +97,27 @@
       "symbol": "URLSession.dataTaskFuture(for:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
+    },
+    {
+      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/Coroutine/CoroutineError.swift",
+      "line": 9,
+      "symbol": "CoroutineError",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/Coroutine/CoroutineError.swift",
+      "line": 10,
+      "symbol": "CoroutineError.calledOutsideCoroutine",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/Coroutine/CoroutineError.swift",
+      "line": 10,
+      "symbol": "CoroutineError.canceled",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
     }
   ],
   "source_directory": "/Users/alexbelozierov/SwiftCoroutine"

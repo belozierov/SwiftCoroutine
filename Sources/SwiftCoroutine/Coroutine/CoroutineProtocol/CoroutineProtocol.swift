@@ -16,8 +16,9 @@ import Darwin
     
     typealias StackSize = Coroutine.StackSize
     
-    func await<T>(_ callback: (@escaping (T) -> Void) -> Void) -> T
-    func await<T>(on scheduler: CoroutineScheduler, task: () throws -> T) rethrows -> T
+    func await<T>(_ callback: (@escaping (T) -> Void) -> Void) throws -> T
+    func await<T>(on scheduler: CoroutineScheduler, task: () throws -> T) throws -> T
+    func cancel()
     
 }
 
@@ -38,21 +39,13 @@ extension Coroutine {
         pthread_getspecific(.coroutine)
     }
     
-    @inlinable internal static var current: CoroutineProtocol {
+    @inlinable internal static func current() throws -> CoroutineProtocol {
         if let pointer = currentPointer,
             let coroutine = Unmanaged<AnyObject>.fromOpaque(pointer)
                 .takeUnretainedValue() as? CoroutineProtocol {
             return coroutine
         }
-        precondition(false,
-                     """
-        Await must be called inside a coroutine.
-        
-        To launch the coroutine, use `startCoroutine()`, e.g. `DispatchQueue.main.startCoroutine()`.
-        OR
-        To check if inside the coroutine, use `Coroutine.isInsideCoroutine`.
-        """)
-        return PseudoCoroutine.shared
+        throw CoroutineError.calledOutsideCoroutine
     }
     
 }

@@ -82,6 +82,9 @@ public class CoFuture<Value> {
 extension CoFuture: _CoFutureCancellable {
 
     /// Starts a new coroutine and initializes future with its result.
+    ///
+    /// - Note: If you cancel this `CoFuture`, it will also cancel the coroutine that was started inside of it.
+    ///
     /// ```
     /// func sum(future1: CoFuture<Int>, future2: CoFuture<Int>) -> CoFuture<Int> {
     ///     CoFuture { try future1.await() + future2.await() }
@@ -90,7 +93,12 @@ extension CoFuture: _CoFutureCancellable {
     /// - Parameter task: The closure that will be executed inside the coroutine.
     @inlinable public convenience init(task: @escaping () throws -> Value) {
         self.init(_result: nil)
-        Coroutine.start { self.setResult(Result(catching: task)) }
+        Coroutine.start {
+            let current = try? Coroutine.current()
+            self.whenCanceled { current?.cancel() }
+            if self.isCanceled { return }
+            self.setResult(Result(catching: task))
+        }
     }
     
     /// Initializes a future with result.

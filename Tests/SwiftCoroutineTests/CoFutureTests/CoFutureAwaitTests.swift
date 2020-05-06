@@ -103,10 +103,10 @@ class CoFutureAwaitTests: XCTestCase {
         var count = 0
         DispatchQueue.global().startCoroutine {
             for _ in 0..<1000 {
-                Coroutine.await {
+                try Coroutine.await {
                     DispatchQueue.global().async(execute: $0)
                 }
-                DispatchQueue.global().await {}
+                try DispatchQueue.global().await {}
                 count += 1
             }
             XCTAssertEqual(count, 1000)
@@ -117,17 +117,16 @@ class CoFutureAwaitTests: XCTestCase {
     
     func testSchedulerAwait() {
         let group = DispatchGroup()
-        let _ = CoroutineDispatcher.default
         measure {
             group.enter()
             var sum = 0
             DispatchQueue.global().startCoroutine {
                 for i in 0..<10_000 {
-                    sum += DispatchQueue.global().await { i }
-                    sum += DispatchQueue.global().await { i }
-                    sum += DispatchQueue.global().await { i }
-                    sum += DispatchQueue.global().await { i }
-                    sum += DispatchQueue.global().await { i }
+                    sum += try DispatchQueue.global().await { i }
+                    sum += try DispatchQueue.global().await { i }
+                    sum += try DispatchQueue.global().await { i }
+                    sum += try DispatchQueue.global().await { i }
+                    sum += try DispatchQueue.global().await { i }
                 }
                 XCTAssertEqual(sum, (0..<10_000).reduce(0, +) * 5)
                 group.leave()

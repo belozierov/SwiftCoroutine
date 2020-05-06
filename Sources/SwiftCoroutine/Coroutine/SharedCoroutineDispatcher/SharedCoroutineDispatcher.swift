@@ -6,14 +6,17 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
-@usableFromInline
-internal final class SharedCoroutineDispatcher: CoroutineTaskExecutor {
+@usableFromInline internal final class SharedCoroutineDispatcher {
+    
+    @usableFromInline internal
+    static let `default` = SharedCoroutineDispatcher(capacity: .processorsNumber * 2,
+                                                     stackSize: .recommended)
     
     private let stackSize, capacity: Int
     private var queues = FifoQueue<SharedCoroutineQueue>()
     private var queuesCount = 0
     
-    internal init(capacity: Int, stackSize: Coroutine.StackSize) {
+    private init(capacity: Int, stackSize: Coroutine.StackSize) {
         self.stackSize = stackSize.size
         self.capacity = capacity
     }

@@ -14,21 +14,21 @@ internal final class SharedCoroutine {
         let stack: UnsafeMutableRawPointer, size: Int
     }
     
-    internal var dispatcher: SharedCoroutineDispatcher!
-    internal var queue: SharedCoroutineQueue!
-    internal var scheduler: CoroutineScheduler!
+    internal let dispatcher: SharedCoroutineDispatcher
+    internal let queue: SharedCoroutineQueue
+    private(set) var scheduler: CoroutineScheduler
     
     private var state: Int = .running
     private var environment: UnsafeMutablePointer<CoroutineContext.SuspendData>!
     private var stackBuffer: StackBuffer!
+    private var isCanceled = 0
     
-    internal func reset() {
-        dispatcher = nil
-        queue = nil
-        scheduler = nil
-        state = .running
+    internal init(dispatcher: SharedCoroutineDispatcher, queue: SharedCoroutineQueue, scheduler: CoroutineScheduler) {
+        self.dispatcher = dispatcher
+        self.queue = queue
+        self.scheduler = scheduler
     }
-    
+  
     // MARK: - Actions
     
     internal func start() -> CompletionState {
@@ -45,10 +45,19 @@ internal final class SharedCoroutine {
     
     private func perform(_ block: () -> Bool) -> CompletionState {
         if block() { return .finished }
-        switch atomicExchange(&state, with: .suspended) {
-        case .running: return resumeContext()
-        case .restarting: return .restarting
-        default: return .suspended
+        while true {
+            switch state {
+            case .suspending:
+                if atomicCAS(&state, expected: .suspending, desired: .suspended) {
+                    return .suspended
+                }
+            case .running:
+                return resumeContext()
+            case .restarting:
+                return .restarting
+            default:
+                return .suspended
+            }
         }
     }
     
@@ -84,26 +93,28 @@ internal final class SharedCoroutine {
 
 extension SharedCoroutine: CoroutineProtocol {
     
-    internal func await<T>(_ callback: (@escaping (T) -> Void) -> Void) -> T {
+    internal func await<T>(_ callback: (@escaping (T) -> Void) -> Void) throws -> T {
+        if isCanceled == 1 { throw CoroutineError.canceled }
         state = .suspending
-        var resultState = 0
-        var result: T!
+        var result: T!, resultState = 0
         callback { value in
             if atomicExchange(&resultState, with: 1) == 1 { return }
             result = value
-            if atomicExchange(&self.state, with: .running) == .suspended {
-                self.queue.resume(coroutine: self)
-            }
+            self.resumeIfSuspended()
         }
         if state == .suspending { suspend() }
+        if isCanceled == 1 { throw CoroutineError.canceled }
         return result
     }
     
-    internal func await<T>(on scheduler: CoroutineScheduler, task: () throws -> T) rethrows -> T {
-        let currentScheduler = self.scheduler!
+    internal func await<T>(on scheduler: CoroutineScheduler, task: () throws -> T) throws -> T {
+        if isCanceled == 1 { throw CoroutineError.canceled }
+        let currentScheduler = self.scheduler
         setScheduler(scheduler)
         defer { setScheduler(currentScheduler) }
+        if isCanceled == 1 { throw CoroutineError.canceled }
         return try task()
+
     }
     
     private func setScheduler(_ scheduler: CoroutineScheduler) {
@@ -112,13 +123,24 @@ extension SharedCoroutine: CoroutineProtocol {
         suspend()
     }
     
+    internal func cancel() {
+        atomicStore(&isCanceled, value: 1)
+        resumeIfSuspended()
+    }
+    
+    private func resumeIfSuspended() {
+        if atomicExchange(&state, with: .running) == .suspended {
+            queue.resume(coroutine: self)
+        }
+    }
+    
 }
 
-extension Int {
+fileprivate extension Int {
     
-    fileprivate static let running = 0
-    fileprivate static let suspending = 1
-    fileprivate static let suspended = 2
-    fileprivate static let restarting = 3
+    static let running = 0
+    static let suspending = 1
+    static let suspended = 2
+    static let restarting = 3
     
 }

@@ -107,11 +107,11 @@ class CoFutureTests: XCTestCase {
         let date = Date()
         let exp = expectation(description: "testCoroutineInit")
         let future1 = DispatchQueue.global().coroutineFuture { () -> Int in
-            Coroutine.delay(.seconds(1))
+            try Coroutine.delay(.seconds(1))
             return 5
         }
         let future2 = DispatchQueue.global().coroutineFuture { () -> Int in
-            Coroutine.delay(.seconds(2))
+            try Coroutine.delay(.seconds(2))
             return 6
         }
         CoFuture { try future1.await() + future2.await() }.whenSuccess {
