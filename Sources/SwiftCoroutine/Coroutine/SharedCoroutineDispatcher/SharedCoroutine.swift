@@ -129,8 +129,17 @@ extension SharedCoroutine: CoroutineProtocol {
     }
     
     private func resumeIfSuspended() {
-        if atomicExchange(&state, with: .running) == .suspended {
-            queue.resume(coroutine: self)
+        while true {
+            switch state {
+            case .suspending:
+                if atomicCAS(&state, expected: .suspending, desired: .running) { return }
+            case .suspended:
+                if atomicCAS(&state, expected: .suspended, desired: .running) {
+                    return queue.resume(coroutine: self)
+                }
+            default:
+                return
+            }
         }
     }
     
