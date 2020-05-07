@@ -179,20 +179,6 @@ DispatchQueue.main.startCoroutine {
 }
 ```
 
-For error handling you can use standart `do-catch` statement or use `CoFuture` as an alternative.
-
-```swift
-//execute coroutine and return CoFuture<Void> that we will use for error handling
-DispatchQueue.main.coroutineFuture {
-    let result = try makeSomeFuture().await()
-    
-    . . . use result . . .
-}.whenFailure { error in
-
-    . . . handle error . . .
-}
-```
-
 It's very easy to transform or compose `CoFuture`s into a new one.
 
 ```swift
@@ -200,22 +186,6 @@ let array: [CoFuture<Int>]
 
 //create new CoFuture<Int> with sum of future results
 let sum = CoFuture { try array.reduce(0) { try $0 + $1.await() } }
-```
-
-Apple has introduced a new reactive programming framework `Combine` that makes writing asynchronous code easier and includes a lot of convenient and common functionality. We can use it with coroutines by making `CoFuture` a subscriber and await its result.
-
-```swift
-//create Combine publisher
-let publisher = URLSession.shared.dataTaskPublisher(for: url).map(\.data)
-
-//execute coroutine on the main thread
-DispatchQueue.main.startCoroutine {
-    //subscribe CoFuture to publisher
-    let future = publisher.subscribeCoFuture()
-    
-    //await data without blocking the thread
-    let data: Data = try future.await()
-}
 ```
 
 ### Channels
