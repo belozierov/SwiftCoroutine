@@ -166,7 +166,7 @@ It allows to start multiple tasks in parallel and synchronize them later with `a
 //create CoFuture<Int> that takes 2 sec. from the example above 
 let future1: CoFuture<Int> = makeIntFuture()
 
-//execute task on the global queue and returns CoFuture<Int> with future result
+//execute coroutine on the global queue and returns CoFuture<Int> with future result
 let future2: CoFuture<Int> = DispatchQueue.global().coroutineFuture {
     try Coroutine.delay(.seconds(3)) //some work that takes 3 sec.
     return 6
