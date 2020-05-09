@@ -9,9 +9,9 @@
 internal struct AtomicTuple {
     
     internal typealias Tuple = (Int32, Int32)
-    private var rawValue = 0
+    private(set) var rawValue = 0
     
-    internal var value: Tuple {
+    @inline(__always) internal var value: Tuple {
         get { unsafeBitCast(rawValue, to: Tuple.self) }
         set { atomicStore(&rawValue, value: unsafeBitCast(newValue, to: Int.self)) }
     }

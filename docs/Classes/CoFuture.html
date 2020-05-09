@@ -14,7 +14,7 @@
     <a title="CoFuture Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">SwiftCoroutine Docs</a> (79% documented)</p>
+        <p><a href="../index.html">SwiftCoroutine Docs</a> (86% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -32,6 +32,12 @@
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="../Classes/CoChannel.html">CoChannel</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/CoChannel/Receiver.html">– Receiver</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/CoChannel/Sender.html">– Sender</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/CoFuture.html">CoFuture</a>
@@ -131,6 +137,32 @@ or by <code>await()</code> inside a coroutine without blocking a thread.</p>
         <span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="k">try</span> <span class="n">future</span><span class="o">.</span><span class="nf">await</span><span class="p">()</span>
         <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> <span class="k">do</span> <span class="kd">some</span> <span class="n">work</span> <span class="n">using</span> <span class="n">result</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span>
     <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+
+<p>For coroutine error handling you can use standart <code>do-catch</code> statement or use <code>CoFuture</code> as an alternative.</p>
+<pre class="highlight swift"><code><span class="c1">//execute coroutine and return CoFuture&lt;Void&gt; that we will use for error handling</span>
+<span class="kt">DispatchQueue</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">coroutineFuture</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="k">try</span> <span class="nf">makeSomeFuture</span><span class="p">()</span><span class="o">.</span><span class="nf">await</span><span class="p">()</span>
+    <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> <span class="n">use</span> <span class="n">result</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span>
+<span class="p">}</span><span class="o">.</span><span class="n">whenFailure</span> <span class="p">{</span> <span class="n">error</span> <span class="k">in</span>
+    <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> <span class="n">handle</span> <span class="n">error</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span>
+<span class="p">}</span>
+</code></pre>
+
+<p>Apple has introduced a new reactive programming framework <code>Combine</code>
+that makes writing asynchronous code easier and includes a lot of convenient and common functionality.
+We can use it with coroutines by making <code>CoFuture</code> a subscriber and await its result.</p>
+<pre class="highlight swift"><code><span class="c1">//create Combine publisher</span>
+<span class="k">let</span> <span class="nv">publisher</span> <span class="o">=</span> <span class="kt">URLSession</span><span class="o">.</span><span class="n">shared</span><span class="o">.</span><span class="nf">dataTaskPublisher</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="nf">map</span><span class="p">(\</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1">//execute coroutine on the main thread</span>
+<span class="kt">DispatchQueue</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">startCoroutine</span> <span class="p">{</span>
+    <span class="c1">//subscribe CoFuture to publisher</span>
+    <span class="k">let</span> <span class="nv">future</span> <span class="o">=</span> <span class="n">publisher</span><span class="o">.</span><span class="nf">subscribeCoFuture</span><span class="p">()</span>
+
+    <span class="c1">//await data without blocking the thread</span>
+    <span class="k">let</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span> <span class="o">=</span> <span class="k">try</span> <span class="n">future</span><span class="o">.</span><span class="nf">await</span><span class="p">()</span>
 <span class="p">}</span>
 </code></pre>
 
@@ -1110,7 +1142,7 @@ may recover from the error by returning a <code>CoFuture</code>.</p>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-05-06)</p>
+          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-05-09)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

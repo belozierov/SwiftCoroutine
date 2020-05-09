@@ -14,7 +14,7 @@
     <a title="Classes  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">SwiftCoroutine Docs</a> (79% documented)</p>
+        <p><a href="index.html">SwiftCoroutine Docs</a> (86% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -32,6 +32,12 @@
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Classes/CoChannel.html">CoChannel</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/CoChannel/Receiver.html">– Receiver</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/CoChannel/Sender.html">– Sender</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/CoFuture.html">CoFuture</a>
@@ -120,14 +126,14 @@ Conceptually, a channel is similar to a queue that allows to suspend a coroutine
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">channel</span> <span class="o">=</span> <span class="kt">CoChannel</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">maxBufferSize</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span>
 
 <span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">global</span><span class="p">()</span><span class="o">.</span><span class="n">startCoroutine</span> <span class="p">{</span>
-   <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">0</span><span class="o">..&lt;</span><span class="mi">10</span> <span class="p">{</span>
+   <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">0</span><span class="o">..&lt;</span><span class="mi">100</span> <span class="p">{</span>
        <span class="k">try</span> <span class="n">channel</span><span class="o">.</span><span class="nf">awaitSend</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
    <span class="p">}</span>
    <span class="n">channel</span><span class="o">.</span><span class="nf">close</span><span class="p">()</span>
 <span class="p">}</span>
 
 <span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">global</span><span class="p">()</span><span class="o">.</span><span class="n">startCoroutine</span> <span class="p">{</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="n">channel</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="n">channel</span><span class="o">.</span><span class="nf">makeIterator</span><span class="p">()</span> <span class="p">{</span>
         <span class="nf">print</span><span class="p">(</span><span class="s">"Receive"</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
     <span class="p">}</span>
     <span class="nf">print</span><span class="p">(</span><span class="s">"Done"</span><span class="p">)</span>
@@ -142,7 +148,6 @@ Conceptually, a channel is similar to a queue that allows to suspend a coroutine
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">CoChannel</span><span class="o">&lt;</span><span class="kt">Element</span><span class="o">&gt;</span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">CoChannel</span><span class="p">:</span> <span class="kt">Cancellable</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">CoChannel</span><span class="p">:</span> <span class="kt">Sequence</span></code></pre>
 
                         </div>
                       </div>
@@ -197,6 +202,32 @@ or by <code>await()</code> inside a coroutine without blocking a thread.</p>
 <span class="p">}</span>
 </code></pre>
 
+<p>For coroutine error handling you can use standart <code>do-catch</code> statement or use <code>CoFuture</code> as an alternative.</p>
+<pre class="highlight swift"><code><span class="c1">//execute coroutine and return CoFuture&lt;Void&gt; that we will use for error handling</span>
+<span class="kt">DispatchQueue</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">coroutineFuture</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="k">try</span> <span class="nf">makeSomeFuture</span><span class="p">()</span><span class="o">.</span><span class="nf">await</span><span class="p">()</span>
+    <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> <span class="n">use</span> <span class="n">result</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span>
+<span class="p">}</span><span class="o">.</span><span class="n">whenFailure</span> <span class="p">{</span> <span class="n">error</span> <span class="k">in</span>
+    <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> <span class="n">handle</span> <span class="n">error</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span>
+<span class="p">}</span>
+</code></pre>
+
+<p>Apple has introduced a new reactive programming framework <code>Combine</code>
+that makes writing asynchronous code easier and includes a lot of convenient and common functionality.
+We can use it with coroutines by making <code>CoFuture</code> a subscriber and await its result.</p>
+<pre class="highlight swift"><code><span class="c1">//create Combine publisher</span>
+<span class="k">let</span> <span class="nv">publisher</span> <span class="o">=</span> <span class="kt">URLSession</span><span class="o">.</span><span class="n">shared</span><span class="o">.</span><span class="nf">dataTaskPublisher</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="nf">map</span><span class="p">(\</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1">//execute coroutine on the main thread</span>
+<span class="kt">DispatchQueue</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">startCoroutine</span> <span class="p">{</span>
+    <span class="c1">//subscribe CoFuture to publisher</span>
+    <span class="k">let</span> <span class="nv">future</span> <span class="o">=</span> <span class="n">publisher</span><span class="o">.</span><span class="nf">subscribeCoFuture</span><span class="p">()</span>
+
+    <span class="c1">//await data without blocking the thread</span>
+    <span class="k">let</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span> <span class="o">=</span> <span class="k">try</span> <span class="n">future</span><span class="o">.</span><span class="nf">await</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre>
+
                         <a href="Classes/CoFuture.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
@@ -248,7 +279,7 @@ You can set the result to <code>CoPromise</code> only once, other attempts will 
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-05-06)</p>
+          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-05-09)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

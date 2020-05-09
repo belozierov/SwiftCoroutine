@@ -14,7 +14,7 @@
     <a title="CoroutineScheduler Protocol Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">SwiftCoroutine Docs</a> (79% documented)</p>
+        <p><a href="../index.html">SwiftCoroutine Docs</a> (86% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -32,6 +32,12 @@
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="../Classes/CoChannel.html">CoChannel</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/CoChannel/Receiver.html">– Receiver</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/CoChannel/Sender.html">– Sender</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/CoFuture.html">CoFuture</a>
@@ -356,12 +362,125 @@ and returns <code><a href="../Classes/CoFuture.html">CoFuture</a></code> with it
                     </section>
                   </div>
                 </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14SwiftCoroutine0B9SchedulerPAAE5actor2of13maxBufferSize4bodyAA9CoChannelC6SenderVyqd___Gqd__m_SiyAI8ReceiverVyqd___GKctlF"></a>
+                    <a name="//apple_ref/swift/Method/actor(of:maxBufferSize:body:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14SwiftCoroutine0B9SchedulerPAAE5actor2of13maxBufferSize4bodyAA9CoChannelC6SenderVyqd___Gqd__m_SiyAI8ReceiverVyqd___GKctlF">actor(of:<wbr>maxBufferSize:<wbr>body:<wbr>)</a>
+                    </code>
+                      <span class="declaration-note">
+                        Extension method
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Starts new coroutine that is receiving messages from its mailbox channel and returns its mailbox channel as a <code>Sender</code>.</p>
+
+<p>An actor coroutine builder conveniently combines a coroutine,
+the state that is confined and encapsulated into this coroutine,
+and a channel to communicate with other coroutines.</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    If you cancel this <code><a href="../Classes/CoChannel.html">CoChannel</a></code>, it will also cancel the coroutine that was started inside of it.
+
+</div>
+<pre class="highlight swift"><code><span class="c1">//Message types for actor</span>
+<span class="kd">enum</span> <span class="kt">CounterMessages</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="n">increment</span><span class="p">,</span> <span class="nf">getCounter</span><span class="p">(</span><span class="kt">CoPromise</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="nv">actor</span> <span class="o">=</span> <span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">global</span><span class="p">()</span><span class="o">.</span><span class="nf">actor</span><span class="p">(</span><span class="nv">of</span><span class="p">:</span> <span class="kt">CounterMessages</span><span class="o">.</span><span class="k">self</span><span class="p">)</span> <span class="p">{</span> <span class="n">receiver</span> <span class="k">in</span>
+    <span class="k">var</span> <span class="nv">counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">message</span> <span class="k">in</span> <span class="n">receiver</span> <span class="p">{</span>
+        <span class="k">switch</span> <span class="n">message</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="o">.</span><span class="nv">increment</span><span class="p">:</span>
+            <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">case</span> <span class="o">.</span><span class="nf">getCounter</span><span class="p">(</span><span class="k">let</span> <span class="nv">promise</span><span class="p">):</span>
+            <span class="n">promise</span><span class="o">.</span><span class="nf">success</span><span class="p">(</span><span class="n">counter</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">concurrentPerform</span><span class="p">(</span><span class="nv">iterations</span><span class="p">:</span> <span class="mi">100_000</span><span class="p">)</span> <span class="p">{</span> <span class="n">_</span> <span class="k">in</span>
+    <span class="n">actor</span><span class="o">.</span><span class="nf">offer</span><span class="p">(</span><span class="o">.</span><span class="n">increment</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="nv">promise</span> <span class="o">=</span> <span class="kt">CoPromise</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="n">promise</span><span class="o">.</span><span class="n">whenSuccess</span> <span class="p">{</span> <span class="nf">print</span><span class="p">(</span><span class="nv">$0</span><span class="p">)</span> <span class="p">}</span>
+<span class="n">actor</span><span class="o">.</span><span class="nf">offer</span><span class="p">(</span><span class="o">.</span><span class="nf">getCounter</span><span class="p">(</span><span class="n">promise</span><span class="p">))</span>
+<span class="n">actor</span><span class="o">.</span><span class="nf">close</span><span class="p">()</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@inlinable</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="n">actor</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">of</span> <span class="nv">type</span><span class="p">:</span> <span class="kt">T</span><span class="o">.</span><span class="k">Type</span> <span class="o">=</span> <span class="kt">T</span><span class="o">.</span><span class="k">self</span><span class="p">,</span> <span class="nv">maxBufferSize</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="o">.</span><span class="n">max</span><span class="p">,</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt"><a href="../Classes/CoChannel.html">CoChannel</a></span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;.</span><span class="kt">Receiver</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Classes/CoChannel.html">CoChannel</a></span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;.</span><span class="kt">Sender</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>type</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p><code><a href="../Classes/CoChannel.html">CoChannel</a></code> generic type.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>maxBufferSize</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The maximum number of elements that can be stored in a channel.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>body</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The closure that will be executed inside coroutine.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p><code><a href="../Classes/CoChannel/Sender.html">CoChannel.Sender</a></code> for sending messages to an actor.</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
               </ul>
             </div>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-05-06)</p>
+          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-05-09)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

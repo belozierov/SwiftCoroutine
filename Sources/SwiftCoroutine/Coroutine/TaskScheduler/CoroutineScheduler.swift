@@ -110,4 +110,56 @@ extension CoroutineScheduler {
         return promise
     }
     
+    /// Starts new coroutine that is receiving messages from its mailbox channel and returns its mailbox channel as a `Sender`.
+    ///
+    /// An actor coroutine builder conveniently combines a coroutine,
+    /// the state that is confined and encapsulated into this coroutine,
+    /// and a channel to communicate with other coroutines.
+    ///
+    /// - Note: If you cancel this `CoChannel`, it will also cancel the coroutine that was started inside of it.
+    ///
+    /// ```
+    /// //Message types for actor
+    /// enum CounterMessages {
+    ///     case increment, getCounter(CoPromise<Int>)
+    /// }
+    ///
+    /// let actor = DispatchQueue.global().actor(of: CounterMessages.self) { receiver in
+    ///     var counter = 0
+    ///     for message in receiver {
+    ///         switch message {
+    ///         case .increment:
+    ///             counter += 1
+    ///         case .getCounter(let promise):
+    ///             promise.success(counter)
+    ///         }
+    ///     }
+    /// }
+    ///
+    /// DispatchQueue.concurrentPerform(iterations: 100_000) { _ in
+    ///     actor.offer(.increment)
+    /// }
+    ///
+    /// let promise = CoPromise<Int>()
+    /// promise.whenSuccess { print($0) }
+    /// actor.offer(.getCounter(promise))
+    /// actor.close()
+    /// ```
+    ///
+    /// - Parameters:
+    ///   - type: `CoChannel` generic type.
+    ///   - maxBufferSize: The maximum number of elements that can be stored in a channel.
+    ///   - body: The closure that will be executed inside coroutine.
+    /// - Returns: `CoChannel.Sender` for sending messages to an actor.
+    @inlinable public func actor<T>(of type: T.Type = T.self, maxBufferSize: Int = .max, body: @escaping (CoChannel<T>.Receiver) throws -> Void) -> CoChannel<T>.Sender {
+        let (receiver, sender) = CoChannel<T>(maxBufferSize: maxBufferSize).pair
+        startCoroutine {
+            let coroutine = try Coroutine.current()
+            receiver.whenCanceled(coroutine.cancel)
+            if receiver.isCanceled { return }
+            try body(receiver)
+        }
+        return sender
+    }
+    
 }

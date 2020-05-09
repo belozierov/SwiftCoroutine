@@ -48,14 +48,41 @@ private protocol _CoFutureCancellable: class {
 ///     }
 /// }
 /// ```
+///
+/// For coroutine error handling you can use standart `do-catch` statement or use `CoFuture` as an alternative.
+///
+/// ```
+/// //execute coroutine and return CoFuture<Void> that we will use for error handling
+/// DispatchQueue.main.coroutineFuture {
+///     let result = try makeSomeFuture().await()
+///     . . . use result . . .
+/// }.whenFailure { error in
+///     . . . handle error . . .
+/// }
+/// ```
+///
+/// Apple has introduced a new reactive programming framework `Combine`
+/// that makes writing asynchronous code easier and includes a lot of convenient and common functionality.
+/// We can use it with coroutines by making `CoFuture` a subscriber and await its result.
+///
+/// ```
+/// //create Combine publisher
+/// let publisher = URLSession.shared.dataTaskPublisher(for: url).map(\.data)
+///
+/// //execute coroutine on the main thread
+/// DispatchQueue.main.startCoroutine {
+///     //subscribe CoFuture to publisher
+///     let future = publisher.subscribeCoFuture()
+///
+///     //await data without blocking the thread
+///     let data: Data = try future.await()
+/// }
+/// ```
+///
 public class CoFuture<Value> {
     
-    private struct Node {
-        let callback: Callback
-        var next = 0
-    }
-    
-    private var nodeList, resultState: Int
+    private var resultState: Int
+    private var nodes: CallbackStack<Result<Value, Error>>
     private var _result: Optional<Result<Value, Error>>
     private var parent: UnownedCancellable?
     
@@ -63,17 +90,17 @@ public class CoFuture<Value> {
         if let result = _result {
             self._result = result
             resultState = 1
-            nodeList = -1
+            nodes = CallbackStack(isFinished: true)
         } else {
             self._result = nil
             resultState = 0
-            nodeList = 0
+            nodes = CallbackStack()
         }
     }
     
     deinit {
-        if nodeList > 0 {
-            completeCallbacks(with: .failure(CoFutureError.canceled))
+        if !nodes.isEmpty {
+            nodes.finish(with: .failure(CoFutureError.canceled))
         }
     }
     
@@ -96,7 +123,6 @@ extension CoFuture: _CoFutureCancellable {
         Coroutine.start {
             let current = try? Coroutine.current()
             self.whenCanceled { current?.cancel() }
-            if self.isCanceled { return }
             self.setResult(Result(catching: task))
         }
     }
@@ -111,23 +137,14 @@ extension CoFuture: _CoFutureCancellable {
     
     /// Returns completed result or nil if this future has not been completed yet.
     public var result: Result<Value, Error>? {
-        nodeList < 0 ? _result : nil
+        nodes.isClosed ? _result : nil
     }
     
     @usableFromInline internal func setResult(_ result: Result<Value, Error>) {
         guard atomicExchange(&resultState, with: 1) == 0 else { return }
         _result = result
         parent = nil
-        completeCallbacks(with: result)
-    }
-    
-    private func completeCallbacks(with result: Result<Value, Error>) {
-        var address = atomicExchange(&nodeList, with: -1)
-        while address > 0, let pointer = UnsafeMutablePointer<Node>(bitPattern: address) {
-            address = pointer.pointee.next
-            pointer.pointee.callback(result)
-            pointer.deinitialize(count: 1).deallocate()
-        }
+        nodes.close().finish(with: result)
     }
     
     // MARK: - Callback
@@ -135,20 +152,7 @@ extension CoFuture: _CoFutureCancellable {
     @usableFromInline internal typealias Callback = (Result<Value, Error>) -> Void
     
     @usableFromInline internal func addCallback(_ callback: @escaping Callback) {
-        var pointer: UnsafeMutablePointer<Node>!
-        let new = atomicUpdate(&nodeList) {
-            if $0 < 0 { return $0 }
-            if pointer == nil {
-                pointer = .allocate(capacity: 1)
-                pointer.initialize(to: Node(callback: callback))
-            }
-            pointer.pointee.next = $0
-            return Int(bitPattern: pointer)
-        }.new
-        if new < 0 {
-            pointer?.deinitialize(count: 1).deallocate()
-            _result.map(callback)
-        }
+        if !nodes.append(callback) { _result.map(callback) }
     }
     
     internal func addChild<T>(future: CoFuture<T>, callback: @escaping Callback) {

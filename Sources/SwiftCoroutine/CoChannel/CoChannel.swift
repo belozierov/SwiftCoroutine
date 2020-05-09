@@ -15,14 +15,14 @@
 /// let channel = CoChannel<Int>(maxBufferSize: 1)
 ///
 /// DispatchQueue.global().startCoroutine {
-///    for i in 0..<10 {
+///    for i in 0..<100 {
 ///        try channel.awaitSend(i)
 ///    }
 ///    channel.close()
 /// }
 ///
 /// DispatchQueue.global().startCoroutine {
-///     for i in channel {
+///     for i in channel.makeIterator() {
 ///         print("Receive", i)
 ///     }
 ///     print("Done")
@@ -38,6 +38,7 @@ public final class CoChannel<Element> {
     public let maxBufferSize: Int
     private var receiveCallbacks = FifoQueue<ReceiveCallback>()
     private var sendBlocks = FifoQueue<SendBlock>()
+    private var cancelBlocks = CallbackStack<Void>()
     private var atomic = AtomicTuple()
     
     /// Initializes a channel.
@@ -46,7 +47,17 @@ public final class CoChannel<Element> {
         self.maxBufferSize = maxBufferSize
     }
     
+    /// Returns tuple of `Receiver` and `Sender`.
+    @inlinable public var pair: (receiver: Receiver, sender: Sender) {
+        (receiver, sender)
+    }
+    
     // MARK: - send
+    
+    /// A `CoChannel` wrapper that provides send-only functionality.
+    @inlinable public var sender: Sender {
+        Sender(channel: self)
+    }
     
     /// Sends the element to this channel, suspending the coroutine while the buffer of this channel is full. Must be called inside a coroutine.
     /// - Parameter element: Value that will be sent to the channel.
@@ -107,6 +118,11 @@ public final class CoChannel<Element> {
     }
     
     // MARK: - receive
+    
+    /// A `CoChannel` wrapper that provides receive-only functionality.
+    public var receiver: Receiver {
+        Receiver(source: .channel(self))
+    }
     
     /// Retrieves and removes an element from this channel if it’s not empty, or suspends a coroutine while the channel is empty.
     /// - Throws: CoChannelError when canceled or closed.
@@ -177,6 +193,16 @@ public final class CoChannel<Element> {
         return block.element
     }
     
+    // MARK: - map
+    
+    /// Returns new `Receiver` that provides transformed values from this `CoChannel`.
+    /// - Parameter transform: A mapping closure.
+    /// - returns: A `Receiver` with transformed values.
+    public func map<T>(_ transform: @escaping (Element) -> T) -> CoChannel<T>.Receiver {
+        let wrapper = CoChannelMap(receiver: self, transform: transform)
+        return CoChannel<T>.Receiver(source: .wrapper(wrapper))
+    }
+    
     // MARK: - close
     
     /// Closes this channel. No more send should be performed on the channel.
@@ -215,21 +241,29 @@ public final class CoChannel<Element> {
                 sendBlocks.blockingPop().resumeBlock?(.canceled)
             }
         }
+        cancelBlocks.close().finish(with: ())
     }
     
     /// Returns `true` if the channel is canceled.
     public var isCanceled: Bool {
         atomic.value.1 == 2
     }
+    
+    /// Adds an observer callback that is called when the `CoChannel` is canceled.
+    /// - Parameter callback: The callback that is called when the `CoChannel` is canceled.
+    public func whenCanceled(_ callback: @escaping () -> Void) {
+        if !cancelBlocks.append(callback) { callback() }
+    }
 
     deinit {
         receiveCallbacks.free()
         sendBlocks.free()
+        cancelBlocks.free()
     }
     
 }
 
-extension CoChannel: Sequence {
+extension CoChannel {
     
     // MARK: - sequence
     

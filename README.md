@@ -216,7 +216,7 @@ DispatchQueue.global().startCoroutine {
 
 DispatchQueue.global().startCoroutine {
     //receives values until closed and suspends a coroutine if it's empty
-    for i in channel {
+    for i in channel.makeIterator() {
         print("Receive", i)
     }
     

@@ -1,11 +1,11 @@
-////
-////  LifoQueue.swift
-////  SwiftCoroutine
-////
-////  Created by Alex Belozierov on 03.05.2020.
-////  Copyright © 2020 Alex Belozierov. All rights reserved.
-////
 //
+//  LifoQueue.swift
+//  SwiftCoroutine
+//
+//  Created by Alex Belozierov on 03.05.2020.
+//  Copyright © 2020 Alex Belozierov. All rights reserved.
+//
+
 //internal struct LifoQueue<T> {
 //
 //    private typealias Pointer = UnsafeMutablePointer<Node>
@@ -55,6 +55,7 @@
 //            address = node.pointee.next
 //            node.deinitialize(count: 1).deallocate()
 //        }
+//        eraser.free()
 //    }
 //
 //}
