@@ -46,8 +46,9 @@ internal struct CallbackStack<T> {
         }
     }
     
-    @inlinable internal mutating func close() -> Self {
-        CallbackStack(rawValue: atomicExchange(&rawValue, with: -1))
+    @inlinable internal mutating func close() -> Self? {
+        let old = atomicExchange(&rawValue, with: -1)
+        return old > 0 ? CallbackStack(rawValue: old) : nil
     }
     
     @inlinable internal func finish(with result: T) {
@@ -55,14 +56,6 @@ internal struct CallbackStack<T> {
         while address > 0, let pointer = Pointer(bitPattern: address) {
             address = pointer.pointee.next
             pointer.pointee.callback(result)
-            pointer.deinitialize(count: 1).deallocate()
-        }
-    }
- 
-    @inlinable internal func free() {
-        var address = rawValue
-        while address > 0, let pointer = Pointer(bitPattern: address) {
-            address = pointer.pointee.next
             pointer.deinitialize(count: 1).deallocate()
         }
     }

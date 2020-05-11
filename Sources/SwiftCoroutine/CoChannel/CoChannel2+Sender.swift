@@ -9,10 +9,7 @@
 extension CoChannel {
     
     /// A `CoChannel` wrapper that provides send-only functionality.
-    ///
-    /// - Note: `Sender` has reference semantics.
-    ///
-    public struct Sender {
+    public final class Sender {
         
         @usableFromInline internal let channel: CoChannel
         
@@ -89,10 +86,10 @@ extension CoChannel.Sender {
         channel.isCanceled
     }
     
-    /// Adds an observer callback that is called when the `CoChannel` is canceled.
-    /// - Parameter callback: The callback that is called when the `CoChannel` is canceled.
-    @inlinable public func whenCanceled(_ callback: @escaping () -> Void) {
-        channel.whenCanceled(callback)
+    /// Adds an observer callback that is called when the `CoChannel` is completed (closed, canceled or deinited).
+    /// - Parameter callback: The callback that is called when the `CoChannel` is completed.
+    @inlinable public func whenComplete(_ callback: @escaping () -> Void) {
+        channel.whenComplete(callback)
     }
     
 }

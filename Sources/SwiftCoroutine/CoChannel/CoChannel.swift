@@ -121,7 +121,7 @@ public final class CoChannel<Element> {
     
     /// A `CoChannel` wrapper that provides receive-only functionality.
     public var receiver: Receiver {
-        Receiver(source: .channel(self))
+        CoChannelReceiver(channel: self)
     }
     
     /// Retrieves and removes an element from this channel if it’s not empty, or suspends a coroutine while the channel is empty.
@@ -132,7 +132,8 @@ public final class CoChannel<Element> {
             if state == 0 { return (count - 1, 0) }
             return (Swift.max(0, count - 1), state)
         }).old {
-        case (let count, _) where count > 0:
+        case (let count, let state) where count > 0:
+            defer { if count == 1, state == 1 { finish() } }
             return getValue()
         case (_, 0):
             return try Coroutine.await { receiveCallbacks.push($0) }.get()
@@ -154,9 +155,12 @@ public final class CoChannel<Element> {
     /// Retrieves and removes an element from this channel.
     /// - Returns: Element from this channel if its not empty, or returns nill if the channel is empty or is closed or canceled.
     public func poll() -> Element? {
-        atomic.update { count, state in
+        let (count, state) = atomic.update { count, state in
             (Swift.max(0, count - 1), state)
-        }.old.0 > 0 ? getValue() : nil
+        }.old
+        guard count > 0 else { return nil }
+        defer { if count == 1, state == 1 { finish() } }
+        return getValue()
     }
     
     /// Adds an observer callback to receive an element from this channel.
@@ -166,8 +170,9 @@ public final class CoChannel<Element> {
             if state == 0 { return (count - 1, 0) }
             return (Swift.max(0, count - 1), state)
         }).old {
-        case (let count, _) where count > 0:
+        case (let count, let state) where count > 0:
             callback(.success(getValue()))
+            if count == 1, state == 1 { finish() }
         case (_, 0):
             receiveCallbacks.push(callback)
         case (_, 1):
@@ -199,8 +204,7 @@ public final class CoChannel<Element> {
     /// - Parameter transform: A mapping closure.
     /// - returns: A `Receiver` with transformed values.
     public func map<T>(_ transform: @escaping (Element) -> T) -> CoChannel<T>.Receiver {
-        let wrapper = CoChannelMap(receiver: self, transform: transform)
-        return CoChannel<T>.Receiver(source: .wrapper(wrapper))
+        CoChannelMap(receiver: self, transform: transform)
     }
     
     // MARK: - close
@@ -218,6 +222,8 @@ public final class CoChannel<Element> {
             }
         } else if count > 0 {
             sendBlocks.forEach { $0.resumeBlock?(.closed) }
+        } else {
+            finish()
         }
         return true
     }
@@ -241,7 +247,7 @@ public final class CoChannel<Element> {
                 sendBlocks.blockingPop().resumeBlock?(.canceled)
             }
         }
-        cancelBlocks.close().finish(with: ())
+        finish()
     }
     
     /// Returns `true` if the channel is canceled.
@@ -249,16 +255,20 @@ public final class CoChannel<Element> {
         atomic.value.1 == 2
     }
     
-    /// Adds an observer callback that is called when the `CoChannel` is canceled.
-    /// - Parameter callback: The callback that is called when the `CoChannel` is canceled.
-    public func whenCanceled(_ callback: @escaping () -> Void) {
+    /// Adds an observer callback that is called when the `CoChannel` is completed (closed, canceled or deinited).
+    /// - Parameter callback: The callback that is called when the `CoChannel` is completed.
+    public func whenComplete(_ callback: @escaping () -> Void) {
         if !cancelBlocks.append(callback) { callback() }
+    }
+    
+    private func finish() {
+        cancelBlocks.close()?.finish(with: ())
     }
 
     deinit {
         receiveCallbacks.free()
         sendBlocks.free()
-        cancelBlocks.free()
+        finish()
     }
     
 }
@@ -272,7 +282,7 @@ extension CoChannel {
     /// If `next()` was called inside a coroutine and there are no more elements in the channel,
     /// then the coroutine will be suspended until a new element will be added to the channel or it will be closed or canceled.
     /// - Returns: Iterator for the channel elements.
-    public func makeIterator() -> AnyIterator<Element> {
+    @inlinable public func makeIterator() -> AnyIterator<Element> {
         AnyIterator { Coroutine.isInsideCoroutine ? try? self.awaitReceive() : self.poll() }
     }
     

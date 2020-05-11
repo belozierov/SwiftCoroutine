@@ -11,6 +11,18 @@ import XCTest
 
 class CoroutineSchedulerTests: XCTestCase {
     
+    func testMeasure() {
+        let scope = CoScope()
+        let scheduler = ImmediateScheduler()
+        measure {
+            DispatchQueue.concurrentPerform(iterations: 100_000) { _ in
+                scheduler.startCoroutine(in: scope) {
+                    
+                }
+            }
+        }
+    }
+    
     func testAwait() {
         let date = Date()
         let exp = expectation(description: "testAwait")

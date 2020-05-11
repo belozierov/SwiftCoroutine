@@ -144,7 +144,7 @@ extension CoFuture: _CoFutureCancellable {
         guard atomicExchange(&resultState, with: 1) == 0 else { return }
         _result = result
         parent = nil
-        nodes.close().finish(with: result)
+        nodes.close()?.finish(with: result)
     }
     
     // MARK: - Callback

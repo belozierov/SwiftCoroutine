@@ -33,18 +33,18 @@ class CoChannelTests: XCTestCase {
         let group = DispatchGroup()
         measure {
             group.enter()
-            let (receiver, sender) = CoChannel<Int>(maxBufferSize: 1).pair
+            let channel = CoChannel<Int>(maxBufferSize: 1)
             DispatchQueue.global().startCoroutine {
-                for value in receiver.makeIterator() {
+                for value in channel.makeIterator() {
                     let _ = value
                 }
                 group.leave()
             }
             DispatchQueue.global().startCoroutine {
                 for index in (0..<100_000) {
-                    try sender.awaitSend(index)
+                    try channel.awaitSend(index)
                 }
-                sender.close()
+                channel.close()
             }
             group.wait()
         }
@@ -134,7 +134,7 @@ class CoChannelTests: XCTestCase {
             XCTAssertThrowError(CoChannelError.canceled) { try receiver.awaitReceive() }
         }
         sender.cancel()
-        sender.whenCanceled { exp.fulfill() }
+        sender.whenComplete { exp.fulfill() }
         wait(for: [exp], timeout: 2)
     }
     
@@ -204,20 +204,20 @@ class CoChannelTests: XCTestCase {
         Coroutine.start {
             map.makeIterator().forEach { XCTAssertEqual($0, 8) }
         }
-        map.whenCanceled { exp.fulfill() }
+        map.whenComplete { exp.fulfill() }
         map.cancel()
         XCTAssertTrue(map.isCanceled)
         wait(for: [exp], timeout: 5)
     }
     
-    func testCoChannelReceiverWrapper() {
-        let wrapper = CoChannelReceiverWrapper<Any>()
+    func testCoChannelReceiver() {
+        let wrapper = CoChannel<Any>.Receiver()
         _ = try? wrapper.awaitReceive()
         _ = wrapper.receiveFuture()
         _ = wrapper.poll()
         wrapper.whenReceive { _ in }
         wrapper.cancel()
-        wrapper.whenCanceled {}
+        wrapper.whenComplete {}
         _ = wrapper.count
         _ = wrapper.isEmpty
         _ = wrapper.isClosed

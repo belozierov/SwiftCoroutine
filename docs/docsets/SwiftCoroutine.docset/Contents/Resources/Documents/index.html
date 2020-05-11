@@ -44,6 +44,9 @@
               <li class="nav-group-task">
                 <a href="Classes/CoPromise.html">CoPromise</a>
               </li>
+              <li class="nav-group-task">
+                <a href="Classes/CoScope.html">CoScope</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -77,6 +80,9 @@
           <li class="nav-group-name">
             <a href="Protocols.html">Protocols</a>
             <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Protocols/CoCancellable.html">CoCancellable</a>
+              </li>
               <li class="nav-group-task">
                 <a href="Protocols/CoroutineScheduler.html">CoroutineScheduler</a>
               </li>
@@ -184,13 +190,6 @@
 <li><strong>Fast context switching</strong>. Switching between coroutines is much faster than switching between threads as it does not require the involvement of operating system.</li>
 <li><strong>Asynchronous code in synchronous manner</strong>. The use of coroutines allows an asynchronous, non-blocking function to be structured in a manner similar to an ordinary synchronous function. And even though coroutines can run in multiple threads, your code will still look consistent and therefore easy to understand.</li>
 </ul>
-<h4 id='main-features' class='heading'>Main features</h4>
-
-<ul>
-<li><strong>Any scheduler</strong>. You can use any scheduler to execute coroutines, including standard <code>DispatchQueue</code> or even CoreData <code>NSManagedObjectContext</code> and NIO <code>EventLoop</code>.</li>
-<li><strong>Await instead of resume/suspend</strong>. For convenience and safety, coroutines&rsquo; resume/suspend has been replaced by await, which suspends it and resumes on callback.</li>
-<li><strong>Memory efficiency</strong>. Contains a mechanism that allows to reuse stacks and, if necessary, effectively store their contents with minimal memory usage.</li>
-</ul>
 <h4 id='usage' class='heading'>Usage</h4>
 
 <p>The coroutines API design is as minimalistic as possible. It consists of the <code><a href="Protocols/CoroutineScheduler.html">CoroutineScheduler</a></code> protocol that describes how to schedule coroutines (<code>DispatchQueue</code> already conforms it), and the <code><a href="Structs/Coroutine.html">Coroutine</a></code> structure with utility methods. This API is enough to do amazing things.</p>
@@ -255,7 +254,7 @@
 <pre class="highlight swift"><code><span class="c1">//create CoFuture&lt;Int&gt; that takes 2 sec. from the example above </span>
 <span class="k">let</span> <span class="nv">future1</span><span class="p">:</span> <span class="kt">CoFuture</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nf">makeIntFuture</span><span class="p">()</span>
 
-<span class="c1">//execute task on the global queue and returns CoFuture&lt;Int&gt; with future result</span>
+<span class="c1">//execute coroutine on the global queue and returns CoFuture&lt;Int&gt; with future result</span>
 <span class="k">let</span> <span class="nv">future2</span><span class="p">:</span> <span class="kt">CoFuture</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span> <span class="o">=</span> <span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">global</span><span class="p">()</span><span class="o">.</span><span class="n">coroutineFuture</span> <span class="p">{</span>
     <span class="k">try</span> <span class="kt">Coroutine</span><span class="o">.</span><span class="nf">delay</span><span class="p">(</span><span class="o">.</span><span class="nf">seconds</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span> <span class="c1">//some work that takes 3 sec.</span>
     <span class="k">return</span> <span class="mi">6</span>
@@ -268,37 +267,11 @@
 <span class="p">}</span>
 </code></pre>
 
-<p>For error handling you can use standart <code>do-catch</code> statement or use <code><a href="Classes/CoFuture.html">CoFuture</a></code> as an alternative.</p>
-<pre class="highlight swift"><code><span class="c1">//execute coroutine and return CoFuture&lt;Void&gt; that we will use for error handling</span>
-<span class="kt">DispatchQueue</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">coroutineFuture</span> <span class="p">{</span>
-    <span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="k">try</span> <span class="nf">makeSomeFuture</span><span class="p">()</span><span class="o">.</span><span class="nf">await</span><span class="p">()</span>
-
-    <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> <span class="n">use</span> <span class="n">result</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span>
-<span class="p">}</span><span class="o">.</span><span class="n">whenFailure</span> <span class="p">{</span> <span class="n">error</span> <span class="k">in</span>
-
-    <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> <span class="n">handle</span> <span class="n">error</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span>
-<span class="p">}</span>
-</code></pre>
-
 <p>It&rsquo;s very easy to transform or compose <code><a href="Classes/CoFuture.html">CoFuture</a></code>s into a new one.</p>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">array</span><span class="p">:</span> <span class="p">[</span><span class="kt">CoFuture</span><span class="o">&lt;</span><span class="kt">Int</span><span class="o">&gt;</span><span class="p">]</span>
 
 <span class="c1">//create new CoFuture&lt;Int&gt; with sum of future results</span>
 <span class="k">let</span> <span class="nv">sum</span> <span class="o">=</span> <span class="kt">CoFuture</span> <span class="p">{</span> <span class="k">try</span> <span class="n">array</span><span class="o">.</span><span class="nf">reduce</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="k">try</span> <span class="nv">$0</span> <span class="o">+</span> <span class="nv">$1</span><span class="o">.</span><span class="nf">await</span><span class="p">()</span> <span class="p">}</span> <span class="p">}</span>
-</code></pre>
-
-<p>Apple has introduced a new reactive programming framework <code>Combine</code> that makes writing asynchronous code easier and includes a lot of convenient and common functionality. We can use it with coroutines by making <code><a href="Classes/CoFuture.html">CoFuture</a></code> a subscriber and await its result.</p>
-<pre class="highlight swift"><code><span class="c1">//create Combine publisher</span>
-<span class="k">let</span> <span class="nv">publisher</span> <span class="o">=</span> <span class="kt">URLSession</span><span class="o">.</span><span class="n">shared</span><span class="o">.</span><span class="nf">dataTaskPublisher</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="nf">map</span><span class="p">(\</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
-
-<span class="c1">//execute coroutine on the main thread</span>
-<span class="kt">DispatchQueue</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">startCoroutine</span> <span class="p">{</span>
-    <span class="c1">//subscribe CoFuture to publisher</span>
-    <span class="k">let</span> <span class="nv">future</span> <span class="o">=</span> <span class="n">publisher</span><span class="o">.</span><span class="nf">subscribeCoFuture</span><span class="p">()</span>
-
-    <span class="c1">//await data without blocking the thread</span>
-    <span class="k">let</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span> <span class="o">=</span> <span class="k">try</span> <span class="n">future</span><span class="o">.</span><span class="nf">await</span><span class="p">()</span>
-<span class="p">}</span>
 </code></pre>
 <h3 id='channels' class='heading'>Channels</h3>
 
@@ -332,11 +305,45 @@
     <span class="nf">print</span><span class="p">(</span><span class="s">"Done"</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre>
+<h3 id='scope' class='heading'>Scope</h3>
+
+<p>All launched coroutines, <code><a href="Classes/CoFuture.html">CoFuture</a></code>s and <code><a href="Classes/CoChannel.html">CoChannel</a></code>s, usually do not need to be referenced. They are deinited after their execution. But often there is a need to complete them earlier, when they are no longer needed. For this, <code><a href="Classes/CoFuture.html">CoFuture</a></code> and <code><a href="Classes/CoChannel.html">CoChannel</a></code> have methods for canceling.</p>
+
+<p><code><a href="Classes/CoScope.html">CoScope</a></code> makes it easier to manage the life cycle of these objects. It allows you to keep weak references to them and cancel if necessary or on deinit.</p>
+<h4 id='usage' class='heading'>Usage</h4>
+
+<p>You can add coroutines, <code><a href="Classes/CoFuture.html">CoFuture</a></code>s, <code><a href="Classes/CoChannel.html">CoChannel</a></code>s and other <code><a href="Protocols/CoCancellable.html">CoCancellable</a></code> to <code><a href="Classes/CoScope.html">CoScope</a></code> to cancel them when they are no longer needed or on deinit.</p>
+<pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">ViewController</span><span class="p">:</span> <span class="kt">UIViewController</span> <span class="p">{</span>
+
+    <span class="k">let</span> <span class="nv">scope</span> <span class="o">=</span> <span class="kt">CoScope</span><span class="p">()</span> <span class="c1">//will cancel all objects on `cancel()` or deinit</span>
+
+    <span class="kd">func</span> <span class="nf">performSomeWork</span><span class="p">()</span> <span class="p">{</span>
+        <span class="c1">//create new `CoChannel` and add to `CoScope`</span>
+        <span class="k">let</span> <span class="nv">channel</span> <span class="o">=</span> <span class="nf">makeSomeChannel</span><span class="p">()</span><span class="o">.</span><span class="nf">added</span><span class="p">(</span><span class="nv">to</span><span class="p">:</span> <span class="n">scope</span><span class="p">)</span>
+
+        <span class="c1">//execute coroutine and add to `CoScope`</span>
+        <span class="kt">DispatchQueue</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="nf">startCoroutine</span><span class="p">(</span><span class="nv">in</span><span class="p">:</span> <span class="n">scope</span><span class="p">)</span> <span class="p">{</span> <span class="p">[</span><span class="k">weak</span> <span class="k">self</span><span class="p">]</span> <span class="k">in</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="k">in</span> <span class="n">channel</span><span class="o">.</span><span class="nf">makeIterator</span><span class="p">()</span> <span class="p">{</span>
+                <span class="k">try</span> <span class="k">self</span><span class="p">?</span><span class="o">.</span><span class="nf">performSomeWork</span><span class="p">(</span><span class="nv">with</span><span class="p">:</span> <span class="n">item</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">performSomeWork</span><span class="p">(</span><span class="n">with</span> <span class="nv">item</span><span class="p">:</span> <span class="kt">Item</span><span class="p">)</span> <span class="k">throws</span> <span class="p">{</span>
+        <span class="c1">//create new `CoFuture` and add to `CoScope`</span>
+        <span class="k">let</span> <span class="nv">future</span> <span class="o">=</span> <span class="nf">makeSomeFuture</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">.</span><span class="nf">added</span><span class="p">(</span><span class="nv">to</span><span class="p">:</span> <span class="n">scope</span><span class="p">)</span>
+
+        <span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="k">try</span> <span class="n">future</span><span class="o">.</span><span class="nf">await</span><span class="p">()</span>
+        <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> <span class="k">do</span> <span class="kd">some</span> <span class="n">work</span> <span class="n">using</span> <span class="n">result</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span>
+    <span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre>
 
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-05-09)</p>
+          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-05-11)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

@@ -45,6 +45,9 @@
               <li class="nav-group-task">
                 <a href="Classes/CoPromise.html">CoPromise</a>
               </li>
+              <li class="nav-group-task">
+                <a href="Classes/CoScope.html">CoScope</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -78,6 +81,9 @@
           <li class="nav-group-name">
             <a href="Protocols.html">Protocols</a>
             <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Protocols/CoCancellable.html">CoCancellable</a>
+              </li>
               <li class="nav-group-task">
                 <a href="Protocols/CoroutineScheduler.html">CoroutineScheduler</a>
               </li>
@@ -147,7 +153,7 @@ Conceptually, a channel is similar to a queue that allows to suspend a coroutine
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">CoChannel</span><span class="o">&lt;</span><span class="kt">Element</span><span class="o">&gt;</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">CoChannel</span><span class="p">:</span> <span class="kt">Cancellable</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">CoChannel</span><span class="p">:</span> <span class="kt"><a href="Protocols/CoCancellable.html">CoCancellable</a></span></code></pre>
 
                         </div>
                       </div>
@@ -236,7 +242,7 @@ We can use it with coroutines by making <code>CoFuture</code> a subscriber and a
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">CoFuture</span><span class="o">&lt;</span><span class="kt">Value</span><span class="o">&gt;</span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">CoFuture</span><span class="p">:</span> <span class="kt">Hashable</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">CoFuture</span><span class="p">:</span> <span class="kt">Cancellable</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">CoFuture</span><span class="p">:</span> <span class="kt"><a href="Protocols/CoCancellable.html">CoCancellable</a></span></code></pre>
 
                         </div>
                       </div>
@@ -274,12 +280,63 @@ You can set the result to <code>CoPromise</code> only once, other attempts will 
                     </section>
                   </div>
                 </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14SwiftCoroutine7CoScopeC"></a>
+                    <a name="//apple_ref/swift/Class/CoScope" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14SwiftCoroutine7CoScopeC">CoScope</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The holder of uncompleted <code><a href="Protocols/CoCancellable.html">CoCancellable</a></code> and coroutines.</p>
+
+<p><code>CoScope</code> helps to manage lifecycle of coroutines and <code><a href="Protocols/CoCancellable.html">CoCancellable</a></code>, like <code><a href="Classes/CoFuture.html">CoFuture</a></code> and <code><a href="Classes/CoChannel.html">CoChannel</a></code>.
+It keeps weak references on inner objects and cancels them on <code>cancel()</code> or deinit.
+All completed objects are automaticaly removed from scope.</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">scope</span> <span class="o">=</span> <span class="kt">CoScope</span><span class="p">()</span>
+
+<span class="k">let</span> <span class="nv">future</span> <span class="o">=</span> <span class="nf">makeSomeFuture</span><span class="p">()</span><span class="o">.</span><span class="nf">added</span><span class="p">(</span><span class="nv">to</span><span class="p">:</span> <span class="n">scope</span><span class="p">)</span>
+
+<span class="n">queue</span><span class="o">.</span><span class="nf">startCoroutine</span><span class="p">(</span><span class="nv">in</span><span class="p">:</span> <span class="n">scope</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> <span class="kd">some</span> <span class="n">code</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span>
+    <span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="k">try</span> <span class="n">future</span><span class="o">.</span><span class="nf">await</span><span class="p">()</span>
+    <span class="o">.</span> <span class="o">.</span> <span class="o">.</span> <span class="kd">some</span> <span class="n">code</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="nv">future2</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">coroutineFuture</span> <span class="p">{</span>
+    <span class="kt">Coroutine</span><span class="o">.</span><span class="nf">delay</span><span class="p">(</span><span class="o">.</span><span class="nf">seconds</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span> <span class="c1">// imitate some work</span>
+    <span class="k">return</span> <span class="mi">5</span>
+<span class="p">}</span><span class="o">.</span><span class="nf">added</span><span class="p">(</span><span class="nv">to</span><span class="p">:</span> <span class="n">scope</span><span class="p">)</span>
+
+<span class="c1">//cancel all added futures and coroutines</span>
+<span class="n">scope</span><span class="o">.</span><span class="nf">cancel</span><span class="p">()</span>
+</code></pre>
+
+                        <a href="Classes/CoScope.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">CoScope</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">CoScope</span><span class="p">:</span> <span class="kt"><a href="Protocols/CoCancellable.html">CoCancellable</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
               </ul>
             </div>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-05-09)</p>
+          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-05-11)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

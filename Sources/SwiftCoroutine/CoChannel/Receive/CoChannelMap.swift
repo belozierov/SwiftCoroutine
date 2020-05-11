@@ -6,13 +6,12 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
-internal final
-class CoChannelMap<Receiver: CoChannelReceiver, Element>: CoChannelReceiverWrapper<Element> {
+internal final class CoChannelMap<R: CoChannelReceiverProtocol, T>: CoChannel<T>.Receiver {
     
-    private let receiver: Receiver
-    private let transform: (Receiver.Output) -> Element
+    private let receiver: R
+    private let transform: (R.Output) -> T
     
-    internal init(receiver: Receiver, transform: @escaping (Receiver.Output) -> Element) {
+    internal init(receiver: R, transform: @escaping (R.Output) -> T) {
         self.receiver = receiver
         self.transform = transform
     }
@@ -21,19 +20,19 @@ class CoChannelMap<Receiver: CoChannelReceiver, Element>: CoChannelReceiverWrapp
         receiver.maxBufferSize
     }
     
-    internal override func awaitReceive() throws -> Element {
+    internal override func awaitReceive() throws -> T {
         try transform(receiver.awaitReceive())
     }
     
-    internal override func receiveFuture() -> CoFuture<Element> {
+    internal override func receiveFuture() -> CoFuture<T> {
         receiver.receiveFuture().map(transform)
     }
     
-    internal override func poll() -> Element? {
+    internal override func poll() -> T? {
         receiver.poll().map(transform)
     }
     
-    internal override func whenReceive(_ callback: @escaping (Result<Element, CoChannelError>) -> Void) {
+    internal override func whenReceive(_ callback: @escaping (Result<T, CoChannelError>) -> Void) {
         receiver.whenReceive { callback($0.map(self.transform)) }
     }
     
@@ -57,8 +56,8 @@ class CoChannelMap<Receiver: CoChannelReceiver, Element>: CoChannelReceiverWrapp
         receiver.isCanceled
     }
     
-    internal override func whenCanceled(_ callback: @escaping () -> Void) {
-        receiver.whenCanceled(callback)
+    internal override func whenComplete(_ callback: @escaping () -> Void) {
+        receiver.whenComplete(callback)
     }
     
 }

@@ -41,4 +41,10 @@ extension CoFuture {
         }
     }
     
+    /// Adds an observer callback that is called when the `CoFuture` has any result.
+    /// - Parameter callback: The callback that is called when the `CoFuture` is fulfilled.
+    @inlinable public func whenComplete(_ callback: @escaping () -> Void) {
+        whenComplete { _ in callback() }
+    }
+    
 }

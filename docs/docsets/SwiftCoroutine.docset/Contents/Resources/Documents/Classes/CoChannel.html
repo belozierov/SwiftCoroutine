@@ -45,6 +45,9 @@
               <li class="nav-group-task">
                 <a href="../Classes/CoPromise.html">CoPromise</a>
               </li>
+              <li class="nav-group-task">
+                <a href="../Classes/CoScope.html">CoScope</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -79,6 +82,9 @@
             <a href="../Protocols.html">Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
+                <a href="../Protocols/CoCancellable.html">CoCancellable</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Protocols/CoroutineScheduler.html">CoroutineScheduler</a>
               </li>
             </ul>
@@ -100,7 +106,7 @@
               <div class="declaration">
                 <div class="language">
                   <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">CoChannel</span><span class="o">&lt;</span><span class="kt">Element</span><span class="o">&gt;</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">CoChannel</span><span class="p">:</span> <span class="kt">Cancellable</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">CoChannel</span><span class="p">:</span> <span class="kt"><a href="../Protocols/CoCancellable.html">CoCancellable</a></span></code></pre>
 
                 </div>
               </div>
@@ -208,9 +214,9 @@ Conceptually, a channel is similar to a queue that allows to suspend a coroutine
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine9CoChannelC4pairAC8ReceiverVyx_G8receiver_AC6SenderVyx_G6sendertvp"></a>
+                    <a name="/s:14SwiftCoroutine9CoChannelC4pairAC8ReceiverCyx_G8receiver_AC6SenderCyx_G6sendertvp"></a>
                     <a name="//apple_ref/swift/Property/pair" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC4pairAC8ReceiverVyx_G8receiver_AC6SenderVyx_G6sendertvp">pair</a>
+                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC4pairAC8ReceiverCyx_G8receiver_AC6SenderCyx_G6sendertvp">pair</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -249,9 +255,9 @@ Conceptually, a channel is similar to a queue that allows to suspend a coroutine
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine9CoChannelC6senderAC6SenderVyx_Gvp"></a>
+                    <a name="/s:14SwiftCoroutine9CoChannelC6senderAC6SenderCyx_Gvp"></a>
                     <a name="//apple_ref/swift/Property/sender" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC6senderAC6SenderVyx_Gvp">sender</a>
+                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC6senderAC6SenderCyx_Gvp">sender</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -438,9 +444,9 @@ Conceptually, a channel is similar to a queue that allows to suspend a coroutine
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine9CoChannelC8receiverAC8ReceiverVyx_Gvp"></a>
+                    <a name="/s:14SwiftCoroutine9CoChannelC8receiverAC8ReceiverCyx_Gvp"></a>
                     <a name="//apple_ref/swift/Property/receiver" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC8receiverAC8ReceiverVyx_Gvp">receiver</a>
+                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC8receiverAC8ReceiverCyx_Gvp">receiver</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -676,9 +682,9 @@ Conceptually, a channel is similar to a queue that allows to suspend a coroutine
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine9CoChannelC3mapyAC8ReceiverVyqd___Gqd__xclF"></a>
+                    <a name="/s:14SwiftCoroutine9CoChannelC3mapyAC8ReceiverCyqd___Gqd__xclF"></a>
                     <a name="//apple_ref/swift/Method/map(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC3mapyAC8ReceiverVyqd___Gqd__xclF">map(_:<wbr>)</a>
+                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC3mapyAC8ReceiverCyqd___Gqd__xclF">map(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -865,9 +871,9 @@ Conceptually, a channel is similar to a queue that allows to suspend a coroutine
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine9CoChannelC12whenCanceledyyyycF"></a>
-                    <a name="//apple_ref/swift/Method/whenCanceled(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC12whenCanceledyyyycF">whenCanceled(_:<wbr>)</a>
+                    <a name="/s:14SwiftCoroutine9CoChannelC12whenCompleteyyyycF"></a>
+                    <a name="//apple_ref/swift/Method/whenComplete(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC12whenCompleteyyyycF">whenComplete(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -875,14 +881,14 @@ Conceptually, a channel is similar to a queue that allows to suspend a coroutine
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Adds an observer callback that is called when the <code>CoChannel</code> is canceled.</p>
+                        <p>Adds an observer callback that is called when the <code>CoChannel</code> is completed (closed, canceled or deinited).</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">whenCanceled</span><span class="p">(</span><span class="n">_</span> <span class="nv">callback</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">whenComplete</span><span class="p">(</span><span class="n">_</span> <span class="nv">callback</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -898,7 +904,7 @@ Conceptually, a channel is similar to a queue that allows to suspend a coroutine
                               </td>
                               <td>
                                 <div>
-                                  <p>The callback that is called when the <code>CoChannel</code> is canceled.</p>
+                                  <p>The callback that is called when the <code>CoChannel</code> is completed.</p>
                                 </div>
                               </td>
                             </tr>
@@ -944,7 +950,8 @@ then the coroutine will be suspended until a new element will be added to the ch
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">makeIterator</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">AnyIterator</span><span class="o">&lt;</span><span class="kt">Element</span><span class="o">&gt;</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">@inlinable</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">makeIterator</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">AnyIterator</span><span class="o">&lt;</span><span class="kt">Element</span><span class="o">&gt;</span></code></pre>
 
                         </div>
                       </div>
@@ -958,9 +965,9 @@ then the coroutine will be suspended until a new element will be added to the ch
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine9CoChannelC8ReceiverV"></a>
-                    <a name="//apple_ref/swift/Struct/Receiver" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC8ReceiverV">Receiver</a>
+                    <a name="/s:14SwiftCoroutine9CoChannelC8ReceiverC"></a>
+                    <a name="//apple_ref/swift/Class/Receiver" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC8ReceiverC">Receiver</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -969,11 +976,6 @@ then the coroutine will be suspended until a new element will be added to the ch
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>A <code><a href="../Classes/CoChannel.html">CoChannel</a></code> wrapper that provides receive-only functionality.</p>
-<div class="aside aside-note">
-    <p class="aside-title">Note</p>
-    <code>Receiver</code> has reference semantics.
-
-</div>
 
                         <a href="../Classes/CoChannel/Receiver.html" class="slightly-smaller">See more</a>
                       </div>
@@ -981,7 +983,8 @@ then the coroutine will be suspended until a new element will be added to the ch
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Receiver</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Receiver</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt"><a href="../Classes/CoChannel.html">CoChannel</a></span><span class="o">.</span><span class="kt">Receiver</span><span class="p">:</span> <span class="kt"><a href="../Protocols/CoCancellable.html">CoCancellable</a></span></code></pre>
 
                         </div>
                       </div>
@@ -991,9 +994,9 @@ then the coroutine will be suspended until a new element will be added to the ch
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine9CoChannelC6SenderV"></a>
-                    <a name="//apple_ref/swift/Struct/Sender" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC6SenderV">Sender</a>
+                    <a name="/s:14SwiftCoroutine9CoChannelC6SenderC"></a>
+                    <a name="//apple_ref/swift/Class/Sender" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC6SenderC">Sender</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1002,11 +1005,6 @@ then the coroutine will be suspended until a new element will be added to the ch
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>A <code><a href="../Classes/CoChannel.html">CoChannel</a></code> wrapper that provides send-only functionality.</p>
-<div class="aside aside-note">
-    <p class="aside-title">Note</p>
-    <code>Sender</code> has reference semantics.
-
-</div>
 
                         <a href="../Classes/CoChannel/Sender.html" class="slightly-smaller">See more</a>
                       </div>
@@ -1014,7 +1012,8 @@ then the coroutine will be suspended until a new element will be added to the ch
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Sender</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Sender</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt"><a href="../Classes/CoChannel.html">CoChannel</a></span><span class="o">.</span><span class="kt">Sender</span><span class="p">:</span> <span class="kt"><a href="../Protocols/CoCancellable.html">CoCancellable</a></span></code></pre>
 
                         </div>
                       </div>
@@ -1026,7 +1025,7 @@ then the coroutine will be suspended until a new element will be added to the ch
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-05-09)</p>
+          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-05-11)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

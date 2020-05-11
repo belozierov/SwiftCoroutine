@@ -10,7 +10,7 @@
 import Combine
 
 @available(OSX 10.15, iOS 13.0, *)
-extension CoFuture: Cancellable {
+extension CoFuture {
     
     // MARK: - publisher
     

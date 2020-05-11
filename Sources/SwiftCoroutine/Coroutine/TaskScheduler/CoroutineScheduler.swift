@@ -47,6 +47,10 @@ public protocol CoroutineScheduler {
 
 extension CoroutineScheduler {
     
+    @inlinable internal func _startCoroutine(_ task: @escaping () -> Void) {
+        SharedCoroutineDispatcher.default.execute(on: self, task: task)
+    }
+    
     /// Start a new coroutine on the current scheduler.
     ///
     /// As an example, with `Coroutine.await(_:)` you can wrap asynchronous functions with callbacks
@@ -58,10 +62,17 @@ extension CoroutineScheduler {
     ///     let result = try Coroutine.await { someAsyncFunc(callback: $0) }
     /// }
     /// ```
-    /// - Parameter task: The closure that will be executed inside coroutine.
-    /// If the task throws an error, then the coroutine will be terminated.
-    @inlinable public func startCoroutine(_ task: @escaping () throws -> Void) {
-        SharedCoroutineDispatcher.default.execute(on: self) { try? task() }
+    /// - Parameters:
+    ///   - scope: `CoScope`to add coroutine to.
+    ///   - task: The closure that will be executed inside coroutine. If the task throws an error, then the coroutine will be terminated.
+    public func startCoroutine(in scope: CoScope? = nil, task: @escaping () throws -> Void) {
+        guard let scope = scope else { return _startCoroutine { try? task() } }
+        _startCoroutine {
+            let coroutine = try? Coroutine.current()
+            let finish = scope.add { [weak coroutine] in coroutine?.cancel() }
+            if !scope.isCanceled { try? task() }
+            finish()
+        }
     }
     
     /// Start a coroutine and await its result. Must be called inside other coroutine.
@@ -101,9 +112,9 @@ extension CoroutineScheduler {
     /// - Returns: Returns `CoFuture` with the future result of the task.
     @inlinable public func coroutineFuture<T>(_ task: @escaping () throws -> T) -> CoFuture<T> {
         let promise = CoPromise<T>()
-        startCoroutine {
-            let current = try Coroutine.current()
-            promise.whenCanceled(current.cancel)
+        _startCoroutine {
+            let current = try? Coroutine.current()
+            promise.whenCanceled { current?.cancel() }
             if promise.isCanceled { return }
             promise.complete(with: Result(catching: task))
         }
@@ -153,11 +164,11 @@ extension CoroutineScheduler {
     /// - Returns: `CoChannel.Sender` for sending messages to an actor.
     @inlinable public func actor<T>(of type: T.Type = T.self, maxBufferSize: Int = .max, body: @escaping (CoChannel<T>.Receiver) throws -> Void) -> CoChannel<T>.Sender {
         let (receiver, sender) = CoChannel<T>(maxBufferSize: maxBufferSize).pair
-        startCoroutine {
-            let coroutine = try Coroutine.current()
-            receiver.whenCanceled(coroutine.cancel)
+        _startCoroutine {
+            let coroutine = try? Coroutine.current()
+            receiver.whenComplete { coroutine?.cancel() }
             if receiver.isCanceled { return }
-            try body(receiver)
+            try? body(receiver)
         }
         return sender
     }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Sender Structure Reference</title>
+    <title>Sender Class Reference</title>
     <link rel="stylesheet" type="text/css" href="../../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../../css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,8 +10,8 @@
     
   </head>
   <body>
-    <a name="//apple_ref/swift/Struct/Sender" class="dashAnchor"></a>
-    <a title="Sender Structure Reference"></a>
+    <a name="//apple_ref/swift/Class/Sender" class="dashAnchor"></a>
+    <a title="Sender Class Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../../index.html">SwiftCoroutine Docs</a> (86% documented)</p>
@@ -21,7 +21,7 @@
       <p id="breadcrumbs">
         <a href="../../index.html">SwiftCoroutine Reference</a>
         <img id="carat" src="../../img/carat.png" />
-        Sender Structure Reference
+        Sender Class Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -44,6 +44,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="../../Classes/CoPromise.html">CoPromise</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/CoScope.html">CoScope</a>
               </li>
             </ul>
           </li>
@@ -79,6 +82,9 @@
             <a href="../../Protocols.html">Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
+                <a href="../../Protocols/CoCancellable.html">CoCancellable</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../../Protocols/CoroutineScheduler.html">CoroutineScheduler</a>
               </li>
             </ul>
@@ -99,16 +105,12 @@
             <h1>Sender</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Sender</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Sender</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt"><a href="../../Classes/CoChannel.html">CoChannel</a></span><span class="o">.</span><span class="kt">Sender</span><span class="p">:</span> <span class="kt"><a href="../../Protocols/CoCancellable.html">CoCancellable</a></span></code></pre>
 
                 </div>
               </div>
             <p>A <code><a href="../../Classes/CoChannel.html">CoChannel</a></code> wrapper that provides send-only functionality.</p>
-<div class="aside aside-note">
-    <p class="aside-title">Note</p>
-    <code>Sender</code> has reference semantics.
-
-</div>
 
           </section>
           <section class="section task-group-section">
@@ -117,9 +119,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine9CoChannelC6SenderV13maxBufferSizeSivp"></a>
+                    <a name="/s:14SwiftCoroutine9CoChannelC6SenderC13maxBufferSizeSivp"></a>
                     <a name="//apple_ref/swift/Property/maxBufferSize" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC6SenderV13maxBufferSizeSivp">maxBufferSize</a>
+                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC6SenderC13maxBufferSizeSivp">maxBufferSize</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -145,9 +147,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine9CoChannelC6SenderV5countSivp"></a>
+                    <a name="/s:14SwiftCoroutine9CoChannelC6SenderC5countSivp"></a>
                     <a name="//apple_ref/swift/Property/count" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC6SenderV5countSivp">count</a>
+                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC6SenderC5countSivp">count</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -173,9 +175,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine9CoChannelC6SenderV7isEmptySbvp"></a>
+                    <a name="/s:14SwiftCoroutine9CoChannelC6SenderC7isEmptySbvp"></a>
                     <a name="//apple_ref/swift/Property/isEmpty" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC6SenderV7isEmptySbvp">isEmpty</a>
+                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC6SenderC7isEmptySbvp">isEmpty</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -214,9 +216,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine9CoChannelC6SenderV9awaitSendyyxKF"></a>
+                    <a name="/s:14SwiftCoroutine9CoChannelC6SenderC9awaitSendyyxKF"></a>
                     <a name="//apple_ref/swift/Method/awaitSend(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC6SenderV9awaitSendyyxKF">awaitSend(_:<wbr>)</a>
+                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC6SenderC9awaitSendyyxKF">awaitSend(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -266,9 +268,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine9CoChannelC6SenderV10sendFutureyyAA0cG0CyxGF"></a>
+                    <a name="/s:14SwiftCoroutine9CoChannelC6SenderC10sendFutureyyAA0cG0CyxGF"></a>
                     <a name="//apple_ref/swift/Method/sendFuture(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC6SenderV10sendFutureyyAA0cG0CyxGF">sendFuture(_:<wbr>)</a>
+                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC6SenderC10sendFutureyyAA0cG0CyxGF">sendFuture(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -313,9 +315,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine9CoChannelC6SenderV5offerySbxF"></a>
+                    <a name="/s:14SwiftCoroutine9CoChannelC6SenderC5offerySbxF"></a>
                     <a name="//apple_ref/swift/Method/offer(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC6SenderV5offerySbxF">offer(_:<wbr>)</a>
+                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC6SenderC5offerySbxF">offer(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -379,9 +381,9 @@ Otherwise, just returns false.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine9CoChannelC6SenderV5closeSbyF"></a>
+                    <a name="/s:14SwiftCoroutine9CoChannelC6SenderC5closeSbyF"></a>
                     <a name="//apple_ref/swift/Method/close()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC6SenderV5closeSbyF">close()</a>
+                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC6SenderC5closeSbyF">close()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -412,9 +414,9 @@ Otherwise, just returns false.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine9CoChannelC6SenderV8isClosedSbvp"></a>
+                    <a name="/s:14SwiftCoroutine9CoChannelC6SenderC8isClosedSbvp"></a>
                     <a name="//apple_ref/swift/Property/isClosed" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC6SenderV8isClosedSbvp">isClosed</a>
+                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC6SenderC8isClosedSbvp">isClosed</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -453,9 +455,9 @@ Otherwise, just returns false.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine9CoChannelC6SenderV6cancelyyF"></a>
+                    <a name="/s:14SwiftCoroutine9CoChannelC6SenderC6cancelyyF"></a>
                     <a name="//apple_ref/swift/Method/cancel()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC6SenderV6cancelyyF">cancel()</a>
+                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC6SenderC6cancelyyF">cancel()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -481,9 +483,9 @@ Otherwise, just returns false.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine9CoChannelC6SenderV10isCanceledSbvp"></a>
+                    <a name="/s:14SwiftCoroutine9CoChannelC6SenderC10isCanceledSbvp"></a>
                     <a name="//apple_ref/swift/Property/isCanceled" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC6SenderV10isCanceledSbvp">isCanceled</a>
+                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC6SenderC10isCanceledSbvp">isCanceled</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -509,9 +511,9 @@ Otherwise, just returns false.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine9CoChannelC6SenderV12whenCanceledyyyycF"></a>
-                    <a name="//apple_ref/swift/Method/whenCanceled(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC6SenderV12whenCanceledyyyycF">whenCanceled(_:<wbr>)</a>
+                    <a name="/s:14SwiftCoroutine9CoChannelC6SenderC12whenCompleteyyyycF"></a>
+                    <a name="//apple_ref/swift/Method/whenComplete(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14SwiftCoroutine9CoChannelC6SenderC12whenCompleteyyyycF">whenComplete(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -519,7 +521,7 @@ Otherwise, just returns false.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Adds an observer callback that is called when the <code><a href="../../Classes/CoChannel.html">CoChannel</a></code> is canceled.</p>
+                        <p>Adds an observer callback that is called when the <code><a href="../../Classes/CoChannel.html">CoChannel</a></code> is completed (closed, canceled or deinited).</p>
 
                       </div>
                       <div class="declaration">
@@ -527,7 +529,7 @@ Otherwise, just returns false.</p>
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@inlinable</span>
-<span class="kd">public</span> <span class="kd">func</span> <span class="nf">whenCanceled</span><span class="p">(</span><span class="n">_</span> <span class="nv">callback</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">whenComplete</span><span class="p">(</span><span class="n">_</span> <span class="nv">callback</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -543,7 +545,7 @@ Otherwise, just returns false.</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>The callback that is called when the <code><a href="../../Classes/CoChannel.html">CoChannel</a></code> is canceled.</p>
+                                  <p>The callback that is called when the <code><a href="../../Classes/CoChannel.html">CoChannel</a></code> is completed.</p>
                                 </div>
                               </td>
                             </tr>
@@ -558,7 +560,7 @@ Otherwise, just returns false.</p>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-05-09)</p>
+          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-05-11)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

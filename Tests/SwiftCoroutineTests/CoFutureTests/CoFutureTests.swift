@@ -39,7 +39,7 @@ class CoFutureTests: XCTestCase {
     
     func testResult2() {
         let exp = expectation(description: "testResult2")
-        exp.expectedFulfillmentCount = 4
+        exp.expectedFulfillmentCount = 6
         let future = CoFuture(result: .success(true))
         func test() {
             XCTAssertEqual(future.result, true)
@@ -51,6 +51,7 @@ class CoFutureTests: XCTestCase {
                 XCTAssertEqual($0, true)
                 exp.fulfill()
             }
+            future.whenComplete { exp.fulfill() }
             future.whenFailure { _ in XCTFail() }
             future.whenCanceled { XCTFail() }
         }

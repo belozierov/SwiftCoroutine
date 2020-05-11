@@ -45,6 +45,9 @@
               <li class="nav-group-task">
                 <a href="../Classes/CoPromise.html">CoPromise</a>
               </li>
+              <li class="nav-group-task">
+                <a href="../Classes/CoScope.html">CoScope</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -79,6 +82,9 @@
             <a href="../Protocols.html">Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
+                <a href="../Protocols/CoCancellable.html">CoCancellable</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Protocols/CoroutineScheduler.html">CoroutineScheduler</a>
               </li>
             </ul>
@@ -110,7 +116,7 @@ Inside the coroutine you can use such methods as <code><a href="../Structs/Corou
 and <code><a href="../Protocols/CoroutineScheduler.html#/s:14SwiftCoroutine0B9SchedulerPAAE5awaityqd__qd__yKXEKlF">CoroutineScheduler.await(_:)</a></code> to suspend the coroutine without blocking a thread
 and resume it when the result is ready.</p>
 
-<p>To launch a coroutine, use <code><a href="../Protocols/CoroutineScheduler.html#/s:14SwiftCoroutine0B9SchedulerPAAE05startB0yyyyKcF">CoroutineScheduler.startCoroutine(_:)</a></code>.</p>
+<p>To launch a coroutine, use <code>CoroutineScheduler.startCoroutine(_:)</code>.</p>
 <pre class="highlight swift"><code><span class="c1">//execute coroutine on the main thread</span>
 <span class="kt">DispatchQueue</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">startCoroutine</span> <span class="p">{</span>
 
@@ -168,9 +174,9 @@ and you can easily make the same for other schedulers as well.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine0B9SchedulerPAAE05startB0yyyyKcF"></a>
-                    <a name="//apple_ref/swift/Method/startCoroutine(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine0B9SchedulerPAAE05startB0yyyyKcF">startCoroutine(_:<wbr>)</a>
+                    <a name="/s:14SwiftCoroutine0B9SchedulerPAAE05startB02in4taskyAA7CoScopeCSg_yyKctF"></a>
+                    <a name="//apple_ref/swift/Method/startCoroutine(in:task:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14SwiftCoroutine0B9SchedulerPAAE05startB02in4taskyAA7CoScopeCSg_yyKctF">startCoroutine(in:<wbr>task:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -197,8 +203,7 @@ to synchronously receive its result without blocking the thread.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">@inlinable</span>
-<span class="kd">public</span> <span class="kd">func</span> <span class="nf">startCoroutine</span><span class="p">(</span><span class="n">_</span> <span class="nv">task</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">startCoroutine</span><span class="p">(</span><span class="k">in</span> <span class="nv">scope</span><span class="p">:</span> <span class="kt"><a href="../Classes/CoScope.html">CoScope</a></span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span> <span class="nv">task</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -209,13 +214,24 @@ to synchronously receive its result without blocking the thread.</p>
                             <tr>
                               <td>
                                 <code>
+                                <em>scope</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p><code><a href="../Classes/CoScope.html">CoScope</a></code>to add coroutine to.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
                                 <em>task</em>
                                 </code>
                               </td>
                               <td>
                                 <div>
-                                  <p>The closure that will be executed inside coroutine.
-If the task throws an error, then the coroutine will be terminated.</p>
+                                  <p>The closure that will be executed inside coroutine. If the task throws an error, then the coroutine will be terminated.</p>
                                 </div>
                               </td>
                             </tr>
@@ -365,9 +381,9 @@ and returns <code><a href="../Classes/CoFuture.html">CoFuture</a></code> with it
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine0B9SchedulerPAAE5actor2of13maxBufferSize4bodyAA9CoChannelC6SenderVyqd___Gqd__m_SiyAI8ReceiverVyqd___GKctlF"></a>
+                    <a name="/s:14SwiftCoroutine0B9SchedulerPAAE5actor2of13maxBufferSize4bodyAA9CoChannelC6SenderCyqd___Gqd__m_SiyAI8ReceiverCyqd___GKctlF"></a>
                     <a name="//apple_ref/swift/Method/actor(of:maxBufferSize:body:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine0B9SchedulerPAAE5actor2of13maxBufferSize4bodyAA9CoChannelC6SenderVyqd___Gqd__m_SiyAI8ReceiverVyqd___GKctlF">actor(of:<wbr>maxBufferSize:<wbr>body:<wbr>)</a>
+                    <a class="token" href="#/s:14SwiftCoroutine0B9SchedulerPAAE5actor2of13maxBufferSize4bodyAA9CoChannelC6SenderCyqd___Gqd__m_SiyAI8ReceiverCyqd___GKctlF">actor(of:<wbr>maxBufferSize:<wbr>body:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -480,7 +496,7 @@ and a channel to communicate with other coroutines.</p>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-05-09)</p>
+          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-05-11)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

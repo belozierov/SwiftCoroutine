@@ -14,7 +14,7 @@
     <a title="CoCancellable Protocol Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">SwiftCoroutine Docs</a> (1% documented)</p>
+        <p><a href="../index.html">SwiftCoroutine Docs</a> (86% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -31,10 +31,22 @@
             <a href="../Classes.html">Classes</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
+                <a href="../Classes/CoChannel.html">CoChannel</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/CoChannel/Receiver.html">– Receiver</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/CoChannel/Sender.html">– Sender</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Classes/CoFuture.html">CoFuture</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/CoPromise.html">CoPromise</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/CoScope.html">CoScope</a>
               </li>
             </ul>
           </li>
@@ -42,16 +54,25 @@
             <a href="../Enums.html">Enumerations</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Enums/CoFutureCancelPolicy.html">CoFutureCancelPolicy</a>
+                <a href="../Enums/CoChannelError.html">CoChannelError</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Enums/CoFutureError.html">CoFutureError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/CoroutineError.html">CoroutineError</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
             <a href="../Extensions.html">Extensions</a>
             <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Extensions/DispatchQueue.html">DispatchQueue</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/Publisher.html">Publisher</a>
+              </li>
               <li class="nav-group-task">
                 <a href="../Extensions/URLSession.html">URLSession</a>
               </li>
@@ -63,34 +84,16 @@
               <li class="nav-group-task">
                 <a href="../Protocols/CoCancellable.html">CoCancellable</a>
               </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/CoroutineScheduler.html">CoroutineScheduler</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
             <a href="../Structs.html">Structures</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Structs.html#/s:14SwiftCoroutine19CoFutureCancellableV">CoFutureCancellable</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Structs/Coroutine.html">Coroutine</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Structs/Coroutine/State.html">– State</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Structs/Coroutine/CoroutineError.html">– CoroutineError</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Structs/Coroutine/StackSize.html">– StackSize</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Structs/CoroutineDispatcher.html">CoroutineDispatcher</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Structs/CoroutineTaskExecutor.html">CoroutineTaskExecutor</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Structs/TaskScheduler.html">TaskScheduler</a>
               </li>
             </ul>
           </li>
@@ -102,7 +105,7 @@
             <h1>CoCancellable</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">CoCancellable</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">CoCancellable</span> <span class="p">:</span> <span class="kt">AnyObject</span></code></pre>
 
                 </div>
               </div>
@@ -125,7 +128,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Cancels the current <code>CoCancellable</code>.</p>
 
                       </div>
                       <div class="declaration">
@@ -139,13 +142,114 @@
                     </section>
                   </div>
                 </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14SwiftCoroutine13CoCancellableP12whenCompleteyyyycF"></a>
+                    <a name="//apple_ref/swift/Method/whenComplete(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14SwiftCoroutine13CoCancellableP12whenCompleteyyyycF">whenComplete(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Adds an observer callback that is called when the <code>CoCancellable</code> is completed.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">whenComplete</span><span class="p">(</span><span class="n">_</span> <span class="nv">callback</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>callback</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The callback that is called when the <code>CoCancellable</code> is completed.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14SwiftCoroutine13CoCancellablePAAE5added2toxAA0C5ScopeC_tF"></a>
+                    <a name="//apple_ref/swift/Method/added(to:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14SwiftCoroutine13CoCancellablePAAE5added2toxAA0C5ScopeC_tF">added(to:<wbr>)</a>
+                    </code>
+                      <span class="declaration-note">
+                        Extension method
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Adds <code>self</code> to <code><a href="../Classes/CoScope.html">CoScope</a></code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="kd">@inlinable</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">added</span><span class="p">(</span><span class="n">to</span> <span class="nv">scope</span><span class="p">:</span> <span class="kt"><a href="../Classes/CoScope.html">CoScope</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="k">Self</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>scope</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p><code><a href="../Classes/CoScope.html">CoScope</a></code> to add <code>self</code> to.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The current <code>CoCancellable</code>.</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
               </ul>
             </div>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-03-11)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.1</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-05-11)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
     </div>

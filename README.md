@@ -223,3 +223,41 @@ DispatchQueue.global().startCoroutine {
     print("Done")
 }
 ```
+
+### Scope
+
+All launched coroutines, `CoFuture`s and `CoChannel`s, usually do not need to be referenced. They are deinited after their execution. But often there is a need to complete them earlier, when they are no longer needed. For this, `CoFuture` and `CoChannel` have methods for canceling.
+
+`CoScope` makes it easier to manage the life cycle of these objects. It allows you to keep weak references to them and cancel if necessary or on deinit.
+
+#### Usage
+
+You can add coroutines, `CoFuture`s, `CoChannel`s and other `CoCancellable` to `CoScope` to cancel them when they are no longer needed or on deinit.
+
+```swift
+class ViewController: UIViewController {
+
+    let scope = CoScope() //will cancel all objects on `cancel()` or deinit
+    
+    func performSomeWork() {
+        //create new `CoChannel` and add to `CoScope`
+        let channel = makeSomeChannel().added(to: scope)
+        
+        //execute coroutine and add to `CoScope`
+        DispatchQueue.main.startCoroutine(in: scope) { [weak self] in
+            for item in channel.makeIterator() {
+                try self?.performSomeWork(with: item)
+            }
+        }
+    }
+    
+    func performSomeWork(with item: Item) throws {
+        //create new `CoFuture` and add to `CoScope`
+        let future = makeSomeFuture(item).added(to: scope)
+        
+        let result = try future.await()
+        . . . do some work using result . . .
+    }
+
+}
+```
