@@ -55,8 +55,8 @@ DispatchQueue.main.startCoroutine {
     //await CoFuture result that suspends coroutine and doesn't block the thread
     let data: Data = try dataFuture.await().data
 
-    //create UIImage from data or throw the error
-    guard let image = UIImage(data: data) else { throw URLError(.cannotParseResponse) }
+    //create UIImage from the data
+    guard let image = UIImage(data: data) else { return }
     
     //execute heavy task on global queue and await the result without blocking the thread
     let thumbnail: UIImage = try DispatchQueue.global().await { image.makeThumbnail() }
