@@ -19,7 +19,7 @@ public protocol CoCancellable: class {
 
 extension CoCancellable {
     
-    /// Adds `self` to `CoScope`.
+    /// Adds weak referance of `self` to `CoScope`.
     /// - Parameter scope: `CoScope` to add `self` to.
     /// - Returns: The current `CoCancellable`.
     @discardableResult @inlinable

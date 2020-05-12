@@ -85,20 +85,6 @@
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Extensions/URLSession+CoFuture.swift",
-      "line": 19,
-      "symbol": "URLSession.dataTaskFuture(for:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Extensions/URLSession+CoFuture.swift",
-      "line": 23,
-      "symbol": "URLSession.dataTaskFuture(for:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
       "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoScope/CoCancellable.swift",
       "line": 9,
       "symbol": "CoCancellable",

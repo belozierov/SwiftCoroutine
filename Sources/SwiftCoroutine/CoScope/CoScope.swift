@@ -12,6 +12,8 @@
 /// It keeps weak references on inner objects and cancels them on `cancel()` or deinit.
 /// All completed objects are automaticaly removed from scope.
 ///
+/// - Note: `CoScope` keeps weak references.
+///
 /// ```
 /// let scope = CoScope()
 ///
@@ -44,7 +46,7 @@ public final class CoScope {
     /// Initializes a scope.
     public init() {}
     
-    /// Adds `CoCancellable` to be canceled when the scope is being canceled or deinited.
+    /// Adds weak referance of `CoCancellable` to be canceled when the scope is being canceled or deinited.
     /// - Parameter item: `CoCancellable` to add.
     @inlinable public func add(_ item: CoCancellable) {
         item.whenComplete(add { [weak item] in item?.cancel() })

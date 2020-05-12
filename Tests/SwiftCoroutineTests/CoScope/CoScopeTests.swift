@@ -56,6 +56,25 @@ class CoScopeTests: XCTestCase {
         }
     }
     
+    func testConcurrency2() {
+        let exp = expectation(description: "testConcurrency2")
+        exp.expectedFulfillmentCount = 1000
+        let list = UnsafeMutableBufferPointer<CoFuture<Int>>.allocate(capacity: 100_000)
+        _ = list.initialize(from: (0..<100_000).map { _ in CoPromise<Int>() })
+        DispatchQueue.concurrentPerform(iterations: 1000) { index in
+            let scope = CoScope()
+            scope.whenComplete { exp.fulfill() }
+            for i in 0..<100 {
+                let future = list[i * 1000 + index].added(to: scope)
+                DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(i), execute: future.cancel)
+            }
+            DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(index % 100), execute: scope.cancel)
+        }
+        wait(for: [exp], timeout: 10)
+        XCTAssertTrue(list.allSatisfy { $0.isCanceled })
+        list.baseAddress?.deinitialize(count: 100_000).deallocate()
+    }
+    
     func testCancel() {
         let exp = expectation(description: "testCancel")
         exp.expectedFulfillmentCount = 2
@@ -70,6 +89,7 @@ class CoScopeTests: XCTestCase {
         scope.whenComplete { exp.fulfill() }
         scope.cancel()
         scope.whenComplete { exp.fulfill() }
+        scope.cancel()
         XCTAssertTrue(cancellable.isCanceled)
         XCTAssertTrue(scope.isEmpty)
         wait(for: [exp], timeout: 1)

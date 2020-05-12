@@ -85,20 +85,6 @@
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Extensions/URLSession+CoFuture.swift",
-      "line": 19,
-      "symbol": "URLSession.dataTaskFuture(for:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Extensions/URLSession+CoFuture.swift",
-      "line": 23,
-      "symbol": "URLSession.dataTaskFuture(for:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
       "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoScope/CoCancellable.swift",
       "line": 9,
       "symbol": "CoCancellable",
@@ -107,21 +93,7 @@
     },
     {
       "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoScope/CoCancellable.swift",
-      "line": 11,
-      "symbol": "CoCancellable.cancel()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoScope/CoCancellable.swift",
-      "line": 12,
-      "symbol": "CoCancellable.whenComplete(_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoScope/CoCancellable.swift",
-      "line": 16,
+      "line": 20,
       "symbol": "CoCancellable",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
