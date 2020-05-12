@@ -84,6 +84,20 @@ class CoScopeTests: XCTestCase {
         XCTAssertTrue(cancellable.isCanceled)
     }
     
-    
+    func testDeinit2() {
+        var futures = [CoFuture<Int>]()
+        let parent = CoScope()
+        for _ in 0..<1000 {
+            let scope = CoScope().added(to: parent)
+            for _ in 0..<1000 {
+                let future = CoPromise<Int>()
+                futures.append(future)
+                scope.add(future)
+            }
+            XCTAssertFalse(parent.isEmpty)
+        }
+        XCTAssertTrue(parent.isEmpty)
+        XCTAssertTrue(futures.allSatisfy { $0.isCanceled })
+    }
 
 }

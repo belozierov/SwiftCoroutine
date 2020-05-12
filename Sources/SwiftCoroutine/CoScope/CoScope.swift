@@ -24,7 +24,7 @@
 /// }
 ///
 /// let future2 = queue.coroutineFuture {
-///     Coroutine.delay(.seconds(5)) // imitate some work
+///     try Coroutine.delay(.seconds(5)) // imitate some work
 ///     return 5
 /// }.added(to: scope)
 ///
@@ -40,6 +40,9 @@ public final class CoScope {
     private var callbacks = [Block]()
     private var state = Int.free
     private var keyCounter = 0
+    
+    /// Initializes a scope.
+    public init() {}
     
     /// Adds `CoCancellable` to be canceled when the scope is being canceled or deinited.
     /// - Parameter item: `CoCancellable` to add.
