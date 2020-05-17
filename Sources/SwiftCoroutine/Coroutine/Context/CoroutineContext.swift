@@ -27,10 +27,6 @@ internal final class CoroutineContext {
     internal init(stackSize: Int, guardPage: Bool = true) {
         self.stackSize = stackSize
         returnEnv = .allocate(byteCount: .environmentSize, alignment: 16)
-        #if os(Linux)
-        haveGuardPage = false
-        stack = .allocate(byteCount: stackSize, alignment: .pageSize)
-        #else
         haveGuardPage = guardPage
         if guardPage {
             stack = .allocate(byteCount: stackSize + .pageSize, alignment: .pageSize)
@@ -38,7 +34,6 @@ internal final class CoroutineContext {
         } else {
             stack = .allocate(byteCount: stackSize, alignment: .pageSize)
         }
-        #endif
     }
     
     @inlinable internal var stackTop: UnsafeMutableRawPointer {
@@ -82,6 +77,9 @@ internal final class CoroutineContext {
     }
     
     deinit {
+        if haveGuardPage {
+            mprotect(stack, .pageSize, PROT_READ | PROT_WRITE)
+        }
         returnEnv.deallocate()
         stack.deallocate()
     }
