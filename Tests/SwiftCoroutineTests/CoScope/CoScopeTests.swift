@@ -102,6 +102,7 @@ class CoScopeTests: XCTestCase {
         XCTAssertFalse(cancellable.isCanceled)
         scope = nil
         XCTAssertTrue(cancellable.isCanceled)
+        XCTAssertNil(scope)
     }
     
     func testDeinit2() {
