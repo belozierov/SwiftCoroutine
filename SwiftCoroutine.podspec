@@ -13,5 +13,5 @@ Pod::Spec.new do |s|
 
   s.swift_version = '5.2'
 
-  s.source_files = ['Source/**/*.{h,c,swift}', 'Sources/SwiftCoroutine.h']
+  s.source_files = ['Sources/**/*.{h,c,swift}', 'Sources/SwiftCoroutine.h']
 end
