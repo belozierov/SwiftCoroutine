@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '10.0'
   s.osx.deployment_target = '10.12'
 
-  swift_version = '5.2'
+  s.swift_version = '5.2'
 
   s.source_files = ['Source/**/*.{h,c,swift}', 'Sources/SwiftCoroutine.h']
 end
