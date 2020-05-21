@@ -13,11 +13,6 @@ Pod::Spec.new do |s|
 
   s.swift_version = '5.2'
 
-  s.source_files = [
-	'Sources/CCoroutine/CCoroutine.c',
-	'Sources/CCoroutine/include/CCoroutine.h',
-	'Sources/*.{h,m,c,swift}', 
-	'Sources/SwiftCoroutine.h', 
-	'Sources/**/*.{h,m,c,swift}']
+  s.source_files = 'Sources/**/*.{h,m,c,swift}'
   s.module_map = 'Sources/module.modulemap'
 end
