@@ -68,10 +68,10 @@ extension CoroutineScheduler {
     public func startCoroutine(in scope: CoScope? = nil, task: @escaping () throws -> Void) {
         guard let scope = scope else { return _startCoroutine { try? task() } }
         _startCoroutine {
-            let coroutine = try? Coroutine.current()
-            let finish = scope.add { [weak coroutine] in coroutine?.cancel() }
-            if !scope.isCanceled { try? task() }
-            finish()
+            guard let coroutine = try? Coroutine.current(),
+                let completion = scope.add(coroutine.cancel) else { return }
+            try? task()
+            completion()
         }
     }
     
@@ -113,8 +113,9 @@ extension CoroutineScheduler {
     @inlinable public func coroutineFuture<T>(_ task: @escaping () throws -> T) -> CoFuture<T> {
         let promise = CoPromise<T>()
         _startCoroutine {
-            let current = try? Coroutine.current()
-            promise.whenCanceled { current?.cancel() }
+            if let coroutine = try? Coroutine.current() {
+                promise.whenCanceled(coroutine.cancel)
+            }
             if promise.isCanceled { return }
             promise.complete(with: Result(catching: task))
         }
@@ -165,8 +166,9 @@ extension CoroutineScheduler {
     @inlinable public func actor<T>(of type: T.Type = T.self, maxBufferSize: Int = .max, body: @escaping (CoChannel<T>.Receiver) throws -> Void) -> CoChannel<T>.Sender {
         let (receiver, sender) = CoChannel<T>(maxBufferSize: maxBufferSize).pair
         _startCoroutine {
-            let coroutine = try? Coroutine.current()
-            receiver.whenComplete { coroutine?.cancel() }
+            if let coroutine = try? Coroutine.current() {
+                receiver.whenCanceled { [weak coroutine] in coroutine?.cancel() }
+            }
             if receiver.isCanceled { return }
             try? body(receiver)
         }

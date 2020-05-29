@@ -15,15 +15,20 @@ class CoScopeTests: XCTestCase {
         
         private var callback: (() -> Void)?
         private(set) var isCanceled = false
+        private let lock = NSLock()
         
         func whenComplete(_ callback: @escaping () -> Void) {
+            lock.lock()
             self.callback = callback
+            lock.unlock()
         }
         
         func cancel() {
+            lock.lock()
             callback?()
             callback = nil
             isCanceled = true
+            lock.unlock()
         }
         
         deinit {
@@ -36,13 +41,11 @@ class CoScopeTests: XCTestCase {
        measure {
            let scope = CoScope()
            DispatchQueue.concurrentPerform(iterations: 100_000) { _ in
-               let item = TestCancellable()
-               scope.add(item)
+               scope.add(TestCancellable())
            }
            scope.cancel()
            DispatchQueue.concurrentPerform(iterations: 100_000) { _ in
-               let item = TestCancellable()
-               scope.add(item)
+               scope.add(TestCancellable())
             }
         }
     }

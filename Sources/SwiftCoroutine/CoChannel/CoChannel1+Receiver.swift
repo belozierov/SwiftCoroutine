@@ -67,6 +67,14 @@ extension CoChannel {
         /// Returns `true` if the channel is canceled.
         public var isCanceled: Bool { true }
         
+        /// Adds an observer callback that is called when the `CoChannel` is canceled.
+        /// - Parameter callback: The callback that is called when the `CoChannel` is canceled.
+        public func whenCanceled(_ callback: @escaping () -> Void) {
+            callback()
+        }
+        
+        // MARK: - complete
+        
         /// Adds an observer callback that is called when the `CoChannel` is completed (closed, canceled or deinited).
         /// - Parameter callback: The callback that is called when the `CoChannel` is completed.
         public func whenComplete(_ callback: @escaping () -> Void) {

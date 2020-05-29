@@ -19,6 +19,7 @@ internal protocol CoChannelReceiverProtocol {
     func cancel()
     var isCanceled: Bool { get }
     func whenComplete(_ callback: @escaping () -> Void)
+    func whenCanceled(_ callback: @escaping () -> Void)
     var maxBufferSize: Int { get }
     
 }

@@ -58,4 +58,8 @@ internal final class CoChannelReceiver<T>: CoChannel<T>.Receiver {
         channel.whenComplete(callback)
     }
     
+    internal override func whenCanceled(_ callback: @escaping () -> Void) {
+        channel.whenCanceled(callback)
+    }
+    
 }

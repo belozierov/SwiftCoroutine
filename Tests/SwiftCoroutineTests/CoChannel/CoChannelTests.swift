@@ -129,12 +129,14 @@ class CoChannelTests: XCTestCase {
 
     func testCancel2() {
         let exp = expectation(description: "testCancel2")
+        exp.expectedFulfillmentCount = 2
         let (receiver, sender) = CoChannel<Int>(maxBufferSize: 0).pair
         ImmediateScheduler().startCoroutine {
             XCTAssertThrowError(CoChannelError.canceled) { try receiver.awaitReceive() }
         }
         sender.cancel()
         sender.whenComplete { exp.fulfill() }
+        sender.whenCanceled { exp.fulfill() }
         wait(for: [exp], timeout: 2)
     }
     
@@ -178,6 +180,7 @@ class CoChannelTests: XCTestCase {
     
     func testMap() {
         let exp = expectation(description: "testMap")
+        exp.expectedFulfillmentCount = 2
         let channel = CoChannel<Int>()
         let map2 = channel.map { $0 + 2 }
         channel.offer(7)
@@ -205,6 +208,7 @@ class CoChannelTests: XCTestCase {
             map.makeIterator().forEach { XCTAssertEqual($0, 8) }
         }
         map.whenComplete { exp.fulfill() }
+        map.whenCanceled { exp.fulfill() }
         map.cancel()
         XCTAssertTrue(map.isCanceled)
         wait(for: [exp], timeout: 5)
@@ -218,6 +222,7 @@ class CoChannelTests: XCTestCase {
         wrapper.whenReceive { _ in }
         wrapper.cancel()
         wrapper.whenComplete {}
+        wrapper.whenCanceled {}
         _ = wrapper.count
         _ = wrapper.isEmpty
         _ = wrapper.isClosed

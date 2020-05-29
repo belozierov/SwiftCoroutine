@@ -38,7 +38,7 @@ public final class CoChannel<Element> {
     public let maxBufferSize: Int
     private var receiveCallbacks = FifoQueue<ReceiveCallback>()
     private var sendBlocks = FifoQueue<SendBlock>()
-    private var cancelBlocks = CallbackStack<Void>()
+    private var completeBlocks = CallbackStack<CoChannelError?>()
     private var atomic = AtomicTuple()
     
     /// Initializes a channel.
@@ -255,14 +255,34 @@ public final class CoChannel<Element> {
         atomic.value.1 == 2
     }
     
+    /// Adds an observer callback that is called when the `CoChannel` is canceled.
+    /// - Parameter callback: The callback that is called when the `CoChannel` is canceled.
+    public func whenCanceled(_ callback: @escaping () -> Void) {
+        whenFinished { if $0 == .canceled { callback() } }
+    }
+    
+    // MARK: - complete
+    
     /// Adds an observer callback that is called when the `CoChannel` is completed (closed, canceled or deinited).
     /// - Parameter callback: The callback that is called when the `CoChannel` is completed.
     public func whenComplete(_ callback: @escaping () -> Void) {
-        if !cancelBlocks.append(callback) { callback() }
+        whenFinished { _ in callback() }
+    }
+    
+    private func whenFinished(_ callback: @escaping (CoChannelError?) -> Void) {
+        if !completeBlocks.append(callback) { callback(channelError) }
     }
     
     private func finish() {
-        cancelBlocks.close()?.finish(with: ())
+        completeBlocks.close()?.finish(with: channelError)
+    }
+    
+    private var channelError: CoChannelError? {
+        switch atomic.value.1 {
+        case 1: return .closed
+        case 2: return .canceled
+        default: return nil
+        }
     }
 
     deinit {
