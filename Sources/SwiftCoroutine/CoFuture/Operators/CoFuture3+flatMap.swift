@@ -50,10 +50,8 @@ extension CoFuture {
         if let result = result {
             return callback(result)
         }
-        let promise = CoPromise<NewValue>()
-        addChild(future: promise) { result in
-            callback(result).addCallback(promise.setResult)
-        }
+        let promise = CoPromise<NewValue>(parent: self)
+        addCallback { callback($0).addCallback(promise.setResult) }
         return promise
     }
     

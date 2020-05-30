@@ -81,12 +81,14 @@ private protocol _CoFutureCancellable: class {
 ///
 public class CoFuture<Value> {
     
-    private var resultState: Int
-    private var nodes: CallbackStack<Result<Value, Error>>
-    private var _result: Optional<Result<Value, Error>>
-    private var parent: UnownedCancellable?
+    @usableFromInline internal typealias _Result = Result<Value, Error>
     
-    @usableFromInline internal init(_result: Result<Value, Error>?) {
+    private var resultState: Int
+    private var nodes: CallbackStack<_Result>
+    private var _result: Optional<_Result>
+    private unowned(unsafe) var parent: _CoFutureCancellable?
+    
+    @usableFromInline internal init(_result: _Result?) {
         if let result = _result {
             self._result = result
             resultState = 1
@@ -99,14 +101,18 @@ public class CoFuture<Value> {
     }
     
     deinit {
-        if !nodes.isEmpty {
-            nodes.finish(with: .failure(CoFutureError.canceled))
-        }
+        if nodes.isEmpty { return }
+        nodes.finish(with: .failure(CoFutureError.canceled))
     }
     
 }
 
 extension CoFuture: _CoFutureCancellable {
+    
+    internal convenience init<T>(parent: CoFuture<T>) {
+        self.init(_result: nil)
+        self.parent = parent
+    }
 
     /// Starts a new coroutine and initializes future with its result.
     ///
@@ -121,8 +127,9 @@ extension CoFuture: _CoFutureCancellable {
     @inlinable public convenience init(task: @escaping () throws -> Value) {
         self.init(_result: nil)
         Coroutine.start {
-            let current = try? Coroutine.current()
-            self.whenCanceled { current?.cancel() }
+            if let current = try? Coroutine.current() {
+                self.whenCanceled(current.cancel)
+            }
             self.setResult(Result(catching: task))
         }
     }
@@ -140,8 +147,8 @@ extension CoFuture: _CoFutureCancellable {
         nodes.isClosed ? _result : nil
     }
     
-    @usableFromInline internal func setResult(_ result: Result<Value, Error>) {
-        guard atomicExchange(&resultState, with: 1) == 0 else { return }
+    @usableFromInline internal func setResult(_ result: _Result) {
+        if atomicExchange(&resultState, with: 1) == 1 { return }
         _result = result
         parent = nil
         nodes.close()?.finish(with: result)
@@ -149,22 +156,11 @@ extension CoFuture: _CoFutureCancellable {
     
     // MARK: - Callback
     
-    @usableFromInline internal typealias Callback = (Result<Value, Error>) -> Void
-    
-    @usableFromInline internal func addCallback(_ callback: @escaping Callback) {
+    @usableFromInline internal func addCallback(_ callback: @escaping (_Result) -> Void) {
         if !nodes.append(callback) { _result.map(callback) }
     }
     
-    internal func addChild<T>(future: CoFuture<T>, callback: @escaping Callback) {
-        future.parent = .init(cancellable: self)
-        addCallback(callback)
-    }
-    
     // MARK: - cancel
-    
-    private struct UnownedCancellable {
-        unowned(unsafe) let cancellable: _CoFutureCancellable
-    }
 
     /// Returns `true` when the current future is canceled.
     @inlinable public var isCanceled: Bool {
@@ -176,11 +172,7 @@ extension CoFuture: _CoFutureCancellable {
     
     /// Cancels the current future.
     public func cancel() {
-        if let parent = parent {
-            parent.cancellable.cancel()
-        } else {
-            setResult(.failure(CoFutureError.canceled))
-        }
+        parent?.cancel() ?? setResult(.failure(CoFutureError.canceled))
     }
     
 }
