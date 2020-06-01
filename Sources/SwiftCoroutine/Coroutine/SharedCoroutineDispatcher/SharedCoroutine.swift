@@ -22,6 +22,7 @@ internal final class SharedCoroutine {
     private var environment: UnsafeMutablePointer<CoroutineContext.SuspendData>!
     private var stackBuffer: StackBuffer!
     private var isCanceled = 0
+    private var awaitTag = 0
     
     internal init(dispatcher: SharedCoroutineDispatcher, queue: SharedCoroutineQueue, scheduler: CoroutineScheduler) {
         self.dispatcher = dispatcher
@@ -96,9 +97,13 @@ extension SharedCoroutine: CoroutineProtocol {
     internal func await<T>(_ callback: (@escaping (T) -> Void) -> Void) throws -> T {
         if isCanceled == 1 { throw CoroutineError.canceled }
         state = .suspending
-        var result: T!, resultState = 0
+        let tag = awaitTag
+        var result: T!
         callback { value in
-            if atomicExchange(&resultState, with: 1) == 1 { return }
+            while true {
+                guard self.awaitTag == tag else { return }
+                if atomicCAS(&self.awaitTag, expected: tag, desired: tag + 1) { break }
+            }
             result = value
             self.resumeIfSuspended()
         }

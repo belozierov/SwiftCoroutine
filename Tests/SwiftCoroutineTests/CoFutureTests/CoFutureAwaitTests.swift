@@ -45,6 +45,16 @@ class CoFutureAwaitTests: XCTestCase {
         XCTAssertTrue(array.enumerated().allSatisfy { $0.element == $0.offset })
         array.deallocate()
     }
+    
+    func testAwaitMeasure() {
+        measure {
+            ImmediateScheduler().startCoroutine {
+                for index in 0..<100_000 {
+                    let _ = try Coroutine.await { $0(index) }
+                }
+            }
+        }
+    }
 
     func testNestetAwaits() {
         let queue = DispatchQueue.global(qos: .userInteractive)
