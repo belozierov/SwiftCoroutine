@@ -30,7 +30,7 @@ Another problem of asynchronous programming is **error handling**, because Swift
 
 #### What about Rx and other such frameworks?
 
-There are many other frameworks that make it easy to use asynchronous code, such as Combine, RxSwift, PromiseKit and so on. They use other approaches that have some drawbacks:
+There are many other frameworks that make it easy to use asynchronous code, such as Combine, RxSwift, PromiseKit and so on. **They use other approaches** that have some drawbacks:
 
 - Similar to callbacks, you also need to create chained calls, that’s why you can’t normally use loops, exception handling, etc.
 - Usually you need to learn a complex new API with hundreds of methods.
@@ -41,7 +41,7 @@ There are many other frameworks that make it easy to use asynchronous code, such
 
 The [async/await](https://en.wikipedia.org/wiki/Async/await) pattern is an alternative that allows an asynchronous, non-blocking function to be structured in a way similar to an ordinary synchronous function. 
 
-It is already well-established in other programming languages and is an evolution in asynchronous programming. The implementation of this pattern is possible thanks to coroutines.
+It is already well-established in other programming languages and is an evolution in asynchronous programming. The implementation of this pattern is possible thanks to [coroutines](https://en.wikipedia.org/wiki/Coroutine).
 
 Let’s have a look at the example with coroutine inside of which `await()` suspends it and resumes when the result is available without blocking the thread.
 
