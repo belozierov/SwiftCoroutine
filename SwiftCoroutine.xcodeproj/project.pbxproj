@@ -1095,7 +1095,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				MARKETING_VERSION = 2.0.26;
+				MARKETING_VERSION = 2.1.5;
 				MODULEMAP_FILE = "${PROJECT_DIR}/Sources/module.modulemap";
 				OTHER_CFLAGS = "-DXCODE_FRAMEWORK=1";
 				PRODUCT_BUNDLE_IDENTIFIER = "Belozierov.SwiftCoroutine-iOS";
@@ -1124,7 +1124,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				MARKETING_VERSION = 2.0.26;
+				MARKETING_VERSION = 2.1.5;
 				MODULEMAP_FILE = "${PROJECT_DIR}/Sources/module.modulemap";
 				OTHER_CFLAGS = "-DXCODE_FRAMEWORK=1";
 				PRODUCT_BUNDLE_IDENTIFIER = "Belozierov.SwiftCoroutine-iOS";
@@ -1192,7 +1192,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				MARKETING_VERSION = 2.0.26;
+				MARKETING_VERSION = 2.1.5;
 				MODULEMAP_FILE = "${PROJECT_DIR}/Sources/module.modulemap";
 				OTHER_CFLAGS = "-DXCODE_FRAMEWORK=1";
 				OTHER_SWIFT_FLAGS = "-Xfrontend -warn-long-expression-type-checking=150 -Xfrontend -warn-long-function-bodies=150";
@@ -1226,7 +1226,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				MARKETING_VERSION = 2.0.26;
+				MARKETING_VERSION = 2.1.5;
 				MODULEMAP_FILE = "${PROJECT_DIR}/Sources/module.modulemap";
 				OTHER_CFLAGS = "-DXCODE_FRAMEWORK=1";
 				OTHER_SWIFT_FLAGS = "-Xfrontend -warn-long-expression-type-checking=150 -Xfrontend -warn-long-function-bodies=150";
