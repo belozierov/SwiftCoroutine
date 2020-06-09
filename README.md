@@ -200,7 +200,7 @@ To create channels, use the `CoChannel` class.
 
 ```swift
 //create a channel with a buffer which can store only one element
-let channel = CoChannel<Int>(maxBufferSize: 1)
+let channel = CoChannel<Int>(capacity: 1)
 
 DispatchQueue.global().startCoroutine {
     for i in 0..<100 {

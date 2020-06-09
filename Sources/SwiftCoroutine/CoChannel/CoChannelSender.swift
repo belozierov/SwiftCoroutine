@@ -1,8 +1,8 @@
 //
-//  CoChannel2+Sender.swift
+//  CoChannelSender.swift
 //  SwiftCoroutine
 //
-//  Created by Alex Belozierov on 07.05.2020.
+//  Created by Alex Belozierov on 07.06.2020.
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
@@ -11,10 +11,15 @@ extension CoChannel {
     /// A `CoChannel` wrapper that provides send-only functionality.
     public final class Sender {
         
-        @usableFromInline internal let channel: CoChannel
+        @usableFromInline internal let channel: _Channel<Element>
         
-        @usableFromInline internal init(channel: CoChannel) {
+        @usableFromInline internal init(channel: _Channel<Element>) {
             self.channel = channel
+        }
+        
+        /// The type of channel buffer.
+        @inlinable public var bufferType: BufferType {
+            channel.bufferType
         }
         
     }
@@ -22,11 +27,6 @@ extension CoChannel {
 }
 
 extension CoChannel.Sender {
-    
-    /// The maximum number of elements that can be stored in a channel.
-    @inlinable public var maxBufferSize: Int {
-        channel.maxBufferSize
-    }
     
     /// Returns a number of elements in this channel.
     @inlinable public var count: Int {

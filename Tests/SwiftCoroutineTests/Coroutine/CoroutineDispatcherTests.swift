@@ -11,18 +11,18 @@ import XCTest
 
 class CoroutineDispatcherTests: XCTestCase {
     
-//    func testSharedCoroutineDispatcherDeinit() {
-//        let group = DispatchGroup()
-//        var dispatcher: SharedCoroutineDispatcher! =
-//            SharedCoroutineDispatcher(contextsCount: 1, stackSize: 32 * 1024)
-//        weak var referance = dispatcher
-//        group.enter()
-//        dispatcher.execute(on: DispatchQueue.global()) {
-//            dispatcher = nil
-//            DispatchQueue.global().asyncAfter(wallDeadline: .now() + 1, execute: group.leave)
-//        }
-//        group.wait()
-//        XCTAssertNil(referance)
-//    }
+    func testSharedCoroutineDispatcherDeinit() {
+        let group = DispatchGroup()
+        var dispatcher: SharedCoroutineDispatcher! =
+            SharedCoroutineDispatcher(capacity: 1, stackSize: .recommended)
+        weak var referance = dispatcher
+        group.enter()
+        dispatcher.execute(on: DispatchQueue.global()) {
+            dispatcher = nil
+            DispatchQueue.global().asyncAfter(wallDeadline: .now() + 1, execute: group.leave)
+        }
+        group.wait()
+        XCTAssertNil(referance)
+    }
     
 }
