@@ -45,6 +45,7 @@ public final class CoChannel<Element> {
         /// This channel has a buffer with unlimited capacity.
         ///
         /// `awaitSend(_:)` to this channel never suspends, and offer always returns true.
+        /// `awaitReceive()` suspends only when the buffer is empty.
         case unlimited
         /// This channel buffers at most one element and offer invocations,
         /// so that the receiver always gets the last element sent.

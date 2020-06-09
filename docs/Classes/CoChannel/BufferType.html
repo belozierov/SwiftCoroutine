@@ -193,7 +193,8 @@ and <code><a href="../../Classes/CoChannel.html#/s:14SwiftCoroutine9CoChannelC12
                       <div class="abstract">
                         <p>This channel has a buffer with unlimited capacity.</p>
 
-<p><code><a href="../../Classes/CoChannel.html#/s:14SwiftCoroutine9CoChannelC9awaitSendyyxKF">awaitSend(_:)</a></code> to this channel never suspends, and offer always returns true.</p>
+<p><code><a href="../../Classes/CoChannel.html#/s:14SwiftCoroutine9CoChannelC9awaitSendyyxKF">awaitSend(_:)</a></code> to this channel never suspends, and offer always returns true.
+<code><a href="../../Classes/CoChannel.html#/s:14SwiftCoroutine9CoChannelC12awaitReceivexyKF">awaitReceive()</a></code> suspends only when the buffer is empty.</p>
 
                       </div>
                       <div class="declaration">
