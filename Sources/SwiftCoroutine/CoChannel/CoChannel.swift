@@ -2,7 +2,7 @@
 //  CoChannel.swift
 //  SwiftCoroutine
 //
-//  Created by Alex Belozierov on 19.04.2020.
+//  Created by Alex Belozierov on 02.06.2020.
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
@@ -12,7 +12,7 @@
 /// - Important: Always `close()` or `cancel()` a channel when you are done to resume all suspended coroutines by the channel.
 ///
 /// ```
-/// let channel = CoChannel<Int>(maxBufferSize: 1)
+/// let channel = CoChannel<Int>(capacity: 1)
 ///
 /// DispatchQueue.global().startCoroutine {
 ///    for i in 0..<100 {
@@ -28,174 +28,137 @@
 ///     print("Done")
 /// }
 /// ```
-///
 public final class CoChannel<Element> {
     
-    private typealias ReceiveCallback = (Result<Element, CoChannelError>) -> Void
-    private struct SendBlock { let element: Element, resumeBlock: ((CoChannelError?) -> Void)? }
+    /// `CoChannel` buffer type.
+    public enum BufferType: Equatable {
+        /// This channel does not have any buffer.
+        ///
+        /// An element is transferred from the sender to the receiver only when send and receive invocations meet in time,
+        /// so `awaitSend(_:)` suspends until invokes receive, and `awaitReceive()` suspends until invokes send.
+        case none
+        /// This channel have a buffer with the specified capacity.
+        ///
+        /// `awaitSend(_:)` suspends only when the buffer is full,
+        /// and `awaitReceive()` suspends only when the buffer is empty.
+        case buffered(capacity: Int)
+        /// This channel has a buffer with unlimited capacity.
+        ///
+        /// `awaitSend(_:)` to this channel never suspends, and offer always returns true.
+        case unlimited
+        /// This channel buffers at most one element and offer invocations,
+        /// so that the receiver always gets the last element sent.
+        ///
+        /// Only the last sent element is received, while previously sent elements are lost.
+        /// `awaitSend(_:)` to this channel never suspends, and offer always returns true.
+        /// `awaitReceive()` suspends only when the buffer is empty.
+        case conflated
+    }
     
-    /// The maximum number of elements that can be stored in a channel.
-    public let maxBufferSize: Int
-    private var receiveCallbacks = FifoQueue<ReceiveCallback>()
-    private var sendBlocks = FifoQueue<SendBlock>()
-    private var completeBlocks = CallbackStack<CoChannelError?>()
-    private var atomic = AtomicTuple()
+    @usableFromInline internal let channel: _Channel<Element>
     
     /// Initializes a channel.
-    /// - Parameter maxBufferSize: The maximum number of elements that can be stored in a channel.
-    public init(maxBufferSize: Int = .max) {
-        self.maxBufferSize = maxBufferSize
+    /// - Parameter type: The type of channel buffer.
+    public init(bufferType type: BufferType = .unlimited) {
+        switch type {
+        case .conflated:
+            channel = _ConflatedChannel()
+        case .buffered(let capacity):
+            channel = _BufferedChannel(capacity: capacity)
+        case .unlimited:
+            channel = _BufferedChannel(capacity: .max)
+        case .none:
+            channel = _BufferedChannel(capacity: 0)
+        }
+    }
+    
+    /// Initializes a channel with `BufferType.buffered(capacity:)` .
+    /// - Parameter capacity: The maximum number of elements that can be stored in a channel.
+    public init(capacity: Int) {
+        channel = _BufferedChannel(capacity: capacity)
+    }
+    
+}
+
+extension CoChannel {
+    
+    /// The type of channel buffer.
+    @inlinable public var bufferType: BufferType {
+        channel.bufferType
     }
     
     /// Returns tuple of `Receiver` and `Sender`.
     @inlinable public var pair: (receiver: Receiver, sender: Sender) {
-        (receiver, sender)
+        (channel, sender)
     }
     
     // MARK: - send
     
     /// A `CoChannel` wrapper that provides send-only functionality.
     @inlinable public var sender: Sender {
-        Sender(channel: self)
+        Sender(channel: channel)
     }
     
-    /// Sends the element to this channel, suspending the coroutine while the buffer of this channel is full. Must be called inside a coroutine.
+    /// Sends the element to this channel, suspending the coroutine while the buffer of this channel is full.
+    /// Must be called inside a coroutine.
     /// - Parameter element: Value that will be sent to the channel.
     /// - Throws: CoChannelError when canceled or closed.
-    public func awaitSend(_ element: Element) throws {
-        switch atomic.update ({ count, state in
-            if state != 0 { return (count, state) }
-            return (count + 1, 0)
-        }).old {
-        case (_, 1):
-            throw CoChannelError.closed
-        case (_, 2):
-            throw CoChannelError.canceled
-        case (let count, _) where count < 0:
-            receiveCallbacks.blockingPop()(.success(element))
-        case (let count, _) where count < maxBufferSize:
-            sendBlocks.push(.init(element: element, resumeBlock: nil))
-        default:
-            try Coroutine.await {
-                sendBlocks.push(.init(element: element, resumeBlock: $0))
-            }.map { throw $0 }
-        }
+    @inlinable public func awaitSend(_ element: Element) throws {
+        try channel.awaitSend(element)
     }
     
     /// Adds the future's value to this channel when it will be available.
     /// - Parameter future: `CoFuture`'s value that will be sent to the channel.
-    public func sendFuture(_ future: CoFuture<Element>) {
-        future.whenSuccess { [weak self] in
-            guard let self = self else { return }
-            let (count, state) = self.atomic.update { count, state in
-                if state != 0 { return (count, state) }
-                return (count + 1, 0)
-            }.old
-            guard state == 0 else { return }
-            count < 0
-                ? self.receiveCallbacks.blockingPop()(.success($0))
-                : self.sendBlocks.push(.init(element: $0, resumeBlock: nil))
-        }
+    @inlinable public func sendFuture(_ future: CoFuture<Element>) {
+        channel.sendFuture(future)
     }
     
-    /// Immediately adds the value to this channel, if this doesn’t violate its capacity restrictions, and returns true. Otherwise, just returns false.
+    /// Immediately adds the value to this channel, if this doesn’t violate its capacity restrictions, and returns true.
+    /// Otherwise, just returns false.
     /// - Parameter element: Value that might be sent to the channel.
     /// - Returns:`true` if sent successfully or `false` if channel buffer is full or channel is closed or canceled.
-    @discardableResult public func offer(_ element: Element) -> Bool {
-        let (count, state) = atomic.update { count, state in
-            if state != 0 || count >= maxBufferSize { return (count, state) }
-            return (count + 1, 0)
-        }.old
-        if state != 0 { return false }
-        if count < 0 {
-            receiveCallbacks.blockingPop()(.success(element))
-            return true
-        } else if count < maxBufferSize {
-            sendBlocks.push(.init(element: element, resumeBlock: nil))
-            return true
-        }
-        return false
+    @discardableResult @inlinable public func offer(_ element: Element) -> Bool {
+        channel.offer(element)
     }
     
     // MARK: - receive
     
     /// A `CoChannel` wrapper that provides receive-only functionality.
-    public var receiver: Receiver {
-        CoChannelReceiver(channel: self)
-    }
+    @inlinable public var receiver: Receiver { channel }
     
     /// Retrieves and removes an element from this channel if it’s not empty, or suspends a coroutine while the channel is empty.
     /// - Throws: CoChannelError when canceled or closed.
     /// - Returns: Removed value from the channel.
-    public func awaitReceive() throws -> Element {
-        switch atomic.update({ count, state in
-            if state == 0 { return (count - 1, 0) }
-            return (Swift.max(0, count - 1), state)
-        }).old {
-        case (let count, let state) where count > 0:
-            defer { if count == 1, state == 1 { finish() } }
-            return getValue()
-        case (_, 0):
-            return try Coroutine.await { receiveCallbacks.push($0) }.get()
-        case (_, 1):
-            throw CoChannelError.closed
-        default:
-            throw CoChannelError.canceled
-        }
+    @inlinable public func awaitReceive() throws -> Element {
+        try channel.awaitReceive()
     }
     
     /// Creates `CoFuture` with retrieved value from this channel.
     /// - Returns: `CoFuture` with a future value from the channel.
-    public func receiveFuture() -> CoFuture<Element> {
-        let promise = CoPromise<Element>()
-        whenReceive(promise.complete)
-        return promise
+    @inlinable public func receiveFuture() -> CoFuture<Element> {
+        channel.receiveFuture()
     }
     
     /// Retrieves and removes an element from this channel.
     /// - Returns: Element from this channel if its not empty, or returns nill if the channel is empty or is closed or canceled.
-    public func poll() -> Element? {
-        let (count, state) = atomic.update { count, state in
-            (Swift.max(0, count - 1), state)
-        }.old
-        guard count > 0 else { return nil }
-        defer { if count == 1, state == 1 { finish() } }
-        return getValue()
+    @inlinable public func poll() -> Element? {
+        channel.poll()
     }
     
     /// Adds an observer callback to receive an element from this channel.
     /// - Parameter callback: The callback that is called when a value is received.
-    public func whenReceive(_ callback: @escaping (Result<Element, CoChannelError>) -> Void) {
-        switch atomic.update({ count, state in
-            if state == 0 { return (count - 1, 0) }
-            return (Swift.max(0, count - 1), state)
-        }).old {
-        case (let count, let state) where count > 0:
-            callback(.success(getValue()))
-            if count == 1, state == 1 { finish() }
-        case (_, 0):
-            receiveCallbacks.push(callback)
-        case (_, 1):
-            callback(.failure(.closed))
-        default:
-            callback(.failure(.canceled))
-        }
+    @inlinable public func whenReceive(_ callback: @escaping (Result<Element, CoChannelError>) -> Void) {
+        channel.whenReceive(callback)
     }
-
+    
     /// Returns a number of elements in this channel.
-    public var count: Int {
-        Int(Swift.max(0, atomic.value.0))
+    @inlinable public var count: Int {
+        channel.count
     }
     
     /// Returns `true` if the channel is empty (contains no elements), which means no elements to receive.
-    public var isEmpty: Bool {
-        atomic.value.0 <= 0
-    }
-    
-    private func getValue() -> Element {
-        let block = sendBlocks.blockingPop()
-        block.resumeBlock?(nil)
-        return block.element
+    @inlinable public var isEmpty: Bool {
+        channel.isEmpty
     }
     
     // MARK: - map
@@ -203,92 +166,47 @@ public final class CoChannel<Element> {
     /// Returns new `Receiver` that provides transformed values from this `CoChannel`.
     /// - Parameter transform: A mapping closure.
     /// - returns: A `Receiver` with transformed values.
-    public func map<T>(_ transform: @escaping (Element) -> T) -> CoChannel<T>.Receiver {
-        CoChannelMap(receiver: self, transform: transform)
+    @inlinable public func map<T>(_ transform: @escaping (Element) -> T) -> CoChannel<T>.Receiver {
+        channel.map(transform)
     }
     
     // MARK: - close
     
     /// Closes this channel. No more send should be performed on the channel.
     /// - Returns: `true` if closed successfully or `false` if channel is already closed or canceled.
-    @discardableResult public func close() -> Bool {
-        let (count, state) = atomic.update { count, state in
-            state == 0 ? (Swift.max(0, count), 1) : (count, state)
-        }.old
-        guard state == 0 else { return false }
-        if count < 0 {
-            for _ in 0..<count.magnitude {
-                receiveCallbacks.blockingPop()(.failure(.closed))
-            }
-        } else if count > 0 {
-            sendBlocks.forEach { $0.resumeBlock?(.closed) }
-        } else {
-            finish()
-        }
-        return true
+    @discardableResult @inlinable public func close() -> Bool {
+        channel.close()
     }
     
     /// Returns `true` if the channel is closed.
-    public var isClosed: Bool {
-        atomic.value.1 == 1
+    @inlinable public var isClosed: Bool {
+        channel.isClosed
     }
     
     // MARK: - cancel
     
     /// Closes the channel and removes all buffered sent elements from it.
-    public func cancel() {
-        let count = atomic.update { _ in (0, 2) }.old.0
-        if count < 0 {
-            for _ in 0..<count.magnitude {
-                receiveCallbacks.blockingPop()(.failure(.canceled))
-            }
-        } else if count > 0 {
-            for _ in 0..<count {
-                sendBlocks.blockingPop().resumeBlock?(.canceled)
-            }
-        }
-        finish()
+    @inlinable public func cancel() {
+        channel.cancel()
     }
     
     /// Returns `true` if the channel is canceled.
-    public var isCanceled: Bool {
-        atomic.value.1 == 2
+    @inlinable public var isCanceled: Bool {
+        channel.isCanceled
     }
     
     /// Adds an observer callback that is called when the `CoChannel` is canceled.
     /// - Parameter callback: The callback that is called when the `CoChannel` is canceled.
-    public func whenCanceled(_ callback: @escaping () -> Void) {
-        whenFinished { if $0 == .canceled { callback() } }
+    @inlinable public func whenCanceled(_ callback: @escaping () -> Void) {
+        channel.whenCanceled(callback)
     }
     
     // MARK: - complete
     
     /// Adds an observer callback that is called when the `CoChannel` is completed (closed, canceled or deinited).
     /// - Parameter callback: The callback that is called when the `CoChannel` is completed.
-    public func whenComplete(_ callback: @escaping () -> Void) {
-        whenFinished { _ in callback() }
-    }
-    
-    private func whenFinished(_ callback: @escaping (CoChannelError?) -> Void) {
-        if !completeBlocks.append(callback) { callback(channelError) }
-    }
-    
-    private func finish() {
-        completeBlocks.close()?.finish(with: channelError)
-    }
-    
-    private var channelError: CoChannelError? {
-        switch atomic.value.1 {
-        case 1: return .closed
-        case 2: return .canceled
-        default: return nil
-        }
-    }
-
-    deinit {
-        receiveCallbacks.free()
-        sendBlocks.free()
-        finish()
+    @inlinable public func whenComplete(_ callback: @escaping () -> Void) {
+        channel.whenComplete(callback)
     }
     
 }
@@ -303,7 +221,7 @@ extension CoChannel {
     /// then the coroutine will be suspended until a new element will be added to the channel or it will be closed or canceled.
     /// - Returns: Iterator for the channel elements.
     @inlinable public func makeIterator() -> AnyIterator<Element> {
-        AnyIterator { Coroutine.isInsideCoroutine ? try? self.awaitReceive() : self.poll() }
+        channel.makeIterator()
     }
     
 }

@@ -160,19 +160,22 @@ extension CoroutineScheduler {
     ///
     /// - Parameters:
     ///   - type: `CoChannel` generic type.
-    ///   - maxBufferSize: The maximum number of elements that can be stored in a channel.
+    ///   - bufferType: The type of channel buffer.
     ///   - body: The closure that will be executed inside coroutine.
     /// - Returns: `CoChannel.Sender` for sending messages to an actor.
-    @inlinable public func actor<T>(of type: T.Type = T.self, maxBufferSize: Int = .max, body: @escaping (CoChannel<T>.Receiver) throws -> Void) -> CoChannel<T>.Sender {
-        let (receiver, sender) = CoChannel<T>(maxBufferSize: maxBufferSize).pair
-        _startCoroutine {
-            if let coroutine = try? Coroutine.current() {
-                receiver.whenCanceled { [weak coroutine] in coroutine?.cancel() }
+    @inlinable public func actor<T>(of type: T.Type = T.self,
+                                    bufferType: CoChannel<T>.BufferType = .unlimited,
+                                    body: @escaping (CoChannel<T>.Receiver) throws -> Void)
+        -> CoChannel<T>.Sender {
+            let (receiver, sender) = CoChannel<T>(bufferType: bufferType).pair
+            _startCoroutine {
+                if let coroutine = try? Coroutine.current() {
+                    receiver.whenCanceled { [weak coroutine] in coroutine?.cancel() }
+                }
+                if receiver.isCanceled { return }
+                try? body(receiver)
             }
-            if receiver.isCanceled { return }
-            try? body(receiver)
-        }
-        return sender
+            return sender
     }
     
 }

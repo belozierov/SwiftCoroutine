@@ -14,7 +14,7 @@
     <a title="CoroutineScheduler Protocol Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">SwiftCoroutine 2.1.2 Docs</a> (87% documented)</p>
+        <p><a href="../index.html">SwiftCoroutine 2.1.2 Docs</a> (88% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -32,6 +32,9 @@
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="../Classes/CoChannel.html">CoChannel</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/CoChannel/BufferType.html">– BufferType</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/CoChannel/Receiver.html">– Receiver</a>
@@ -381,9 +384,9 @@ and returns <code><a href="../Classes/CoFuture.html">CoFuture</a></code> with it
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:14SwiftCoroutine0B9SchedulerPAAE5actor2of13maxBufferSize4bodyAA9CoChannelC6SenderCyqd___Gqd__m_SiyAI8ReceiverCyqd___GKctlF"></a>
-                    <a name="//apple_ref/swift/Method/actor(of:maxBufferSize:body:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:14SwiftCoroutine0B9SchedulerPAAE5actor2of13maxBufferSize4bodyAA9CoChannelC6SenderCyqd___Gqd__m_SiyAI8ReceiverCyqd___GKctlF">actor(of:<wbr>maxBufferSize:<wbr>body:<wbr>)</a>
+                    <a name="/s:14SwiftCoroutine0B9SchedulerPAAE5actor2of10bufferType4bodyAA9CoChannelC6SenderCyqd___Gqd__m_AI06BufferG0Oyqd___GyAI8ReceiverCyqd___GKctlF"></a>
+                    <a name="//apple_ref/swift/Method/actor(of:bufferType:body:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14SwiftCoroutine0B9SchedulerPAAE5actor2of10bufferType4bodyAA9CoChannelC6SenderCyqd___Gqd__m_AI06BufferG0Oyqd___GyAI8ReceiverCyqd___GKctlF">actor(of:<wbr>bufferType:<wbr>body:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -437,7 +440,10 @@ and a channel to communicate with other coroutines.</p>
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@inlinable</span>
-<span class="kd">public</span> <span class="kd">func</span> <span class="n">actor</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">of</span> <span class="nv">type</span><span class="p">:</span> <span class="kt">T</span><span class="o">.</span><span class="k">Type</span> <span class="o">=</span> <span class="kt">T</span><span class="o">.</span><span class="k">self</span><span class="p">,</span> <span class="nv">maxBufferSize</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="o">.</span><span class="n">max</span><span class="p">,</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt"><a href="../Classes/CoChannel.html">CoChannel</a></span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;.</span><span class="kt">Receiver</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Classes/CoChannel.html">CoChannel</a></span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;.</span><span class="kt">Sender</span></code></pre>
+<span class="kd">public</span> <span class="kd">func</span> <span class="n">actor</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">of</span> <span class="nv">type</span><span class="p">:</span> <span class="kt">T</span><span class="o">.</span><span class="k">Type</span> <span class="o">=</span> <span class="kt">T</span><span class="o">.</span><span class="k">self</span><span class="p">,</span>
+                     <span class="nv">bufferType</span><span class="p">:</span> <span class="kt"><a href="../Classes/CoChannel.html">CoChannel</a></span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;.</span><span class="kt">BufferType</span> <span class="o">=</span> <span class="o">.</span><span class="n">unlimited</span><span class="p">,</span>
+                     <span class="nv">body</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt"><a href="../Classes/CoChannel.html">CoChannel</a></span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;.</span><span class="kt">Receiver</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span>
+    <span class="o">-&gt;</span> <span class="kt"><a href="../Classes/CoChannel.html">CoChannel</a></span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;.</span><span class="kt">Sender</span></code></pre>
 
                         </div>
                       </div>
@@ -460,12 +466,12 @@ and a channel to communicate with other coroutines.</p>
                             <tr>
                               <td>
                                 <code>
-                                <em>maxBufferSize</em>
+                                <em>bufferType</em>
                                 </code>
                               </td>
                               <td>
                                 <div>
-                                  <p>The maximum number of elements that can be stored in a channel.</p>
+                                  <p>The type of channel buffer.</p>
                                 </div>
                               </td>
                             </tr>
@@ -496,7 +502,7 @@ and a channel to communicate with other coroutines.</p>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2020 <a class="link" href="https://github.com/belozierov/SwiftCoroutine" target="_blank" rel="external">Alex Belozierov</a>. All rights reserved. (Last updated: 2020-05-29)</p>
+          <p>&copy; 2020 <a class="link" href="https://github.com/belozierov/SwiftCoroutine" target="_blank" rel="external">Alex Belozierov</a>. All rights reserved. (Last updated: 2020-06-09)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

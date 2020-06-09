@@ -13,19 +13,19 @@ class CoChannelTests: XCTestCase {
     
     func testSequence() {
         let exp = expectation(description: "testSequence")
-        let (receiver, sender) = CoChannel<Int>().pair
+        let channel = CoChannel<Int>()
         var set = Set<Int>()
         DispatchQueue.global().startCoroutine {
-            for value in receiver.makeIterator() {
+            for value in channel.makeIterator() {
                 set.insert(value)
             }
             XCTAssertEqual(set.count, 100_000)
             exp.fulfill()
         }
         DispatchQueue.concurrentPerform(iterations: 100_000) { index in
-            sender.offer(index)
+            channel.offer(index)
         }
-        sender.close()
+        channel.close()
         wait(for: [exp], timeout: 10)
     }
     
@@ -33,7 +33,7 @@ class CoChannelTests: XCTestCase {
         let group = DispatchGroup()
         measure {
             group.enter()
-            let channel = CoChannel<Int>(maxBufferSize: 1)
+            let channel = CoChannel<Int>(capacity: 1)
             DispatchQueue.global().startCoroutine {
                 for value in channel.makeIterator() {
                     let _ = value
@@ -50,132 +50,93 @@ class CoChannelTests: XCTestCase {
         }
     }
     
-    func testInsideCoroutine() {
-        let exp = expectation(description: "testInsideCoroutine")
-        let (receiver, sender) = CoChannel<Int>(maxBufferSize: 1).pair
-        var set = Set<Int>()
-        DispatchQueue.global().startCoroutine {
-            for value in receiver.makeIterator() {
-                set.insert(value)
-            }
-            XCTAssertNil(try? receiver.awaitReceive())
-            XCTAssertEqual(set.count, 100_000)
+    func testBufferType() {
+        XCTAssertEqual(CoChannel<Int>(capacity: 3).bufferType, .buffered(capacity: 3))
+        XCTAssertEqual(CoChannel<Int>(bufferType: .buffered(capacity: 2)).bufferType, .buffered(capacity: 2))
+        XCTAssertEqual(CoChannel<Int>(bufferType: .none).bufferType, .none)
+        XCTAssertEqual(CoChannel<Int>(bufferType: .unlimited).bufferType, .unlimited)
+        XCTAssertEqual(CoChannel<Int>(bufferType: .conflated).bufferType, .conflated)
+        
+        XCTAssertEqual(CoChannel<Int>(bufferType: .buffered(capacity: 2)).map { $0 }.bufferType, .buffered(capacity: 2))
+        XCTAssertEqual(CoChannel<Int>(bufferType: .none).map { $0 }.bufferType, .none)
+        XCTAssertEqual(CoChannel<Int>(bufferType: .unlimited).map { $0 }.bufferType, .unlimited)
+        XCTAssertEqual(CoChannel<Int>(bufferType: .conflated).map { $0 }.bufferType, .conflated)
+    }
+    
+    func testCoChannel() {
+        let exp = expectation(description: "testCoChannel")
+        exp.expectedFulfillmentCount = 6
+        let channel = CoChannel<Int>()
+        XCTAssertTrue(channel.offer(1))
+        XCTAssertEqual(channel.count, 1)
+        XCTAssertFalse(channel.isEmpty)
+        XCTAssertEqual(channel.poll(), 1)
+        channel.receiveFuture().whenSuccess {
+            XCTAssertEqual($0, 2)
             exp.fulfill()
         }
-        DispatchQueue.global().startCoroutine {
-            for index in (0..<100_000) {
-                try sender.awaitSend(index)
-            }
-            sender.close()
-            try sender.awaitSend(-1)
+        channel.sendFuture(.init(result: .success(2)))
+        XCTAssertNotNil(try? channel.awaitSend(3))
+        XCTAssertEqual(try? channel.awaitReceive(), 3)
+        channel.whenReceive {
+            XCTAssertEqual(try? $0.get(), 4)
+            exp.fulfill()
         }
-        wait(for: [exp], timeout: 20)
-    }
-    
-    func testOffer() {
-        let (receiver, sender) = CoChannel<Int>(maxBufferSize: 1).pair
-        ImmediateScheduler().startCoroutine {
-            XCTAssertEqual(try? receiver.awaitReceive(), 1)
-        }
-        sender.offer(1)
-        sender.offer(2)
-        sender.offer(3)
-        XCTAssertEqual(sender.count, 1)
-        receiver.whenReceive {
-            XCTAssertEqual(try? $0.get(), 2)
-        }
-        sender.offer(4)
-        XCTAssertEqual(receiver.poll(), 4)
-        XCTAssertTrue(receiver.isEmpty)
-        sender.offer(5)
-        XCTAssertFalse(sender.isEmpty)
-        XCTAssertEqual(receiver.makeIterator().next(), 5)
-        XCTAssertNil(receiver.makeIterator().next())
-        receiver.whenReceive {
+        XCTAssertTrue(channel.offer(4))
+        channel.map { $0 + 1 }.whenReceive {
             XCTAssertEqual(try? $0.get(), 6)
+            exp.fulfill()
         }
-        sender.offer(6)
+        XCTAssertTrue(channel.offer(5))
+        channel.receiver.whenReceive {
+            XCTAssertEqual(try? $0.get(), 6)
+            exp.fulfill()
+        }
+        XCTAssertTrue(channel.sender.offer(6))
+        XCTAssertTrue(channel.close())
+        XCTAssertTrue(channel.isClosed)
+        channel.cancel()
+        XCTAssertTrue(channel.isCanceled)
+        channel.whenCanceled { exp.fulfill() }
+        channel.whenComplete { exp.fulfill() }
+        wait(for: [exp], timeout: 1)
     }
     
-    func testFuture() {
-        let (receiver, sender) = CoChannel<Int>(maxBufferSize: 1).pair
-        receiver.receiveFuture().whenSuccess {
-            XCTAssertEqual($0, 1)
-        }
-        sender.sendFuture(.init(result: .success(1)))
-        sender.sendFuture(.init(result: .success(2)))
-        sender.sendFuture(.init(result: .success(3)))
-        receiver.receiveFuture().whenSuccess {
-            XCTAssertEqual($0, 2)
-        }
-    }
-    
-    func testCancel() {
-        let (receiver, sender) = CoChannel<Int>(maxBufferSize: 0).pair
-        ImmediateScheduler().startCoroutine {
-            XCTAssertThrowError(CoChannelError.canceled) { try sender.awaitSend(0) }
-        }
-        XCTAssertFalse(receiver.isCanceled)
-        receiver.cancel()
-        XCTAssertThrowError(CoChannelError.canceled) { try receiver.awaitReceive() }
-        XCTAssertThrowError(CoChannelError.canceled) { try sender.awaitSend(1) }
-        XCTAssertFalse(sender.offer(1))
-        receiver.whenReceive { result in
-            XCTAssertThrowError(CoChannelError.canceled) { try result.get() }
-        }
-        XCTAssertNil(receiver.poll())
-        XCTAssertTrue(sender.isCanceled)
-    }
-
-    func testCancel2() {
-        let exp = expectation(description: "testCancel2")
+    func testReceiveFuture() {
+        let exp = expectation(description: "testReceiveFuture")
         exp.expectedFulfillmentCount = 2
-        let (receiver, sender) = CoChannel<Int>(maxBufferSize: 0).pair
-        ImmediateScheduler().startCoroutine {
-            XCTAssertThrowError(CoChannelError.canceled) { try receiver.awaitReceive() }
+        let channel = CoChannel<Int>(capacity: 1)
+        channel.receiveFuture().whenSuccess {
+            XCTAssertEqual($0, 1)
+            exp.fulfill()
         }
-        sender.cancel()
+        channel.sendFuture(.init(result: .success(1)))
+        channel.sendFuture(.init(result: .success(2)))
+        channel.sendFuture(.init(result: .success(3)))
+        channel.receiveFuture().whenSuccess {
+            XCTAssertEqual($0, 2)
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1)
+    }
+    
+    func testSender() {
+        let exp = expectation(description: "testSender")
+        exp.expectedFulfillmentCount = 2
+        let sender = CoChannel<Int>().sender
+        XCTAssertEqual(sender.bufferType, .unlimited)
+        XCTAssertNotNil(try? sender.awaitSend(1))
+        sender.sendFuture(.init(result: .success(2)))
+        XCTAssertTrue(sender.offer(3))
+        XCTAssertEqual(sender.count, 3)
+        XCTAssertFalse(sender.isEmpty)
+        XCTAssertFalse(sender.isClosed)
+        XCTAssertFalse(sender.isCanceled)
         sender.whenComplete { exp.fulfill() }
         sender.whenCanceled { exp.fulfill() }
-        wait(for: [exp], timeout: 2)
-    }
-    
-    func testClose() {
-        let (receiver, sender) = CoChannel<Int>(maxBufferSize: 1).pair
-        receiver.whenReceive { result in
-            XCTAssertThrowError(CoChannelError.closed) { try result.get() }
-        }
-        XCTAssertFalse(receiver.isClosed)
-        XCTAssertTrue(sender.close())
+        sender.cancel()
         XCTAssertFalse(sender.close())
-        XCTAssertTrue(sender.isClosed)
-        receiver.whenReceive { result in
-            XCTAssertThrowError(CoChannelError.closed) { try result.get() }
-        }
-        receiver.receiveFuture().whenFailure {
-            if let error = $0 as? CoChannelError {
-                XCTAssertEqual(error, CoChannelError.closed)
-            } else {
-                XCTFail()
-            }
-        }
-        sender.sendFuture(.init(result: .success(1)))
-    }
-    
-    func testDeinit() {
-        let exp = expectation(description: "testDeinit")
-        var channel: CoChannel<Int>! = .init()
-        weak var _weak = channel
-        channel.offer(1)
-        let promise = CoPromise<Int>()
-        channel.sendFuture(promise)
-        channel = nil
-        DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
-            promise.success(1)
-            XCTAssertNil(_weak)
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 3)
+        wait(for: [exp], timeout: 1)
     }
     
     func testMap() {
@@ -187,7 +148,7 @@ class CoChannelTests: XCTestCase {
         XCTAssertEqual(map2.poll(), 9)
         let (receiver, sender) = channel.pair
         let map = receiver.map { $0 + 1 }.map { $0 + 1 }
-        XCTAssertEqual(map.maxBufferSize, sender.maxBufferSize)
+        XCTAssertEqual(map.bufferType, sender.bufferType)
         sender.offer(1)
         sender.offer(2)
         XCTAssertFalse(map.isEmpty)
@@ -214,8 +175,36 @@ class CoChannelTests: XCTestCase {
         wait(for: [exp], timeout: 5)
     }
     
+    
+    
+    func testCancelFinish() {
+        let exp = expectation(description: "testCancelFinished")
+        exp.expectedFulfillmentCount = 2
+        let channel = CoChannel<Int>()
+        channel.whenCanceled { exp.fulfill() }
+        channel.cancel()
+        channel.whenCanceled { exp.fulfill() }
+        wait(for: [exp], timeout: 1)
+    }
+    
+    func testCloseFinish() {
+        let exp = expectation(description: "testCancelFinished")
+        let channel = CoChannel<Int>()
+        channel.whenComplete { exp.fulfill() }
+        channel.close()
+        wait(for: [exp], timeout: 1)
+    }
+    
+    func testFinish() {
+        let exp = expectation(description: "testCancelFinished")
+        let channel = _BufferedChannel<Int>(capacity: 1)
+        channel.whenFinished { _ in exp.fulfill() }
+        channel.finish()
+        wait(for: [exp], timeout: 1)
+    }
+    
     func testCoChannelReceiver() {
-        let wrapper = CoChannel<Any>.Receiver()
+        let wrapper = _Channel<Any>()
         _ = try? wrapper.awaitReceive()
         _ = wrapper.receiveFuture()
         _ = wrapper.poll()
@@ -227,7 +216,13 @@ class CoChannelTests: XCTestCase {
         _ = wrapper.isEmpty
         _ = wrapper.isClosed
         _ = wrapper.isCanceled
-        _ = wrapper.maxBufferSize
+        _ = wrapper.bufferType
+        try? wrapper.awaitSend(1)
+        wrapper.sendFuture(.init(result: .success(1)))
+        _ = wrapper.offer(1)
+        _ = wrapper.close()
+        _ = wrapper
+        _ = CoChannel<Int>.Receiver().whenFinished { _ in }
     }
     
 }
