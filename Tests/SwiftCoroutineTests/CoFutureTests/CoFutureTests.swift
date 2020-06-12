@@ -123,4 +123,18 @@ class CoFutureTests: XCTestCase {
         wait(for: [exp], timeout: 3)
     }
     
+    func testPromiseInit() {
+        let exp = expectation(description: "testPromiseInit")
+        func asyncFunc(_ callback: @escaping (Result<Int, Error>) -> Void) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
+                callback(.success(1))
+            }
+        }
+        CoFuture(promise: asyncFunc).whenSuccess {
+            XCTAssertEqual($0, 1)
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 5)
+    }
+    
 }

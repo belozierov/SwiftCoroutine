@@ -10,13 +10,13 @@
 import Combine
 
 @available(OSX 10.15, iOS 13.0, *)
-final class CoFuturePublisher<Output, Future: CoFuture<Output>> {
+internal final class CoFuturePublisher<Output> {
     
-    typealias Failure = Error
+    internal typealias Failure = Error
     
-    let future: Future
+    internal let future: CoFuture<Output>
     
-    @inlinable init(future: Future) {
+    @inlinable internal init(future: CoFuture<Output>) {
         self.future = future
     }
     
@@ -25,8 +25,8 @@ final class CoFuturePublisher<Output, Future: CoFuture<Output>> {
 @available(OSX 10.15, iOS 13.0, *)
 extension CoFuturePublisher: Publisher {
     
-    @inlinable func receive<S: Subscriber>(subscriber: S) where Failure == S.Failure, Output == S.Input {
-        let subscription = CoSubscription(subscriber: subscriber, future: future)
+    @inlinable internal func receive<S: Subscriber>(subscriber: S) where Failure == S.Failure, Output == S.Input {
+        let subscription = CoFutureSubscription(subscriber: subscriber, future: future)
         subscriber.receive(subscription: subscription)
     }
     

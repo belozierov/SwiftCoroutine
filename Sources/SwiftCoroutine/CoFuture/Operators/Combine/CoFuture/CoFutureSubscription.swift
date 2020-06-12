@@ -1,5 +1,5 @@
 //
-//  CoSubscription.swift
+//  CoFutureSubscription.swift
 //  SwiftCoroutine
 //
 //  Created by Alex Belozierov on 15.03.2020.
@@ -10,7 +10,7 @@
 import Combine
 
 @available(OSX 10.15, iOS 13.0, *)
-internal final class CoSubscription<S: Subscriber, T>: Subscription where S.Input == T, S.Failure == Error {
+internal final class CoFutureSubscription<S: Subscriber, T>: Subscription where S.Input == T, S.Failure == Error {
     
     private let future: CoFuture<T>
     private var subscriber: S?
