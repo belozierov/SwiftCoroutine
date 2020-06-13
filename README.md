@@ -79,7 +79,8 @@ DispatchQueue.main.startCoroutine {
 
 ### Installation
 
-`SwiftCoroutine` is available through the [Swift Package Manager](https://swift.org/package-manager) for iOS, macOS and Linux.
+- It's available through the [Swift Package Manager](https://swift.org/package-manager) for iOS, macOS and Linux.
+- It's available through [CocoaPods](https://cocoapods.org/pods/swiftcoroutine) for iOS and macOS.
 
 ## Working with SwiftCoroutine
 
