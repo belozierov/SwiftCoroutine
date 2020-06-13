@@ -10,5 +10,5 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '10.0'
   s.osx.deployment_target = '10.12'
   s.documentation_url = 'https://belozierov.github.io/SwiftCoroutine/'
-  s.source_files = 'Sources/**/*.{swift,h, c}'
+  s.source_files = 'Sources/**/*.{swift,h,c}'
 end
