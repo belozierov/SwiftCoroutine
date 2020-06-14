@@ -15,7 +15,7 @@ public final class CoPromise<Value>: CoFuture<Value> {}
 
 extension CoPromise {
     
-    @inlinable public convenience init() {
+    public convenience init() {
         self.init(_result: nil)
     }
     
