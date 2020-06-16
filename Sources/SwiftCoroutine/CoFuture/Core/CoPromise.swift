@@ -20,7 +20,10 @@ extension CoPromise {
     }
     
     @inlinable public func complete<E: Error>(with result: Result<Value, E>) {
-        setResult2(result)
+        switch result {
+        case .success(let value): setResult(.success(value))
+        case .failure(let error): setResult(.failure(error))
+        }
     }
     
     @inlinable public func success(_ value: Value) {

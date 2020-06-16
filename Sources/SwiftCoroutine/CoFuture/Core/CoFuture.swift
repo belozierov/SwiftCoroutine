@@ -121,9 +121,9 @@ extension CoFuture: _CoFutureCancellable {
     /// let future = CoFuture(promise: someAsyncFunc)
     /// ```
     /// - Parameter promise: A closure to fulfill this future.
-    @inlinable public convenience init<E: Error>(promise: (@escaping (Result<Value, E>) -> Void) -> Void) {
+    @inlinable public convenience init(promise: (@escaping (Result<Value, Error>) -> Void) -> Void) {
         self.init(_result: nil)
-        promise(setResult2)
+        promise(setResult)
     }
 
     /// Starts a new coroutine and initializes future with its result.
@@ -164,13 +164,6 @@ extension CoFuture: _CoFutureCancellable {
         _result = result
         parent = nil
         nodes.close()?.finish(with: result)
-    }
-    
-    @inlinable internal func setResult2<E: Error>(_ result: Result<Value, E>) {
-        switch result {
-        case .success(let value): setResult(.success(value))
-        case .failure(let error): setResult(.failure(error))
-        }
     }
     
     // MARK: - Callback

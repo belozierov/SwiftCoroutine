@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = 'SwiftCoroutine'
-  s.version = '2.1.7'
+  s.version = '2.1.8'
   s.license = 'MIT'
   s.summary = 'Swift coroutines for iOS, macOS and Linux.'
   s.homepage = 'https://github.com/belozierov/SwiftCoroutine'

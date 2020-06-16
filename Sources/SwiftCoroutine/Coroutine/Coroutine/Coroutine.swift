@@ -40,7 +40,7 @@ public struct Coroutine {
     
     /// Starts a new coroutine.
     /// - Parameter task: The closure that will be executed inside coroutine.
-    @inlinable public static func start(_ task: @escaping () -> Void) {
+    @inlinable public static func start(_ task: @escaping () throws -> Void) {
         ImmediateScheduler().startCoroutine(task: task)
     }
     
