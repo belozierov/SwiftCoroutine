@@ -1,124 +1,124 @@
 {
   "warnings": [
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoChannel/CoChannelError.swift",
+      "file": "/Users/obe/SwiftCoroutine/Sources/SwiftCoroutine/CoChannel/CoChannelError.swift",
       "line": 9,
       "symbol": "CoChannelError",
       "symbol_kind": "source.lang.swift.decl.enum",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoChannel/CoChannelError.swift",
+      "file": "/Users/obe/SwiftCoroutine/Sources/SwiftCoroutine/CoChannel/CoChannelError.swift",
       "line": 10,
       "symbol": "CoChannelError.canceled",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoChannel/CoChannelError.swift",
+      "file": "/Users/obe/SwiftCoroutine/Sources/SwiftCoroutine/CoChannel/CoChannelError.swift",
       "line": 10,
       "symbol": "CoChannelError.closed",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/CoFutureError.swift",
+      "file": "/Users/obe/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/CoFutureError.swift",
       "line": 9,
       "symbol": "CoFutureError",
       "symbol_kind": "source.lang.swift.decl.enum",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/CoFutureError.swift",
+      "file": "/Users/obe/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/CoFutureError.swift",
       "line": 10,
       "symbol": "CoFutureError.canceled",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/CoFutureError.swift",
+      "file": "/Users/obe/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/CoFutureError.swift",
       "line": 10,
       "symbol": "CoFutureError.timeout",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Core/CoPromise.swift",
+      "file": "/Users/obe/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Core/CoPromise.swift",
       "line": 18,
       "symbol": "CoPromise.init()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Core/CoPromise.swift",
+      "file": "/Users/obe/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Core/CoPromise.swift",
       "line": 22,
       "symbol": "CoPromise.complete(with:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Core/CoPromise.swift",
-      "line": 26,
+      "file": "/Users/obe/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Core/CoPromise.swift",
+      "line": 29,
       "symbol": "CoPromise.success(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Core/CoPromise.swift",
-      "line": 30,
+      "file": "/Users/obe/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Core/CoPromise.swift",
+      "line": 33,
       "symbol": "CoPromise.fail(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Core/CoPromise.swift",
-      "line": 34,
+      "file": "/Users/obe/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Core/CoPromise.swift",
+      "line": 37,
       "symbol": "CoPromise.complete(with:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Extensions/URLSession+CoFuture.swift",
+      "file": "/Users/obe/SwiftCoroutine/Sources/SwiftCoroutine/CoFuture/Extensions/URLSession+CoFuture.swift",
       "line": 17,
       "symbol": "URLSession.DataResponse",
       "symbol_kind": "source.lang.swift.decl.typealias",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoScope/CoCancellable.swift",
+      "file": "/Users/obe/SwiftCoroutine/Sources/SwiftCoroutine/CoScope/CoCancellable.swift",
       "line": 9,
       "symbol": "CoCancellable",
       "symbol_kind": "source.lang.swift.decl.protocol",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/CoScope/CoCancellable.swift",
+      "file": "/Users/obe/SwiftCoroutine/Sources/SwiftCoroutine/CoScope/CoCancellable.swift",
       "line": 20,
       "symbol": "CoCancellable",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/Coroutine/CoroutineError.swift",
+      "file": "/Users/obe/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/Coroutine/CoroutineError.swift",
       "line": 9,
       "symbol": "CoroutineError",
       "symbol_kind": "source.lang.swift.decl.enum",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/Coroutine/CoroutineError.swift",
+      "file": "/Users/obe/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/Coroutine/CoroutineError.swift",
       "line": 10,
       "symbol": "CoroutineError.calledOutsideCoroutine",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/alexbelozierov/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/Coroutine/CoroutineError.swift",
+      "file": "/Users/obe/SwiftCoroutine/Sources/SwiftCoroutine/Coroutine/Coroutine/CoroutineError.swift",
       "line": 10,
       "symbol": "CoroutineError.canceled",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     }
   ],
-  "source_directory": "/Users/alexbelozierov/SwiftCoroutine"
+  "source_directory": "/Users/obe/SwiftCoroutine"
 }
