@@ -67,9 +67,9 @@ extension CoroutineScheduler {
     ///   - task: The closure that will be executed inside coroutine. If the task throws an error, then the coroutine will be terminated.
     public func startCoroutine(in scope: CoScope? = nil, task: @escaping () throws -> Void) {
         guard let scope = scope else { return _startCoroutine { try? task() } }
-        _startCoroutine {
+        _startCoroutine { [weak scope] in
             guard let coroutine = try? Coroutine.current(),
-                let completion = scope.add(coroutine.cancel) else { return }
+                let completion = scope?.add(coroutine.cancel) else { return }
             try? task()
             completion()
         }
