@@ -122,7 +122,7 @@ public struct Coroutine {
         timer.schedule(deadline: .now() + time)
         defer { timer.cancel() }
         do {
-            try await {
+            try self.await {
                 timer.setEventHandler(handler: $0)
                 timer.start()
             }

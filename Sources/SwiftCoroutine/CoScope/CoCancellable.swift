@@ -6,7 +6,7 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
-public protocol CoCancellable: class {
+public protocol CoCancellable: AnyObject {
     
     /// Cancels the current `CoCancellable`.
     func cancel()

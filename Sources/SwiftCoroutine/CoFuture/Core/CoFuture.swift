@@ -6,7 +6,7 @@
 //  Copyright © 2020 Alex Belozierov. All rights reserved.
 //
 
-private protocol _CoFutureCancellable: class {
+private protocol _CoFutureCancellable: AnyObject {
 
     func cancel()
     
