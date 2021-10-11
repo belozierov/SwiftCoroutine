@@ -18,22 +18,22 @@ class CoFutureCombineTests: XCTestCase {
     struct TestError: Error {}
     var cancellables = Set<AnyCancellable>()
     
-    func testSubscribe() {
-        let exp = expectation(description: "testSubscribe")
-        exp.expectedFulfillmentCount = 100_000
-        for i in 0..<100_000 {
-            let future = Future<Int, Never> { promise in
-                DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(100)) {
-                    promise(.success(i))
-                }
-            }.delay(for: .milliseconds(100), scheduler: DispatchQueue.global()).subscribeCoFuture()
-            DispatchQueue.global().startCoroutine {
-                XCTAssertEqual(try future.await(), i)
-                exp.fulfill()
-            }
-        }
-        wait(for: [exp], timeout: 5)
-    }
+//    func testSubscribe() {
+//        let exp = expectation(description: "testSubscribe")
+//        exp.expectedFulfillmentCount = 100_000
+//        for i in 0..<100_000 {
+//            let future = Future<Int, Never> { promise in
+//                DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(100)) {
+//                    promise(.success(i))
+//                }
+//            }.delay(for: .milliseconds(100), scheduler: DispatchQueue.global()).subscribeCoFuture()
+//            DispatchQueue.global().startCoroutine {
+//                XCTAssertEqual(try future.await(), i)
+//                exp.fulfill()
+//            }
+//        }
+//        wait(for: [exp], timeout: 5)
+//    }
     
     func testSubscription() {
         let exp = expectation(description: "testSubscription")
