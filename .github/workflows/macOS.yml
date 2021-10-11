@@ -1,10 +1,10 @@
 name: macOS
 on: [push]
 jobs:
-  Catalina:
+  mac_os_build:
     runs-on: macos-latest
     env:
-      DEVELOPER_DIR: /Applications/Xcode_11.4.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_13.0.app/Contents/Developer
       CODECOV_TOKEN: 4dcab976-dc00-4d0a-af2c-ff675655a733
     steps:
     - uses: actions/checkout@v1
