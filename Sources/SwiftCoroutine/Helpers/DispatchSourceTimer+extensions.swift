@@ -11,7 +11,7 @@ import Dispatch
 extension DispatchSourceTimer {
     
     @inlinable internal func start() {
-        if #available(OSX 10.12, iOS 10.0, *) {
+        if #available(OSX 10.12, iOS 10.0, tvOS 10.0, *) {
             activate()
         } else {
             resume()

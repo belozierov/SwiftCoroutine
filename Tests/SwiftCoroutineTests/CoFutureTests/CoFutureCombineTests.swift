@@ -12,7 +12,7 @@ import Combine
 import SwiftCoroutine
 import Foundation
 
-@available(OSX 10.15, iOS 13.0, *)
+@available(OSX 10.15, iOS 13.0, tvOS 13.0, *)
 class CoFutureCombineTests: XCTestCase {
     
     struct TestError: Error {}
