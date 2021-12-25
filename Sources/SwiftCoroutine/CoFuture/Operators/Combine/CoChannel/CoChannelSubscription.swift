@@ -9,7 +9,7 @@
 #if canImport(Combine)
 import Combine
 
-@available(OSX 10.15, iOS 13.0, *)
+@available(OSX 10.15, iOS 13.0, tvOS 13.0, *)
 internal final class CoChannelSubscription<S: Subscriber, T>: Subscription where S.Input == T, S.Failure == CoChannelError {
     
     private let receiver: CoChannel<T>.Receiver
